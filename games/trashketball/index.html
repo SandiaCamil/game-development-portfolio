@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trashketball Extreme Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --court-dark:#0a1e16;
+    --court-mid:#134a36;
+    --lime:#C6FF3D;
+    --lime-dark:#8ec221;
+    --organic:#E67E22;
+    --recycle:#2980B9;
+    --trash:#7F8C8D;
+    --red:#E74C3C;
+    --gold:#F1C40F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#05120c;font-family:'Rubik',sans-serif;}
+  #wrap{position:relative;width:100%;height:100vh;}
+  canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab;}
+  
+  /* Overlays solidos y bien opacos (sin transparencias feas) */
+  .overlay{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:#081c15;text-align:center;color:#fff;padding:24px;z-index:20;
+    box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+  }
+  .hidden{display:none !important;}
+  h1.title{
+    font-family:'Bungee',cursive;
+    font-size:clamp(2.2rem,7vw,4.2rem);
+    color:var(--lime);
+    letter-spacing:2px;
+    margin:0 0 8px 0;
+    text-shadow:5px 5px 0 #000;
+  }
+  .subtitle{font-size:clamp(0.9rem,2.5vw,1.1rem);color:#d1e7dd;max-width:580px;margin:0 0 20px 0;line-height:1.5;}
+  .subtitle b{color:var(--lime);}
+  
+  .features-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap:10px; max-width:550px; width:100%; margin-bottom:24px;
+  }
+  .feat-card{
+    background:#113829; border:2px solid #1e523d; padding:10px; border-radius:12px; font-size:0.8rem; text-align:center;
+  }
+  .feat-card span{display:block; font-size:1.4rem; margin-bottom:4px;}
+
+  button{
+    font-family:'Bungee',cursive;
+    background:var(--lime);
+    color:#05120c;
+    border:none;
+    padding:16px 48px;
+    font-size:1.2rem;
+    border-radius:100px;
+    cursor:pointer;
+    box-shadow:0 6px 0 var(--lime-dark), 0 10px 20px rgba(0,0,0,0.5);
+    transition:transform .08s ease, box-shadow .08s ease;
+    letter-spacing:1px;
+  }
+  button:active{transform:translateY(4px);box-shadow:0 2px 0 var(--lime-dark);}
+  
+  .legend{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;justify-content:center;}
+  .chip{display:flex;align-items:center;gap:8px;background:#113829;border:1px solid #225a43;padding:8px 14px;border-radius:100px;font-size:0.85rem;font-weight:600;}
+  .dot{width:12px;height:12px;border-radius:50%;border:2px solid #fff;}
+  .result-score{font-family:'Bungee',cursive;font-size:clamp(3rem,10vw,4.5rem);color:var(--lime);margin:6px 0 14px 0;text-shadow:3px 3px 0 #000;}
+  
+  /* HUD Sólido y profesional */
+  #hud{
+    position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;
+    pointer-events:none;z-index:10;
+  }
+  .hud-card{
+    background:#081c15; border:2px solid #1e523d; padding:8px 16px; border-radius:14px;
+    box-shadow:0 6px 16px rgba(0,0,0,0.6); display:flex; align-items:center; gap:10px;
+  }
+  .score-box{font-family:'Bungee',cursive;color:var(--lime);font-size:1.3rem;}
+  .combo-box{font-family:'Bungee',cursive;color:var(--gold);font-size:1.1rem;}
+  .lives-box{display:flex;gap:6px;}
+  .life{font-size:1.4rem;transition:transform .2s;}
+  .life.lost{filter:grayscale(1) opacity(0.2); transform:scale(0.8);}
+  
+  #timerBarBg{position:absolute;top:0;left:0;right:0;height:8px;background:#000;z-index:11;}
+  #timerBarFg{height:100%;width:100%;background:var(--lime);transition:width 0.2s linear;}
+  
+  /* Indicador de Viento */
+  #windIndicator{
+    position:absolute; top:70px; right:12px; background:#081c15; border:2px solid #1e523d;
+    padding:6px 14px; border-radius:30px; color:#fff; font-size:0.85rem; font-weight:800;
+    display:flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(0,0,0,0.5); z-index:10;
+  }
+  #windArrow{display:inline-block; font-size:1.2rem; transition:transform 0.3s ease;}
+
+  #toast{
+    position:absolute;left:50%;top:22%;transform:translate(-50%,-50%) scale(0.8);
+    font-family:'Bungee',cursive;font-size:clamp(1.2rem,4vw,1.8rem);
+    padding:14px 28px;border-radius:20px;opacity:0;pointer-events:none;transition:opacity .15s, transform .15s;z-index:15;
+    text-align:center;max-width:90%;box-shadow:0 10px 30px rgba(0,0,0,0.7);
+  }
+  #toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .toast-good{background:var(--lime);color:#05120c;border:3px solid #fff;}
+  .toast-bad{background:var(--red);color:#fff;border:3px solid #fff;}
+  .toast-combo{background:var(--gold);color:#05120c;border:3px solid #fff;}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="hud-card score-box">🏆 <span id="scoreVal">0</span></div>
+    <div class="hud-card combo-box" id="comboCard">🔥 x<span id="comboVal">1</span></div>
+    <div class="hud-card lives-box">
+      <span class="life" id="life0">🗑️</span>
+      <span class="life" id="life1">🗑️</span>
+      <span class="life" id="life2">🗑️</span>
+    </div>
+  </div>
+  
+  <div id="windIndicator" class="hidden">
+    <span>VIENTO:</span>
+    <span id="windArrow">➔</span>
+    <span id="windVal">0 mph</span>
+  </div>
+
+  <div id="timerBarBg" class="hidden"><div id="timerBarFg"></div></div>
+  <div id="toast"></div>
+
+  <!-- MENU INICIAL COMPLETO -->
+  <div id="startScreen" class="overlay">
+    <h1 class="title">TRASHKETBALL PRO</h1>
+    <p class="subtitle">¡Encesta los residuos en sus contenedores móviles! Un simulador arcade con física avanzada, clima cambiante y multiplicadores.</p>
+    
+    <div class="features-grid">
+      <div class="feat-card"><span>💨</span><b>Viento Dinámico</b><br>Afecta el tiro</div>
+      <div class="feat-card"><span>🚚</span><b>Canchas / Urbano</b><br>Escenarios vivos</div>
+      <div class="feat-card"><span>🔥</span><b>Combos</b><br>Multiplica puntos</div>
+      <div class="feat-card"><span>🛡️</span><b>Escudos / Botes</b><br>Obstáculos móviles</div>
+    </div>
+
+    <div class="legend">
+      <div class="chip"><span class="dot" style="background:var(--organic)"></span>Orgánico</div>
+      <div class="chip"><span class="dot" style="background:var(--recycle)"></span>Reciclable</div>
+      <div class="chip"><span class="dot" style="background:var(--trash)"></span>No reciclable</div>
+    </div>
+    
+    <button id="playBtn" style="margin-top:24px;">¡JUGAR AHORA!</button>
+  </div>
+
+  <!-- MENU FIN DE JUEGO -->
+  <div id="endScreen" class="overlay hidden">
+    <h1 class="title" id="endTitle">¡TIEMPO AGOTADO!</h1>
+    <div class="result-score" id="endScore">0 pts</div>
+    <p class="subtitle" id="endMsg">¡Gran trabajo limpiando la ciudad!</p>
+    <button id="retryBtn">REINTENTAR</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('wrap');
+  let W, H, DPR;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1, 2);
+    W = wrap.clientWidth; H = wrap.clientHeight;
+    canvas.width = W*DPR; canvas.height = H*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    if(state !== 'intro') layoutBins(currentOrder);
+  }
+  window.addEventListener('resize', resize);
+
+  // ---------- Categorías e Ítems ----------
+  const CATS = {
+    organic:  {label:'Orgánico',      color:'#E67E22', dark:'#A04000', items:['🍌','🍎','🍂','🍞','🍕']},
+    recycle:  {label:'Reciclable',    color:'#2980B9', dark:'#1B4F72', items:['🥤','♻️','📦','🧴','🍾']},
+    trash:    {label:'No reciclable', color:'#7F8C8D', dark:'#4D5656', items:['🧦','🖊️','🩹','🥫','🚬']}
+  };
+  const CAT_KEYS = Object.keys(CATS);
+
+  // ---------- Variables de Estado de Juego ----------
+  let state = 'intro'; // intro, idle, aiming, flying, resolving, ended
+  let item = null;
+  let dragStart = null, dragCurrent = null;
+  let score = 0, lives = 3, timeLeft = 60, combo = 1;
+  let timerInterval = null;
+  let particles = [];
+  let bgClouds = [];
+  let bgCars = [];
+  
+  // Físicas y Dificultad
+  const GRAVITY = 1400;
+  let wind = 0; // Viento horizontal (-400 a 400)
+  let currentOrder = [...CAT_KEYS];
+  let currentLaunchPoint = {x:0, y:0};
+  let obstacle = null; // Obstáculo rebotador móvil
+  
+  // Elementos de fondo decorativos
+  for(let i=0; i<5; i++){
+    bgClouds.push({x: Math.random()*1200, y: 30 + Math.random()*120, speed: 10 + Math.random()*20, scale: 0.6+Math.random()*0.8});
+  }
+
+  function spawnCar(){
+    bgCars.push({x: -120, speed: 120 + Math.random()*100, color: ['#e74c3c','#3498db','#f1c40f','#ecf0f1'][Math.floor(Math.random()*4)]});
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // ---------- Configuración de Basureros (Ocupan espacio inteligente) ----------
+  let bins = [];
+  function layoutBins(order){
+    const groundY = H - 90; // Bastante elevado del fondo real
+    const n = order.length;
+    const margin = W * 0.12;
+    const usable = W - margin*2;
+
+    bins = order.map((key, i) => {
+      const cx = margin + usable * ((i + 0.5) / n);
+      const w = Math.min(130, (usable / n) * 0.78);
+      const h = 110;
+      // Dirección y velocidad de movimiento para contenedores
+      const moveSpeed = (Math.random() > 0.4) ? (15 + Math.random() * 25) * (Math.random() > 0.5 ? 1 : -1) : 0;
+
+      return {
+        key, cx, originalCx: cx,
+        x: cx - w/2, y: groundY - h, w, h,
+        mouthY: groundY - h - 5,
+        color: CATS[key].color, dark: CATS[key].dark, label: CATS[key].label,
+        bob: Math.random()*Math.PI*2,
+        vx: moveSpeed,
+        minX: cx - 40, maxX: cx + 40
+      };
+    });
+  }
+
+  // ---------- Punto de Lanzamiento y Clima ----------
+  function setRandomLaunchPoint(){
+    const minX = W * 0.08;
+    const maxX = W * 0.35;
+    const minY = H - 220;
+    const maxY = H - 140;
+    currentLaunchPoint = {
+      x: minX + Math.random() * (maxX - minX),
+      y: minY + Math.random() * (maxY - minY)
+    };
+
+    // Nuevo viento aleatorio en cada tiro
+    wind = (Math.random() - 0.5) * 600; // Viento fuerte positivo o negativo
+    updateWindUI();
+
+    // Crear o mover obstáculo flotante
+    if(Math.random() > 0.3) {
+      obstacle = {
+        x: W*0.45 + Math.random()*(W*0.2),
+        y: H*0.35 + Math.random()*(H*0.2),
+        r: 28,
+        vy: 40,
+        minY: H*0.25, maxY: H*0.55
+      };
+    } else {
+      obstacle = null;
+    }
+  }
+
+  function updateWindUI(){
+    const windVal = document.getElementById('windVal');
+    const windArrow = document.getElementById('windArrow');
+    const absWind = Math.round(Math.abs(wind) / 10);
+    windVal.textContent = absWind + ' mph';
+    
+    if(Math.abs(wind) < 50){
+      windArrow.style.transform = 'rotate(0deg)';
+      windVal.textContent = 'CALMA';
+    } else if(wind > 0){
+      windArrow.style.transform = 'rotate(0deg)';
+    } else {
+      windArrow.style.transform = 'rotate(180deg)';
+    }
+  }
+
+  // ---------- Lógica de Turnos ----------
+  function setupNewTurn(){
+    setRandomLaunchPoint();
+    currentOrder = shuffle([...CAT_KEYS]);
+    layoutBins(currentOrder);
+    spawnItem();
+  }
+
+  function spawnItem(){
+    const key = CAT_KEYS[Math.floor(Math.random()*CAT_KEYS.length)];
+    const emoji = CATS[key].items[Math.floor(Math.random()*CATS[key].items.length)];
+    item = { cat:key, emoji, x:currentLaunchPoint.x, y:currentLaunchPoint.y, vx:0, vy:0, r:26, thrown:false, rot:0, vRot:0 };
+    state = 'idle';
+  }
+
+  function resetGame(){
+    score = 0; lives = 3; timeLeft = 60; combo = 1; particles = []; bgCars = [];
+    document.getElementById('scoreVal').textContent = score;
+    document.getElementById('comboVal').textContent = combo;
+    for(let i=0;i<3;i++) document.getElementById('life'+i).classList.remove('lost');
+    updateTimerBar();
+    setupNewTurn();
+  }
+
+  function updateTimerBar(){
+    const pct = Math.max(0, timeLeft/60*100);
+    document.getElementById('timerBarFg').style.width = pct+'%';
+  }
+
+  function loseLife(){
+    lives--;
+    combo = 1; // Reiniciar combo
+    document.getElementById('comboVal').textContent = combo;
+    const idx = lives;
+    if(idx>=0) document.getElementById('life'+idx).classList.add('lost');
+    if(lives<=0){ endGame(false); }
+  }
+
+  function addScore(basePts){
+    const pts = basePts * combo;
+    score = Math.max(0, score + pts);
+    document.getElementById('scoreVal').textContent = score;
+  }
+
+  function showToast(text, type){
+    const t = document.getElementById('toast');
+    t.textContent = text;
+    t.className = 'show toast-' + type;
+    clearTimeout(showToast._to);
+    showToast._to = setTimeout(()=>{ t.classList.remove('show'); }, 1200);
+  }
+
+  function spawnParticles(x, y, color, count=25){
+    for(let i=0; i<count; i++){
+      const ang = Math.random()*Math.PI*2;
+      const spd = 80 + Math.random()*260;
+      particles.push({
+        x, y, vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd-100,
+        life:1, color, r:3+Math.random()*4
+      });
+    }
+  }
+
+  function resolveThrow(landedBin){
+    state = 'resolving';
+    if(landedBin){
+      if(landedBin.key === item.cat){
+        addScore(20);
+        combo++;
+        document.getElementById('comboVal').textContent = combo;
+        if(combo > 2){
+          showToast(`¡COMBO x${combo}! +${20*combo} pts`, 'combo');
+        } else {
+          showToast('¡ENCESTADO! +20', 'good');
+        }
+        spawnParticles(landedBin.cx, landedBin.mouthY, landedBin.color, 30);
+      } else {
+        showToast(`¡INCORRECTO! Era ${CATS[item.cat].label}`, 'bad');
+        loseLife();
+      }
+    } else {
+      showToast('¡FALLASTE EL TIRO!', 'bad');
+      loseLife();
+    }
+    
+    setTimeout(()=>{
+      if(state!=='ended' && lives > 0) setupNewTurn();
+    }, 800);
+  }
+
+  function endGame(won){
+    state = 'ended';
+    clearInterval(timerInterval);
+    document.getElementById('hud').classList.add('hidden');
+    document.getElementById('windIndicator').classList.add('hidden');
+    document.getElementById('timerBarBg').classList.add('hidden');
+    
+    const endScreen = document.getElementById('endScreen');
+    document.getElementById('endTitle').textContent = won ? '¡CIUDAD LIMPIA!' : 'FIN DEL JUEGO';
+    document.getElementById('endTitle').style.color = won ? 'var(--lime)' : 'var(--red)';
+    document.getElementById('endScore').textContent = score + ' pts';
+    document.getElementById('endMsg').textContent = won
+      ? 'Demostraste un dominio total de la separación de residuos y la física.'
+      : 'Te quedaste sin vidas. ¡El medio ambiente necesita que sigas practicando!';
+    endScreen.classList.remove('hidden');
+  }
+
+  // ---------- Control de Arrastre ----------
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    return {x:cx, y:cy};
+  }
+
+  canvas.addEventListener('mousedown', onDown);
+  canvas.addEventListener('touchstart', onDown, {passive:true});
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('touchmove', onMove, {passive:true});
+  window.addEventListener('mouseup', onUp);
+  window.addEventListener('touchend', onUp);
+
+  function onDown(e){
+    if(state!=='idle' || !item) return;
+    const p = getPos(e);
+    if(Math.hypot(p.x-item.x, p.y-item.y) < 80){
+      state='aiming'; dragStart = {x:item.x, y:item.y}; dragCurrent = p;
+      canvas.style.cursor='grabbing';
+    }
+  }
+  function onMove(e){
+    if(state!=='aiming') return;
+    dragCurrent = getPos(e);
+  }
+  function onUp(e){
+    if(state!=='aiming') return;
+    canvas.style.cursor='grab';
+    const dx = dragStart.x - dragCurrent.x;
+    const dy = dragStart.y - dragCurrent.y;
+    const dist = Math.min(Math.hypot(dx,dy), 190);
+    
+    if(dist < 22){ state='idle'; return; }
+
+    const power = 10.5;
+    item.vx = (dx/Math.hypot(dx,dy)) * dist * power;
+    item.vy = (dy/Math.hypot(dx,dy)) * dist * power * 1.08;
+    item.vRot = (Math.random() - 0.5) * 12;
+    item.thrown = true;
+    state = 'flying';
+  }
+
+  // ---------- Loop Principal y Actualización ----------
+  let lastT = performance.now();
+  function frame(now){
+    const dt = Math.min(0.032, (now-lastT)/1000);
+    lastT = now;
+    update(dt);
+    draw();
+    requestAnimationFrame(frame);
+  }
+
+  function update(dt){
+    // Nubes
+    bgClouds.forEach(c => {
+      c.x += c.speed * dt;
+      if(c.x > W + 100) c.x = -100;
+    });
+
+    // Autos en el fondo
+    if(Math.random() < 0.005 && bgCars.length < 2) spawnCar();
+    for(let i=bgCars.length-1; i>=0; i--){
+      bgCars[i].x += bgCars[i].speed * dt;
+      if(bgCars[i].x > W + 150) bgCars.splice(i, 1);
+    }
+
+    // Mover basureros dinámicos
+    bins.forEach(b => {
+      b.bob += dt;
+      if(b.vx !== 0){
+        b.cx += b.vx * dt;
+        b.x = b.cx - b.w/2;
+        if(b.cx < b.minX || b.cx > b.maxX) b.vx *= -1;
+      }
+    });
+
+    // Mover obstáculo
+    if(obstacle){
+      obstacle.y += obstacle.vy * dt;
+      if(obstacle.y < obstacle.minY || obstacle.y > obstacle.maxY) obstacle.vy *= -1;
+    }
+
+    // Física del proyectil
+    if(state==='flying' && item){
+      item.vx += wind * dt; // Efecto del viento
+      item.vy += GRAVITY * dt;
+      item.x += item.vx * dt;
+      item.y += item.vy * dt;
+      item.rot += item.vRot * dt;
+
+      // Colisión con obstáculo rebotador
+      if(obstacle){
+        const distObs = Math.hypot(item.x - obstacle.x, item.y - obstacle.y);
+        if(distObs < item.r + obstacle.r){
+          // Rebote elástico simple
+          item.vx *= -0.8;
+          item.vy *= -0.7;
+          spawnParticles(item.x, item.y, '#F1C40F', 10);
+        }
+      }
+
+      // Detectar encestamiento
+      if(item.vy > 0){
+        for(const b of bins){
+          if(item.x > b.x+6 && item.x < b.x+b.w-6 && item.y > b.mouthY && item.y < b.mouthY+35){
+            resolveThrow(b);
+            item = null;
+            return;
+          }
+        }
+      }
+
+      // Fuera de límites
+      if(item.y > H + 100 || item.x < -100 || item.x > W + 100){
+        resolveThrow(null);
+        item = null;
+      }
+    }
+
+    // Partículas
+    for(let i=particles.length-1; i>=0; i--){
+      const p = particles[i];
+      p.vy += 800*dt; p.x += p.vx*dt; p.y += p.vy*dt; p.life -= dt*1.4;
+      if(p.life <= 0) particles.splice(i,1);
+    }
+  }
+
+  // ---------- DIBUJADO DETALLADO DEL ESCENARIO ----------
+  function drawScenario(){
+    // 1. Cielo Urbano con Gradiente Solido
+    const skyG = ctx.createLinearGradient(0,0,0,H*0.65);
+    skyG.addColorStop(0, '#0d281e');
+    skyG.addColorStop(0.7, '#1a4a38');
+    skyG.addColorStop(1, '#2d6a4f');
+    ctx.fillStyle = skyG; ctx.fillRect(0,0,W,H);
+
+    // 2. Nubes
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    bgClouds.forEach(c => {
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 25*c.scale, 0, Math.PI*2);
+      ctx.arc(c.x+20*c.scale, c.y-10*c.scale, 30*c.scale, 0, Math.PI*2);
+      ctx.arc(c.x+40*c.scale, c.y, 25*c.scale, 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    // 3. Edificios de Fondo (Siluetas urbanas sólidas)
+    ctx.fillStyle = '#081c15';
+    const bldgWidth = 80;
+    for(let i=0; i<W+bldgWidth; i+=bldgWidth){
+      const h = 180 + Math.sin(i*99)*80;
+      ctx.fillRect(i, H*0.65 - h, bldgWidth-4, h);
+      
+      // Ventanitas iluminadas
+      ctx.fillStyle = 'rgba(241,196,15,0.15)';
+      for(let wy = H*0.65 - h + 15; wy < H*0.65 - 20; wy += 28){
+        for(let wx = i + 10; wx < i + bldgWidth - 20; wx += 22){
+          if(Math.sin(wx+wy) > 0) ctx.fillRect(wx, wy, 12, 16);
+        }
+      }
+      ctx.fillStyle = '#081c15';
+    }
+
+    // 4. Carretera / Fondo Secundario
+    const roadY = H * 0.65;
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, roadY, W, 40);
+    // Línea de carretera
+    ctx.strokeStyle = '#f1c40f'; ctx.lineWidth = 3; ctx.setLineDash([20, 15]);
+    ctx.beginPath(); ctx.moveTo(0, roadY+20); ctx.lineTo(W, roadY+20); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Dibujar Autos
+    bgCars.forEach(car => {
+      ctx.fillStyle = car.color;
+      ctx.fillRect(car.x, roadY + 8, 50, 18);
+      ctx.fillStyle = '#111'; // Ruedas
+      ctx.beginPath(); ctx.arc(car.x+10, roadY+26, 5, 0, Math.PI*2); ctx.arc(car.x+40, roadY+26, 5, 0, Math.PI*2); ctx.fill();
+    });
+
+    // 5. Muro Urbano y Parque (Suelo Principal)
+    const wallY = roadY + 40;
+    // Muro de ladrillo/concreto
+    ctx.fillStyle = '#1b4332';
+    ctx.fillRect(0, wallY, W, 30);
+    ctx.fillStyle = '#2d6a4f'; ctx.fillRect(0, wallY, W, 4); // Borde superior muro
+
+    // Cancha de Juego (Suelo Sólido con Textura)
+    const courtY = wallY + 30;
+    const courtG = ctx.createLinearGradient(0, courtY, 0, H);
+    courtG.addColorStop(0, '#134a36');
+    courtG.addColorStop(1, '#081c15');
+    ctx.fillStyle = courtG;
+    ctx.fillRect(0, courtY, W, H - courtY);
+
+    // Líneas de la cancha deportivas bien marcadas
+    ctx.strokeStyle = 'rgba(237,234,223,0.3)';
+    ctx.lineWidth = 5;
+    
+    // Área y arcos
+    ctx.beginPath(); ctx.arc(W*0.2, H, W*0.35, Math.PI*1.1, Math.PI*1.8); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, H-90); ctx.lineTo(W, H-90); ctx.stroke(); // Línea de límite
+  }
+
+  function drawObstacle(){
+    if(!obstacle) return;
+    ctx.save();
+    ctx.translate(obstacle.x, obstacle.y);
+    
+    // Bumper metálico brillante
+    const g = ctx.createRadialGradient(0,0,5,0,0,obstacle.r);
+    g.addColorStop(0, '#f39c12');
+    g.addColorStop(0.8, '#d35400');
+    g.addColorStop(1, '#7e5109');
+    
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0,0, obstacle.r, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.stroke();
+
+    // Icono
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('⚡', 0, 0);
+    ctx.restore();
+  }
+
+  function drawBins(){
+    bins.forEach(b => {
+      ctx.save();
+      const bob = Math.sin(b.bob*3)*3;
+
+      // Sombra en el suelo
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath();
+      ctx.ellipse(b.cx, H-80, b.w*0.5, 12, 0, 0, Math.PI*2);
+      ctx.fill();
+
+      // Cuerpo del Basurero 3D Sólido
+      const bodyG = ctx.createLinearGradient(b.x, 0, b.x+b.w, 0);
+      bodyG.addColorStop(0, b.dark);
+      bodyG.addColorStop(0.25, b.color);
+      bodyG.addColorStop(0.75, b.color);
+      bodyG.addColorStop(1, b.dark);
+
+      ctx.fillStyle = bodyG;
+      roundRect(b.x, b.y+18+bob, b.w, b.h-18, 10); ctx.fill();
+
+      // Franjas de textura / Rejilla
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      for(let ly = b.y+30+bob; ly < b.y+b.h-15; ly += 14){
+        ctx.fillRect(b.x+8, ly, b.w-16, 4);
+      }
+
+      // Tapa / Borde Superior
+      ctx.fillStyle = b.dark;
+      roundRect(b.x-6, b.y+bob, b.w+12, 24, 12); ctx.fill();
+      ctx.fillStyle = b.color;
+      roundRect(b.x-2, b.y+3+bob, b.w+4, 18, 9); ctx.fill();
+
+      // Boca (Interior oscuro)
+      ctx.fillStyle = '#050505';
+      roundRect(b.x+8, b.y+7+bob, b.w-16, 12, 6); ctx.fill();
+
+      // Texto de Etiqueta con Fondo Sólido
+      ctx.fillStyle = '#081c15';
+      roundRect(b.cx - 45, b.y + b.h + 6 + bob, 90, 22, 6); ctx.fill();
+      ctx.strokeStyle = b.color; ctx.lineWidth = 2; ctx.stroke();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = "800 11px 'Rubik', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.fillText(b.label.toUpperCase(), b.cx, b.y + b.h + 21 + bob);
+
+      ctx.restore();
+    });
+  }
+
+  function roundRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function drawPlayer(){
+    ctx.save();
+    const px = currentLaunchPoint.x;
+    const py = currentLaunchPoint.y;
+
+    // Sombra del personaje
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.beginPath(); ctx.ellipse(px, H-80, 28, 10, 0, 0, Math.PI*2); ctx.fill();
+
+    // Personaje (Emoji con base elegante)
+    ctx.font = '58px serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🧍', px, py + 35);
+
+    // Plataforma de lanzamiento debajo del personaje
+    ctx.fillStyle = 'rgba(198,255,61,0.2)';
+    ctx.strokeStyle = 'var(--lime)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(px, py+65, 35, 10, 0, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function drawItem(){
+    if(!item) return;
+    ctx.save();
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+
+    if(state==='aiming' && dragCurrent){
+      // Trayectoria calculada con Viento
+      const dx = dragStart.x - dragCurrent.x;
+      const dy = dragStart.y - dragCurrent.y;
+      const dist = Math.min(Math.hypot(dx,dy), 190);
+      const power = 10.5;
+      
+      let vx = (dx/Math.hypot(dx,dy)) * dist * power;
+      let vy = (dy/Math.hypot(dx,dy)) * dist * power * 1.08;
+      let px = item.x, py = item.y;
+
+      // Puntos de curva con física real
+      for(let i=0; i<20; i++){
+        vx += wind * 0.035;
+        vy += GRAVITY * 0.035;
+        px += vx * 0.035;
+        py += vy * 0.035;
+
+        if(i % 2 === 0){
+          const alpha = 1 - (i/20);
+          ctx.fillStyle = `rgba(198,255,61, ${alpha})`;
+          ctx.beginPath(); ctx.arc(px, py, 5 - (i/20)*3, 0, Math.PI*2); ctx.fill();
+        }
+      }
+
+      // Línea de la Resortera / Elástico
+      ctx.strokeStyle = '#C6FF3D';
+      ctx.lineWidth = 4; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(item.x, item.y); ctx.lineTo(dragCurrent.x, dragCurrent.y); ctx.stroke();
+
+      // Dibujar Ítem en la mano
+      ctx.translate(dragCurrent.x, dragCurrent.y);
+      ctx.font = '42px serif';
+      ctx.fillText(item.emoji, 0, 0);
+
+    } else {
+      // Ítem volando o reposo con rotación
+      ctx.translate(item.x, item.y);
+      ctx.rotate(item.rot);
+      ctx.font = '42px serif';
+      ctx.fillText(item.emoji, 0, 0);
+    }
+    ctx.restore();
+  }
+
+  function drawParticles(){
+    ctx.save();
+    particles.forEach(p => {
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI*2); ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    drawScenario();
+    drawObstacle();
+    drawBins();
+    drawPlayer();
+    drawItem();
+    drawParticles();
+  }
+
+  // ---------- Iniciar Juego ----------
+  function initGameLoop(){
+    resize();
+    resetGame();
+    clearInterval(timerInterval);
+    timerInterval = setInterval(()=>{
+      timeLeft--;
+      updateTimerBar();
+      if(timeLeft <= 0){ clearInterval(timerInterval); endGame(true); }
+    }, 1000);
+  }
+
+  document.getElementById('playBtn').addEventListener('click', ()=>{
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('hud').classList.remove('hidden');
+    document.getElementById('windIndicator').classList.remove('hidden');
+    document.getElementById('timerBarBg').classList.remove('hidden');
+    initGameLoop();
+  });
+
+  document.getElementById('retryBtn').addEventListener('click', ()=>{
+    document.getElementById('endScreen').classList.add('hidden');
+    document.getElementById('hud').classList.remove('hidden');
+    document.getElementById('windIndicator').classList.remove('hidden');
+    document.getElementById('timerBarBg').classList.remove('hidden');
+    initGameLoop();
+  });
+
+  resize();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

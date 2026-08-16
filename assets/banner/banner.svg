@@ -1,0 +1,43 @@
+<svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bannerBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#141225"/>
+      <stop offset="45%" stop-color="#2a2450"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f5d4" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#00f5d4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="220" fill="url(#bannerBg)"/>
+  <circle cx="760" cy="60" r="140" fill="url(#glow1)"/>
+
+  <!-- Pixel grid decorativo -->
+  <g opacity="0.5">
+    <rect x="40" y="170" width="14" height="14" fill="#00f5d4"/>
+    <rect x="58" y="170" width="14" height="14" fill="#ff206e"/>
+    <rect x="76" y="170" width="14" height="14" fill="#ffd23f"/>
+    <rect x="94" y="170" width="14" height="14" fill="#3ddc97"/>
+  </g>
+
+  <!-- Iconos de los 3 juegos -->
+  <g transform="translate(600,40)">
+    <rect x="0" y="0" width="36" height="56" fill="#4a3f7a" stroke="#00f5d4" stroke-width="2"/>
+    <text x="6" y="80" font-family="monospace" font-size="10" fill="#00f5d4">DMQ</text>
+  </g>
+  <g transform="translate(680,45)">
+    <circle cx="18" cy="18" r="18" fill="#F1C40F" stroke="#111" stroke-width="2"/>
+    <text x="4" y="52" font-family="monospace" font-size="10" fill="#F1C40F">TKB</text>
+  </g>
+  <g transform="translate(740,42)">
+    <path d="M18 4 C30 26 34 34 34 42 a16 16 0 1 1 -32 0 C2 34 6 26 18 4 Z" fill="#2563EB" stroke="#93C5FD" stroke-width="2"/>
+    <text x="2" y="70" font-family="monospace" font-size="10" fill="#93C5FD">GTM</text>
+  </g>
+
+  <!-- Texto principal -->
+  <text x="40" y="80" font-family="'Press Start 2P', monospace" font-size="26" fill="#f4f0ff">HUGO CAMILO</text>
+  <text x="40" y="112" font-family="'Press Start 2P', monospace" font-size="26" fill="#00f5d4">CUSSI SUXO</text>
+  <text x="40" y="140" font-family="monospace" font-size="16" fill="#ffd23f">Game Development Portfolio</text>
+  <text x="40" y="162" font-family="monospace" font-size="13" fill="#9be3d6">github.com/SandiaCamil</text>
+</svg>

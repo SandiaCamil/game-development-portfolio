@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Gotitas Mágicas 💧 — Salva a Ajolí</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@600;700;800&display=swap');
+
+  :root {
+    --lavanda: #E9DCFF;
+    --lavanda-deep: #7C3AED;
+    --menta: #C6F8E5;
+    --menta-deep: #059669;
+    --rosa: #FFD4EA;
+    --rosa-deep: #DB2777;
+    --amarillo: #FFF0A5;
+    --amarillo-deep: #D97706;
+    --celeste: #D0F4DE;
+    --azul-agua: #2563EB;
+    --texto: #2E1065;
+    --texto-suave: #6D28D9;
+    --blanco: #FFFFFF;
+    --sombra: rgba(46, 16, 101, 0.18);
+    --sombra-glow: rgba(124, 58, 237, 0.45);
+    --font-display: 'Fredoka', cursive, sans-serif;
+    --font-body: 'Quicksand', sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0F0921;
+    font-family: var(--font-body);
+    color: var(--texto);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #game-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 540px;
+    max-height: 960px;
+    aspect-ratio: 9/16;
+    background: linear-gradient(180deg, #A5F3FC 0%, #38BDF8 40%, #0284C7 85%, #0369A1 100%);
+    box-shadow: 0 0 80px rgba(56, 189, 248, 0.4), 0 0 120px rgba(0,0,0,0.8);
+    overflow: hidden;
+    border-radius: 0;
+  }
+
+  @media (min-width: 560px) and (min-height: 700px) {
+    #game-wrapper {
+      border-radius: 32px;
+      height: 94vh;
+      border: 5px solid rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 1;
+  }
+
+  /* OVERLAYS UI */
+  .ui-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+  }
+
+  #hud-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 2.5px solid rgba(255, 255, 255, 0.95);
+    border-radius: 22px;
+    padding: 8px 14px;
+    box-shadow: 0 10px 25px var(--sombra), inset 0 2px 4px rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-weight: 700;
+  }
+
+  #hearts-container {
+    font-size: 22px;
+    letter-spacing: 3px;
+    filter: drop-shadow(0 2px 4px rgba(219, 39, 119, 0.3));
+  }
+
+  #score-container {
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 6px 16px;
+  }
+  #score-num {
+    font-size: 24px;
+    color: var(--lavanda-deep);
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(124, 58, 237, 0.2);
+  }
+  #score-lbl {
+    font-size: 9.5px;
+    color: var(--texto-suave);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  #sound-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    padding: 0;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  #sound-btn:active { transform: scale(0.88); }
+
+  /* COMPANION BAR */
+  #companion-bar {
+    margin-top: 10px;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 3px solid #FFFFFF;
+    border-radius: 26px;
+    box-shadow: 0 12px 30px var(--sombra);
+  }
+
+  #ajoli-avatar-box {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    background: radial-gradient(circle, #FFE4F2 0%, #F472B6 100%);
+    border-radius: 50%;
+    border: 3.5px solid #FFF;
+    box-shadow: 0 6px 16px rgba(219, 39, 119, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+    flex-shrink: 0;
+    animation: avatarPulse 2.5s infinite ease-in-out;
+  }
+  @keyframes avatarPulse {
+    0%, 100% { transform: scale(1) rotate(-3deg); }
+    50% { transform: scale(1.08) rotate(3deg); }
+  }
+
+  #meter-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meter-title-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--texto);
+  }
+  .meter-bg {
+    width: 100%;
+    height: 18px;
+    background: rgba(203, 213, 225, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 2px;
+    border: 2px solid #FFF;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.12);
+  }
+  .meter-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 9px;
+    background: linear-gradient(90deg, #38BDF8, #818CF8, #C084FC);
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.9);
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* TOAST BANNER */
+  #toast-banner {
+    position: absolute;
+    top: 160px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+    width: 90%;
+    background: rgba(255, 255, 255, 0.96);
+    border: 2.5px solid var(--rosa-deep);
+    border-radius: 22px;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--texto);
+    box-shadow: 0 12px 35px var(--sombra-glow);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    z-index: 15;
+  }
+  #toast-banner.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* MODALS */
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    background: rgba(15, 9, 33, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal-card {
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.96) 0%, rgba(237, 233, 254, 0.96) 100%);
+    border: 3.5px solid #FFFFFF;
+    border-radius: 36px;
+    padding: 26px 22px;
+    box-shadow: 0 25px 60px rgba(15, 9, 33, 0.35), inset 0 2px 6px #FFF;
+    text-align: center;
+    transform: scale(0.85) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .modal-overlay.active .modal-card {
+    transform: scale(1) translateY(0);
+  }
+
+  .game-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #EC4899, #8B5CF6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
+    line-height: 1.1;
+  }
+
+  .subtitle {
+    font-size: 13.5px;
+    color: var(--texto-suave);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .diff-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+  .diff-card {
+    background: rgba(255, 255, 255, 0.85);
+    border: 2.5px solid rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 10px 4px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 14px var(--sombra);
+  }
+  .diff-card:hover, .diff-card.selected {
+    background: #FFF;
+    border-color: #EC4899;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 22px rgba(236, 72, 153, 0.3);
+  }
+  .diff-card.selected {
+    background: linear-gradient(135deg, #FCE7F3, #FBCFE8);
+  }
+  .diff-icon { font-size: 22px; margin-bottom: 2px; }
+  .diff-name { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--texto); }
+  .diff-desc { font-size: 9.5px; color: var(--texto-suave); font-weight: 700; margin-top: 2px; }
+
+  .primary-btn {
+    width: 100%;
+    padding: 14px 24px;
+    border: 3.5px solid #FFFFFF;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #10B981 0%, #6366F1 100%);
+    color: #FFFFFF;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(16, 185, 129, 0.4);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .primary-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 16px 35px rgba(16, 185, 129, 0.5);
+  }
+  .primary-btn:active { transform: translateY(1px) scale(0.98); }
+
+  .secondary-btn {
+    width: 100%;
+    padding: 12px 20px;
+    border: 3px solid #FFFFFF;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+    color: #FFFFFF;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(139, 92, 246, 0.35);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .secondary-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 14px 30px rgba(139, 92, 246, 0.45);
+  }
+  .secondary-btn:active { transform: translateY(1px) scale(0.98); }
+
+  .btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .instructions-box {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 22px;
+    padding: 12px 14px;
+    width: 100%;
+    text-align: left;
+    font-size: 12px;
+    border: 2px solid #FFF;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .inst-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+  .inst-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #FFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    box-shadow: 0 3px 8px var(--sombra);
+    flex-shrink: 0;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+  }
+  .stat-card {
+    background: #FFF;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 4px 14px var(--sombra);
+    border: 2px solid var(--lavanda);
+  }
+  .stat-val {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--lavanda-deep);
+  }
+  .stat-lbl {
+    font-size: 10px;
+    color: var(--texto-suave);
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .hero-ajoli {
+    position: relative;
+    width: 86px;
+    height: 86px;
+    background: radial-gradient(circle, #FFE4F2 0%, #F472B6 100%);
+    border-radius: 50%;
+    border: 4px solid #FFF;
+    box-shadow: 0 10px 28px rgba(236, 72, 153, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    animation: heroFloat 3s infinite ease-in-out;
+  }
+  @keyframes heroFloat {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-10px) rotate(3deg); }
+  }
+
+  .shake-screen {
+    animation: screenShake 0.35s cubic-bezier(.36,.07,.19,.97) both;
+  }
+  @keyframes screenShake {
+    10%, 90% { transform: translate3d(-4px, 0, 0); }
+    20%, 80% { transform: translate3d(5px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-7px, 0, 0); }
+    40%, 60% { transform: translate3d(7px, 0, 0); }
+  }
+</style>
+</head>
+<body>
+
+<div id="game-wrapper">
+  <canvas id="gameCanvas"></canvas>
+
+  <div class="ui-layer">
+    <div>
+      <div id="hud-top">
+        <div class="glass-card" id="hearts-container">
+          <span>❤️</span><span>❤️</span><span>❤️</span>
+        </div>
+
+        <button class="glass-card" id="sound-btn" title="Sonido">🔊</button>
+
+        <div class="glass-card" id="score-container">
+          <div id="score-num">0</div>
+          <div id="score-lbl">Puntos 💧</div>
+        </div>
+      </div>
+
+      <div id="companion-bar">
+        <div id="ajoli-avatar-box">
+          <div id="ajoli-face">🦎</div>
+        </div>
+        <div id="meter-box">
+          <div class="meter-title-row">
+            <span id="ajoli-status-text">Ajolí necesita agua limpia...</span>
+            <span id="meter-percent-text">0%</span>
+          </div>
+          <div class="meter-bg">
+            <div class="meter-fill" id="meter-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-banner">✨ ¡El agua es vida! Cierra la llave al cepillarte.</div>
+
+  <!-- START MODAL -->
+  <div class="modal-overlay active" id="modal-start">
+    <div class="modal-card">
+      <div class="hero-ajoli"><span>🦎</span></div>
+      <div>
+        <h1 class="game-title">Gotitas Mágicas</h1>
+        <p class="subtitle">¡Ayuda a <b>Ajolí el Ajolote</b> a salvar su hábitat recolectando gotas puras y evitando la contaminación! 💧🌿</p>
+      </div>
+
+      <div class="instructions-box">
+        <div class="inst-item">
+          <div class="inst-badge">🧺</div>
+          <span>Mueve la canasta para recolectar lo bueno.</span>
+        </div>
+        <div class="inst-item">
+          <div class="inst-badge">🌟</div>
+          <span>Atrapa poder: ❄️ Hielo, 🛡️ Escudo, 💖 Vidas</span>
+        </div>
+        <div class="inst-item">
+          <div class="inst-badge">⚠️</div>
+          <span>¡Evita Basura, Toxinas, Smog y Químicos! 🧪🗑️☣️</span>
+        </div>
+      </div>
+
+      <div style="width: 100%;">
+        <p style="font-size: 10.5px; font-weight:800; color:var(--texto-suave); margin-bottom: 6px; text-transform:uppercase;">Dificultad</p>
+        <div class="diff-grid">
+          <div class="diff-card" data-diff="easy">
+            <div class="diff-icon">🌱</div>
+            <div class="diff-name">Tranquilo</div>
+            <div class="diff-desc">Principiantes</div>
+          </div>
+          <div class="diff-card selected" data-diff="normal">
+            <div class="diff-icon">🌸</div>
+            <div class="diff-name">Normal</div>
+            <div class="diff-desc">Equilibrado</div>
+          </div>
+          <div class="diff-card" data-diff="hard">
+            <div class="diff-icon">🔥</div>
+            <div class="diff-name">Reto Pro</div>
+            <div class="diff-desc">Veloz</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="btn-play">
+        <span>¡Salvar el Agua!</span> ✨
+      </button>
+    </div>
+  </div>
+
+  <!-- END MODAL -->
+  <div class="modal-overlay" id="modal-end">
+    <div class="modal-card">
+      <div class="hero-ajoli" id="end-hero"><span id="end-emoji">🏆</span></div>
+      <div>
+        <h1 class="game-title" id="end-title">¡Misión Cumplida!</h1>
+        <p class="subtitle" id="end-subtitle">Has purificado el hábitat de Ajolí con éxito.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-score">0</div>
+          <div class="stat-lbl">Puntaje Final</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-combo">x0</div>
+          <div class="stat-lbl">Combo Máximo</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-level">1</div>
+          <div class="stat-lbl">Nivel</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-high">0</div>
+          <div class="stat-lbl">Récord</div>
+        </div>
+      </div>
+
+      <p id="end-tip" style="font-size: 11.5px; color: var(--texto-suave); font-weight: 700; background: rgba(255,255,255,0.92); padding: 10px 14px; border-radius: 16px; border: 1.5px solid var(--rosa);">
+        💡 <b>Eco-Dato:</b> Cuidar el agua protege a miles de especies de la extinción.
+      </p>
+
+      <div class="btn-group">
+        <button class="primary-btn" id="btn-restart">
+          <span>Volver a Intentar</span> 🔁
+        </button>
+        <button class="secondary-btn" id="btn-menu">
+          <span>Cambiar Dificultad</span> ⚙️
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+class KawaiiAudio {
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  playPop(pitch = 1) {
+    if (this.muted || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(420 * pitch, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(920 * pitch, this.ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.09);
+    } catch(e){}
+  }
+
+  playPowerup() {
+    if (this.muted || !this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+        gain.gain.setValueAtTime(0.2, now + idx * 0.06);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.06 + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now + idx * 0.06);
+        osc.stop(now + idx * 0.06 + 0.16);
+      });
+    } catch(e){}
+  }
+
+  playHurt() {
+    if (this.muted || !this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(70, this.ctx.currentTime + 0.22);
+      gain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.22);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.23);
+    } catch(e){}
+  }
+}
+
+const audio = new KawaiiAudio();
+
+const wrapper = document.getElementById('game-wrapper');
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let W = canvas.width = wrapper.clientWidth;
+let H = canvas.height = wrapper.clientHeight;
+
+function resizeCanvas() {
+  W = canvas.width = wrapper.clientWidth;
+  H = canvas.height = wrapper.clientHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+
+const ECO_TIPS = [
+  "🌊 ¡Solo el 0.5% del agua del planeta es dulce y accesible para beber!",
+  "🪥 Cierra la llave al cepillarte: ¡ahorras hasta 12L por minuto!",
+  "🚿 Duchas de 5 minutos ahorran más de 3,500 litros de agua al mes.",
+  "💧 Una sola gota goteando cada segundo tira 30 litros de agua al día.",
+  "🔋 ¡Una pila alcalina tirada puede contaminar 175,000 litros de agua!",
+  "🚗 Lavar el auto con cubeta evita desperdiciar hasta 120 litros.",
+  "👖 Fabricar unos jeans de mezclilla requiere cerca de 7,500L de agua.",
+  "🌱 Regar tus plantas de noche evita la evaporación por el calor sol."
+];
+
+const DIFF_SETTINGS = {
+  easy: { speedMult: 0.85, spawnMs: 1000, badProb: 0.18 },
+  normal: { speedMult: 1.15, spawnMs: 800, badProb: 0.28 },
+  hard: { speedMult: 1.5, spawnMs: 600, badProb: 0.38 }
+};
+
+class Game {
+  constructor() {
+    this.diffKey = 'normal';
+    this.state = 'MENU';
+    this.score = 0;
+    this.highScore = parseInt(localStorage.getItem('gotitas_high') || '0');
+    this.lives = 3;
+    this.level = 1;
+    this.meter = 0;
+    this.combo = 0;
+    this.maxCombo = 0;
+    
+    this.freezeTimer = 0;
+    this.shieldTimer = 0;
+
+    this.basket = {
+      x: W / 2,
+      y: H - 90,
+      width: 84,
+      height: 60,
+      targetX: W / 2,
+      squashX: 1,
+      squashY: 1
+    };
+
+    this.items = [];
+    this.particles = [];
+    this.floatingTexts = [];
+    this.bgClouds = [];
+    this.bgBubbles = [];
+    this.bgReeds = [];
+    this.waterWaveOffset = 0;
+
+    this.lastSpawnTime = 0;
+    this.lastTipTime = 0;
+
+    this.initBackgroundElements();
+    this.bindEvents();
+    this.updateUI();
+  }
+
+  initBackgroundElements() {
+    this.bgClouds = [];
+    for (let i = 0; i < 6; i++) {
+      this.bgClouds.push({
+        x: Math.random() * W,
+        y: 30 + Math.random() * (H * 0.25),
+        scale: 0.5 + Math.random() * 0.8,
+        speed: 0.15 + Math.random() * 0.35
+      });
+    }
+
+    this.bgBubbles = [];
+    for (let i = 0; i < 20; i++) {
+      this.bgBubbles.push({
+        x: Math.random() * W,
+        y: H - Math.random() * (H * 0.5),
+        radius: 3 + Math.random() * 9,
+        speed: 0.5 + Math.random() * 1.2,
+        alpha: 0.25 + Math.random() * 0.5,
+        wobble: Math.random() * Math.PI * 2
+      });
+    }
+
+    this.bgReeds = [];
+    const count = 12;
+    for (let i = 0; i < count; i++) {
+      this.bgReeds.push({
+        x: (W / count) * i + Math.random() * 10,
+        height: 60 + Math.random() * 50,
+        swayOffset: Math.random() * Math.PI * 2,
+        swaySpeed: 0.02 + Math.random() * 0.02
+      });
+    }
+  }
+
+  bindEvents() {
+    const handleMove = (clientX) => {
+      const rect = wrapper.getBoundingClientRect();
+      let mouseX = clientX - rect.left;
+      this.basket.targetX = Math.max(this.basket.width / 2 + 10, Math.min(W - this.basket.width / 2 - 10, mouseX));
+    };
+
+    window.addEventListener('mousemove', (e) => handleMove(e.clientX));
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches[0]) handleMove(e.touches[0].clientX);
+    }, { passive: true });
+
+    document.getElementById('btn-play').addEventListener('click', () => {
+      audio.init();
+      audio.playPowerup();
+      this.start();
+    });
+
+    document.getElementById('btn-restart').addEventListener('click', () => {
+      audio.init();
+      audio.playPowerup();
+      this.start();
+    });
+
+    document.getElementById('btn-menu').addEventListener('click', () => {
+      audio.init();
+      audio.playPop(1.2);
+      this.openMenu();
+    });
+
+    const soundBtn = document.getElementById('sound-btn');
+    soundBtn.addEventListener('click', () => {
+      audio.init();
+      audio.muted = !audio.muted;
+      soundBtn.textContent = audio.muted ? '🔇' : '🔊';
+    });
+
+    document.querySelectorAll('.diff-card').forEach(card => {
+      card.addEventListener('click', () => {
+        audio.init();
+        audio.playPop(1.2);
+        document.querySelectorAll('.diff-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        this.diffKey = card.dataset.diff;
+      });
+    });
+  }
+
+  openMenu() {
+    this.state = 'MENU';
+    this.items = [];
+    this.particles = [];
+    this.floatingTexts = [];
+    document.getElementById('modal-end').classList.remove('active');
+    document.getElementById('modal-start').classList.add('active');
+  }
+
+  start() {
+    this.score = 0;
+    this.lives = 3;
+    this.level = 1;
+    this.meter = 0;
+    this.combo = 0;
+    this.maxCombo = 0;
+    this.freezeTimer = 0;
+    this.shieldTimer = 0;
+    this.items = [];
+    this.particles = [];
+    this.floatingTexts = [];
+    this.state = 'PLAYING';
+
+    document.getElementById('modal-start').classList.remove('active');
+    document.getElementById('modal-end').classList.remove('active');
+    
+    this.updateUI();
+    this.showToast("¡Recoge Gotas Puras y evita la contaminación para salvar a Ajolí! 💧✨", 3500);
+  }
+
+  showToast(text, duration = 3500) {
+    const toast = document.getElementById('toast-banner');
+    toast.textContent = text;
+    toast.classList.add('show');
+    clearTimeout(this.toastTimeout);
+    this.toastTimeout = setTimeout(() => {
+      toast.classList.remove('show');
+    }, duration);
+  }
+
+  triggerScreenShake() {
+    wrapper.classList.add('shake-screen');
+    setTimeout(() => wrapper.classList.remove('shake-screen'), 350);
+  }
+
+  spawnItem() {
+    const cfg = DIFF_SETTINGS[this.diffKey];
+    const isBad = Math.random() < cfg.badProb;
+
+    let type = 'WATER';
+    let emoji = '💧';
+    let points = 5;
+
+    if (isBad) {
+      const badTypes = [
+        { type: 'TRASH', emoji: '🗑️', points: -10 },
+        { type: 'TOXIC', emoji: '🧪', points: -15 },
+        { type: 'SMOG', emoji: '☣️', points: -20 },
+        { type: 'PLASTIC', emoji: '🍾', points: -10 },
+        { type: 'BATTERY', emoji: '🔋', points: -25 },
+        { type: 'FACTORY', emoji: '🏭', points: -15 }
+      ];
+      const selected = badTypes[Math.floor(Math.random() * badTypes.length)];
+      type = selected.type;
+      emoji = selected.emoji;
+      points = selected.points;
+    } else {
+      const rand = Math.random();
+      if (rand < 0.42) {
+        type = 'WATER'; emoji = '💧'; points = 5;
+      } else if (rand < 0.60) {
+        type = 'SUPERWATER'; emoji = '💦'; points = 10;
+      } else if (rand < 0.72) {
+        type = 'PLANT'; emoji = '🌱'; points = 8;
+      } else if (rand < 0.82) {
+        type = 'FLOWER'; emoji = '🌺'; points = 12;
+      } else if (rand < 0.89) {
+        type = 'STAR'; emoji = '🌟'; points = 20;
+      } else if (rand < 0.93) {
+        type = 'FREEZE'; emoji = '❄️'; points = 5;
+      } else if (rand < 0.96) {
+        type = 'SHIELD'; emoji = '🛡️'; points = 5;
+      } else {
+        type = 'HEART'; emoji = '💖'; points = 5;
+      }
+    }
+
+    const margin = 40;
+    const x = margin + Math.random() * (W - margin * 2);
+    const speed = (2.4 + Math.random() * 1.8) * cfg.speedMult * (1 + (this.level - 1) * 0.12);
+
+    this.items.push({
+      x,
+      y: -40,
+      type,
+      emoji,
+      points,
+      radius: 24,
+      baseSpeed: speed,
+      rotation: (Math.random() - 0.5) * 0.5,
+      rotSpeed: (Math.random() - 0.5) * 0.06,
+      wobbleOffset: Math.random() * Math.PI * 2,
+      wobbleAmp: 3 + Math.random() * 5
+    });
+  }
+
+  addFloatingText(x, y, text, color) {
+    this.floatingTexts.push({
+      x, y, text, color,
+      alpha: 1,
+      scale: 1.5,
+      vy: -2.5
+    });
+  }
+
+  createSparkles(x, y, color = '#FFD4EA', count = 14) {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 5;
+      this.particles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1.5,
+        radius: 2.5 + Math.random() * 4.5,
+        color,
+        alpha: 1,
+        life: 0.025 + Math.random() * 0.035
+      });
+    }
+  }
+
+  handleCatch(item) {
+    this.basket.squashX = 1.35;
+    this.basket.squashY = 0.65;
+
+    const isHarmful = ['TRASH', 'TOXIC', 'SMOG', 'PLASTIC', 'BATTERY', 'FACTORY'].includes(item.type);
+
+    if (isHarmful) {
+      if (this.shieldTimer > 0) {
+        audio.playPowerup();
+        this.addFloatingText(item.x, item.y, '🛡️ ¡Bloqueado!', '#38BDF8');
+        this.createSparkles(item.x, item.y, '#38BDF8', 14);
+      } else {
+        audio.playHurt();
+        this.lives--;
+        this.combo = 0;
+        this.triggerScreenShake();
+        this.addFloatingText(item.x, item.y, '💔 ¡Tóxico!', '#EC4899');
+        this.createSparkles(item.x, item.y, '#EC4899', 18);
+
+        if (this.lives <= 0) {
+          this.gameOver(false);
+          return;
+        }
+      }
+    } else {
+      this.combo++;
+      if (this.combo > this.maxCombo) this.maxCombo = this.combo;
+
+      let pts = item.points;
+      if (this.combo >= 5) pts *= 2;
+
+      this.score += pts;
+      this.meter += pts * 0.65;
+
+      audio.playPop(1 + Math.min(this.combo, 15) * 0.05);
+
+      if (item.type === 'FREEZE') {
+        this.freezeTimer = 260;
+        this.addFloatingText(item.x, item.y, '❄️ ¡Congelación!', '#38BDF8');
+        this.createSparkles(item.x, item.y, '#38BDF8', 18);
+      } else if (item.type === 'SHIELD') {
+        this.shieldTimer = 320;
+        this.addFloatingText(item.x, item.y, '🛡️ ¡Escudo Activo!', '#10B981');
+        this.createSparkles(item.x, item.y, '#10B981', 18);
+      } else if (item.type === 'HEART') {
+        if (this.lives < 3) {
+          this.lives++;
+          this.addFloatingText(item.x, item.y, '❤️ +1 Vida!', '#EC4899');
+        } else {
+          this.score += 20;
+          this.addFloatingText(item.x, item.y, '💖 ¡Super Bonus +20!', '#EC4899');
+        }
+        this.createSparkles(item.x, item.y, '#EC4899', 20);
+      } else {
+        const comboTxt = this.combo >= 3 ? ` (x${this.combo})` : '';
+        this.addFloatingText(item.x, item.y, `+${pts}${comboTxt}`, '#10B981');
+        this.createSparkles(item.x, item.y, '#A7F3D0', 12);
+      }
+
+      if (this.meter >= 100) {
+        this.advanceLevel();
+      }
+    }
+
+    this.updateUI();
+  }
+
+  advanceLevel() {
+    this.level++;
+    this.meter = 0;
+    audio.playPowerup();
+    this.addFloatingText(W / 2, H / 2, `✨ ¡NIVEL ${this.level}! ✨`, '#8B5CF6');
+    this.showToast(`¡Increíble! El agua luce más cristalina. Nivel ${this.level} superado 🌊`, 3500);
+    this.updateUI();
+  }
+
+  gameOver(won = false) {
+    this.state = 'GAMEOVER';
+    if (this.score > this.highScore) {
+      this.highScore = this.score;
+      localStorage.setItem('gotitas_high', this.highScore.toString());
+    }
+
+    document.getElementById('stat-score').textContent = this.score;
+    document.getElementById('stat-combo').textContent = `x${this.maxCombo}`;
+    document.getElementById('stat-level').textContent = this.level;
+    document.getElementById('stat-high').textContent = this.highScore;
+
+    const endTitle = document.getElementById('end-title');
+    const endSub = document.getElementById('end-subtitle');
+    const endEmoji = document.getElementById('end-emoji');
+
+    if (won || this.score >= 120) {
+      endTitle.textContent = "¡Río Cristalino!";
+      endSub.textContent = "¡Lograste purificar el hogar de Ajolí por completo!";
+      endEmoji.textContent = "👑";
+    } else {
+      endTitle.textContent = "¡Agua Contaminada!";
+      endSub.textContent = "La contaminación afectó el lago de Ajolí. ¡Limpia de nuevo!";
+      endEmoji.textContent = "🦎";
+    }
+
+    document.getElementById('end-tip').innerHTML = `💡 <b>Eco-Dato:</b> ${ECO_TIPS[Math.floor(Math.random() * ECO_TIPS.length)]}`;
+    document.getElementById('modal-end').classList.add('active');
+  }
+
+  updateUI() {
+    const heartsCont = document.getElementById('hearts-container');
+    let hHtml = '';
+    for (let i = 0; i < 3; i++) {
+      hHtml += `<span style="opacity: ${i < this.lives ? 1 : 0.2}; transform: scale(${i < this.lives ? 1 : 0.7}); display:inline-block; transition:all 0.3s;">❤️</span>`;
+    }
+    heartsCont.innerHTML = hHtml;
+
+    document.getElementById('score-num').textContent = this.score;
+
+    const pct = Math.min(100, Math.round(this.meter));
+    document.getElementById('meter-fill').style.width = pct + '%';
+    document.getElementById('meter-percent-text').textContent = pct + '%';
+
+    const face = document.getElementById('ajoli-face');
+    const statusText = document.getElementById('ajoli-status-text');
+
+    if (this.lives <= 1) {
+      face.textContent = '🦎😢';
+      statusText.textContent = '¡Ajolí está en peligro!';
+    } else if (pct >= 80) {
+      face.textContent = '🦎💖';
+      statusText.textContent = '¡El agua está impecable!';
+    } else if (pct >= 40) {
+      face.textContent = '🦎✨';
+      statusText.textContent = '¡Ajolí nada alegrely!';
+    } else {
+      face.textContent = '🦎';
+      statusText.textContent = 'Ajolí requiere agua pura...';
+    }
+  }
+
+  update() {
+    if (this.state !== 'PLAYING') return;
+
+    if (this.freezeTimer > 0) this.freezeTimer--;
+    if (this.shieldTimer > 0) this.shieldTimer--;
+
+    if (Date.now() - this.lastTipTime > 12000) {
+      this.lastTipTime = Date.now();
+      this.showToast(ECO_TIPS[Math.floor(Math.random() * ECO_TIPS.length)], 4000);
+    }
+
+    this.basket.x += (this.basket.targetX - this.basket.x) * 0.3;
+    this.basket.squashX += (1 - this.basket.squashX) * 0.12;
+    this.basket.squashY += (1 - this.basket.squashY) * 0.12;
+
+    const cfg = DIFF_SETTINGS[this.diffKey];
+    if (Date.now() - this.lastSpawnTime > cfg.spawnMs) {
+      this.lastSpawnTime = Date.now();
+      this.spawnItem();
+    }
+
+    const speedFactor = this.freezeTimer > 0 ? 0.35 : 1.0;
+
+    for (let i = this.items.length - 1; i >= 0; i--) {
+      const item = this.items[i];
+      
+      item.y += item.baseSpeed * speedFactor;
+      item.rotation += item.rotSpeed * speedFactor;
+
+      const dx = item.x - this.basket.x;
+      const dy = item.y - this.basket.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < item.radius + this.basket.width / 2.1) {
+        this.handleCatch(item);
+        this.items.splice(i, 1);
+        continue;
+      }
+
+      if (item.y > H - 45) {
+        if (item.type === 'WATER' || item.type === 'SUPERWATER') {
+          this.lives--;
+          this.combo = 0;
+          this.triggerScreenShake();
+          audio.playHurt();
+          this.addFloatingText(item.x, H - 55, '💧 ¡Gota Pérdida!', '#EC4899');
+          this.updateUI();
+
+          if (this.lives <= 0) {
+            this.gameOver(false);
+            return;
+          }
+        }
+        this.items.splice(i, 1);
+      }
+    }
+
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= p.life;
+      if (p.alpha <= 0) this.particles.splice(i, 1);
+    }
+
+    for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
+      const ft = this.floatingTexts[i];
+      ft.y += ft.vy;
+      ft.alpha -= 0.02;
+      ft.scale = Math.max(1, ft.scale - 0.02);
+      if (ft.alpha <= 0) this.floatingTexts.splice(i, 1);
+    }
+
+    this.waterWaveOffset += 0.04;
+    this.bgClouds.forEach(c => {
+      c.x += c.speed;
+      if (c.x > W + 60) c.x = -60;
+    });
+    this.bgBubbles.forEach(b => {
+      b.y -= b.speed;
+      b.wobble += 0.03;
+      if (b.y < -20) {
+        b.y = H + 20;
+        b.x = Math.random() * W;
+      }
+    });
+  }
+
+  draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Fondo ambiental rico y dinámico
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+    if (this.freezeTimer > 0) {
+      bgGrad.addColorStop(0, '#CFFAFE');
+      bgGrad.addColorStop(0.5, '#67E8F9');
+      bgGrad.addColorStop(1, '#0891B2');
+    } else {
+      bgGrad.addColorStop(0, '#BAE6FD');
+      bgGrad.addColorStop(0.4, '#38BDF8');
+      bgGrad.addColorStop(0.8, '#0284C7');
+      bgGrad.addColorStop(1, '#0369A1');
+    }
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Sol / Resplandor de Agua Superior
+    ctx.save();
+    const sunGrad = ctx.createRadialGradient(W / 2, 0, 10, W / 2, 0, 240);
+    sunGrad.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
+    sunGrad.addColorStop(0.5, 'rgba(254, 240, 138, 0.25)');
+    sunGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = sunGrad;
+    ctx.beginPath();
+    ctx.arc(W / 2, 0, 240, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Nubes Flotantes
+    ctx.save();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    this.bgClouds.forEach(c => {
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 25 * c.scale, 0, Math.PI * 2);
+      ctx.arc(c.x + 20 * c.scale, c.y - 10 * c.scale, 20 * c.scale, 0, Math.PI * 2);
+      ctx.arc(c.x + 40 * c.scale, c.y, 22 * c.scale, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // Algas / Vegetación marina en el fondo
+    ctx.save();
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
+    ctx.lineWidth = 6;
+    ctx.lineCap = 'round';
+    this.bgReeds.forEach(reed => {
+      reed.swayOffset += reed.swaySpeed;
+      const swayX = Math.sin(reed.swayOffset) * 15;
+      ctx.beginPath();
+      ctx.moveTo(reed.x, H);
+      ctx.quadraticCurveTo(reed.x + swayX * 0.5, H - reed.height * 0.5, reed.x + swayX, H - reed.height);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // Olas animadas
+    ctx.save();
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.beginPath();
+    ctx.moveTo(0, H - 70);
+    for (let x = 0; x <= W; x += 20) {
+      ctx.lineTo(x, H - 70 + Math.sin(x * 0.02 + this.waterWaveOffset) * 10);
+    }
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(2, 132, 199, 0.45)';
+    ctx.beginPath();
+    ctx.moveTo(0, H - 50);
+    for (let x = 0; x <= W; x += 20) {
+      ctx.lineTo(x, H - 50 + Math.cos(x * 0.025 + this.waterWaveOffset) * 8);
+    }
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.fill();
+    ctx.restore();
+
+    // Burbujas
+    ctx.save();
+    this.bgBubbles.forEach(b => {
+      ctx.strokeStyle = `rgba(255, 255, 255, ${b.alpha})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      const bx = b.x + Math.sin(b.wobble) * 10;
+      ctx.arc(bx, b.y, b.radius, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // Items
+    this.items.forEach(item => {
+      ctx.save();
+      const wobbleX = item.x + Math.sin(item.y * 0.04 + item.wobbleOffset) * item.wobbleAmp;
+      ctx.translate(wobbleX, item.y);
+      ctx.rotate(item.rotation);
+
+      if (['STAR', 'HEART', 'SUPERWATER'].includes(item.type)) {
+        ctx.shadowColor = '#FBBF24';
+        ctx.shadowBlur = 18;
+      } else if (item.type === 'FREEZE') {
+        ctx.shadowColor = '#38BDF8';
+        ctx.shadowBlur = 18;
+      } else if (item.type === 'SHIELD') {
+        ctx.shadowColor = '#10B981';
+        ctx.shadowBlur = 18;
+      }
+
+      ctx.font = '42px "Fredoka", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(item.emoji, 0, 0);
+      ctx.restore();
+    });
+
+    // Jugador (Canasta)
+    ctx.save();
+    ctx.translate(this.basket.x, this.basket.y);
+    ctx.scale(this.basket.squashX, this.basket.squashY);
+
+    if (this.shieldTimer > 0) {
+      ctx.strokeStyle = '#10B981';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(0, 0, 54, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+      ctx.fill();
+    }
+
+    if (this.freezeTimer > 0) {
+      ctx.strokeStyle = '#38BDF8';
+      ctx.lineWidth = 4;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 58, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.font = '62px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🧺', 0, 0);
+    ctx.restore();
+
+    // Partículas
+    this.particles.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Textos Flotantes
+    this.floatingTexts.forEach(ft => {
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, ft.alpha);
+      ctx.font = '800 24px "Fredoka", sans-serif';
+      ctx.fillStyle = ft.color;
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 4.5;
+      ctx.textAlign = 'center';
+      ctx.strokeText(ft.text, ft.x, ft.y);
+      ctx.fillText(ft.text, ft.x, ft.y);
+      ctx.restore();
+    });
+  }
+
+  loop() {
+    this.update();
+    this.draw();
+    requestAnimationFrame(() => this.loop());
+  }
+}
+
+const game = new Game();
+game.loop();
+</script>
+</body>
+</html>

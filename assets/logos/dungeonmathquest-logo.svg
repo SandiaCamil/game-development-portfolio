@@ -1,0 +1,36 @@
+<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dmqBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a2450"/>
+      <stop offset="100%" stop-color="#141225"/>
+    </linearGradient>
+    <linearGradient id="dmqTower" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a3f7a"/>
+      <stop offset="100%" stop-color="#2a2450"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="200" rx="14" fill="url(#dmqBg)"/>
+
+  <!-- Torre -->
+  <g>
+    <rect x="46" y="60" width="70" height="110" fill="url(#dmqTower)" stroke="#00f5d4" stroke-width="2"/>
+    <rect x="38" y="46" width="18" height="24" fill="#4a3f7a" stroke="#00f5d4" stroke-width="2"/>
+    <rect x="70" y="40" width="18" height="30" fill="#4a3f7a" stroke="#00f5d4" stroke-width="2"/>
+    <rect x="102" y="46" width="18" height="24" fill="#4a3f7a" stroke="#00f5d4" stroke-width="2"/>
+    <rect x="58" y="120" width="20" height="50" fill="#141225" stroke="#ffd23f" stroke-width="2"/>
+    <rect x="52" y="80" width="14" height="14" fill="#00f5d4" opacity="0.85"/>
+    <rect x="96" y="80" width="14" height="14" fill="#ff206e" opacity="0.85"/>
+    <rect x="52" y="102" width="14" height="14" fill="#3ddc97" opacity="0.85"/>
+  </g>
+
+  <!-- Simbolos matematicos flotando -->
+  <text x="150" y="72" font-family="'Press Start 2P', monospace" font-size="20" fill="#ffd23f">+</text>
+  <text x="150" y="120" font-family="'Press Start 2P', monospace" font-size="20" fill="#ff206e">÷</text>
+  <text x="150" y="168" font-family="'Press Start 2P', monospace" font-size="20" fill="#3ddc97">×</text>
+
+  <!-- Texto -->
+  <text x="185" y="90" font-family="'Press Start 2P', monospace" font-size="26" fill="#f4f0ff">DUNGEON</text>
+  <text x="185" y="122" font-family="'Press Start 2P', monospace" font-size="26" fill="#00f5d4">MATH</text>
+  <text x="185" y="154" font-family="'Press Start 2P', monospace" font-size="26" fill="#f4f0ff">QUEST</text>
+  <text x="185" y="176" font-family="monospace" font-size="13" fill="#ffd23f">La Torre de los Números</text>
+</svg>

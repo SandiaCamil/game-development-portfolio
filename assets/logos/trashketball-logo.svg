@@ -1,0 +1,33 @@
+<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tkBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7F8C8D"/>
+      <stop offset="100%" stop-color="#2c2c2c"/>
+    </linearGradient>
+    <radialGradient id="tkBall" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#F1C40F"/>
+      <stop offset="100%" stop-color="#E67E22"/>
+    </radialGradient>
+  </defs>
+  <rect width="480" height="200" rx="14" fill="url(#tkBg)"/>
+
+  <!-- Aro de basquet -->
+  <rect x="330" y="46" width="90" height="8" fill="#2980B9"/>
+  <line x1="330" y1="54" x2="330" y2="70" stroke="#E74C3C" stroke-width="4"/>
+  <path d="M330 70 q45 40 90 0" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="6 5" opacity="0.85"/>
+
+  <!-- Pelota (bote de basura reciclado) -->
+  <circle cx="130" cy="100" r="46" fill="url(#tkBall)" stroke="#111" stroke-width="3"/>
+  <path d="M84 100 Q130 70 176 100" stroke="#111" stroke-width="3" fill="none"/>
+  <path d="M84 100 Q130 130 176 100" stroke="#111" stroke-width="3" fill="none"/>
+  <line x1="130" y1="54" x2="130" y2="146" stroke="#111" stroke-width="3"/>
+  <text x="118" y="108" font-family="'Bungee', cursive, sans-serif" font-size="20" fill="#111">♻</text>
+
+  <!-- Lineas de viento (mecanica del juego) -->
+  <path d="M190 60 h34" stroke="#C6FF3D" stroke-width="4" stroke-linecap="round"/>
+  <path d="M190 150 h34" stroke="#C6FF3D" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Texto -->
+  <text x="196" y="105" font-family="'Bungee', cursive, sans-serif" font-size="34" fill="#C6FF3D" stroke="#111" stroke-width="1">TRASHKETBALL</text>
+  <text x="196" y="130" font-family="sans-serif" font-weight="bold" font-size="15" fill="#F1C40F">EXTREME PRO</text>
+</svg>
