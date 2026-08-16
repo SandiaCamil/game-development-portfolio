@@ -18,7 +18,7 @@ Game Development · Gestión 2 – 2026 · Paralelo A
 
 ---
 
-## 👋 Sobre mí
+## Sobre mí
 
 ¡Hola! Soy **Hugo Camilo**, pero en internet me conocen como **SandiaCamil** 🍉. Estudio Ingeniería de Software y actualmente curso la asignatura de **Game Development**, donde estoy dando mis primeros pasos serios en el diseño y programación de videojuegos.
 
@@ -28,7 +28,7 @@ Este repositorio es mi **portafolio personal de Game Development**: reúne los p
 
 ---
 
-## 🖼️ Presentación visual
+## Presentación visual
 
 <div align="center">
 <table>
@@ -42,7 +42,7 @@ Este repositorio es mi **portafolio personal de Game Development**: reúne los p
 
 ---
 
-## 🕹️ Galería de videojuegos
+## Galería de videojuegos
 
 <table>
 <tr>
@@ -124,7 +124,7 @@ Mueve una canasta para atrapar gotas de agua pura (y power-ups de hielo, escudo 
 
 ---
 
-## 🧪 Betas y evolución de cada proyecto
+## Betas y evolución de cada proyecto
 
 Uno de los objetivos de este portafolio es mostrar el **proceso**, no solo el resultado. Cada juego pasó por versiones intermedias (betas) antes de llegar a su forma final, y esas iteraciones quedan documentadas dentro de cada carpeta:
 
@@ -134,7 +134,7 @@ Uno de los objetivos de este portafolio es mostrar el **proceso**, no solo el re
 | **Trashketball** | `v1 (Quiz)` → `v2 (Resortera)` → `v3 (Extreme Pro)` | De tocar el bote correcto → mecánica de arrastre tipo resortera → viento dinámico + combos + fondo urbano animado |
 | **Gotitas Mágicas** | `v1 (Final)` | Prototipo único hasta el momento, documentado como base para futuras iteraciones |
 
-👉 Los detalles de cada beta, con capturas y explicación de qué cambió, están en el README individual de cada juego.
+Los detalles de cada beta, con capturas y explicación de qué cambió, están en el README individual de cada juego.
 
 ---
 
@@ -157,14 +157,14 @@ En partes del proceso de estos prototipos usé asistencia de IA (Claude) princip
 
 ---
 
-## 📚 Qué aprendí
+## Qué aprendí
 
 - A estructurar un game loop desde cero con `requestAnimationFrame`, sin depender de un motor.
 - Diferencias reales entre diseñar para **teclado** (DungeonMathQuest) vs. **mouse/touch** (Trashketball, Gotitas Mágicas), y cómo eso cambia por completo el *game feel*.
 - La importancia de iterar: ninguno de los 3 juegos quedó bien a la primera versión — Trashketball especialmente pasó por 3 rediseños de mecánica central.
 - A comunicar un proyecto: escribir un buen README es tan parte del trabajo como programar el juego.
 
-## 🔭 Qué mejoraría en una siguiente versión
+## Qué mejoraría en una siguiente versión
 
 - Migrar los prototipos a un motor real (Godot) para manejar mejor física, partículas y sonido.
 - Agregar sonido y música — ninguno de los 3 prototipos actuales tiene audio.
