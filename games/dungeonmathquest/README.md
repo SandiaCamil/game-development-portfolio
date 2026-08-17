@@ -5,7 +5,7 @@
 ![Genero](https://img.shields.io/badge/Género-Platformer_educativo-4a3f7a?style=flat-square)
 ![Tech](https://img.shields.io/badge/Tech-HTML5_Canvas_%2B_JS-00f5d4?style=flat-square)
 ![Niveles](https://img.shields.io/badge/Niveles-10-ffd23f?style=flat-square)
-![Versiones](https://img.shields.io/badge/Versiones_documentadas-2-3ddc97?style=flat-square)
+![Versiones](https://img.shields.io/badge/Versiones_documentadas-3-3ddc97?style=flat-square)
 
 [◀ Volver al portafolio](../../README.md)
 
@@ -82,14 +82,28 @@ La primera beta fue mucho más simple: sin plataformas ni movimiento del persona
 
 📄 Código de esta versión: [`versions/v1-quiz.html`](versions/v1-quiz.html)
 
-### 🔹 v3 — Versión final (Platformer completo)
+### 🔹 v2 — Primer prototipo jugable (nivel plano)
 
-*(La v2 fue una iteración interna de ajuste de dificultad y balance de niveles que no se conservó como archivo aparte; el salto documentado es de v1 a v3.)*
-
-Se reemplazó el quiz por un **entorno de plataformas real**: el jugador controla un personaje que se mueve y salta físicamente por el escenario, y en vez de elegir de una lista, debe tocar el cofre correcto entre varios distribuidos en distintas plataformas (incluyendo cofres señuelo). Se agregó también controles táctiles para poder jugarlo desde el celular.
+Se reemplazó el quiz por el primer **entorno de plataformas real**: el jugador ya controla un personaje que se mueve y salta físicamente por el escenario, y en vez de elegir de una lista, debe tocar el cofre correcto entre varios distribuidos en el nivel. En esta versión todos los cofres todavía están al **ras del suelo, sin plataformas a distinta altura** — el salto existe como mecánica, pero el diseño de nivel aún no lo exige.
 
 **Cambios clave respecto a v1:**
-- ✅ Movimiento y salto real del personaje (física simple de plataformas)
+- ✅ Movimiento y salto real del personaje (física simple, aunque el nivel es plano)
+- ✅ Cofres múltiples distribuidos en el escenario en vez de opciones en una lista
+- ✅ Barra de progreso de niveles (1 al 10) visible en la parte superior
+
+<div align="center">
+<img src="versions/v2-flatlevel.png" width="420"/>
+<br/><sub>v2 — Primer prototipo jugable: cofres al ras del suelo, sin plataformas elevadas</sub>
+</div>
+
+📄 Código de esta versión: [`versions/v2-flatlevel.html`](versions/v2-flatlevel.html)
+
+### 🔹 v3 — Versión final (Platformer completo)
+
+Se rediseñó el nivel para agregar **plataformas suspendidas a distintas alturas**, obligando a saltar entre ellas para alcanzar el cofre correcto — ya no basta con moverse en línea recta como en la v2. También se sumaron cofres falsos como factor de riesgo adicional y controles táctiles para poder jugarlo desde el celular.
+
+**Cambios clave respecto a v2:**
+- ✅ Plataformas a distintas alturas (el salto ahora es indispensable, no opcional)
 - ✅ Cofres falsos como factor de riesgo/tensión adicional
 - ✅ Controles táctiles en pantalla para móvil
 - ✅ Ambientación retro pixel-art más trabajada (paleta de colores, tipografía)

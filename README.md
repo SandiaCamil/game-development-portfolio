@@ -130,7 +130,7 @@ Uno de los objetivos de este portafolio es mostrar el **proceso**, no solo el re
 
 | Juego | Versiones documentadas | Cambio principal entre versiones |
 |---|---|---|
-| **DungeonMathQuest** | `v1 (Quiz)` → `v3 (Final)` | De un quiz de opción múltiple a un platformer completo con física de salto y plataformas |
+| **DungeonMathQuest** | `v1 (Quiz)` → `v2 (Nivel plano)` → `v3 (Final)` | De un quiz de opción múltiple → primer prototipo jugable con cofres al ras del suelo → platformer completo con plataformas a distinta altura |
 | **Trashketball** | `v1 (Quiz)` → `v2 (Resortera)` → `v3 (Extreme Pro)` | De tocar el bote correcto → mecánica de arrastre tipo resortera → viento dinámico + combos + fondo urbano animado |
 | **Gotitas Mágicas** | `v1 (Final)` | Prototipo único hasta el momento, documentado como base para futuras iteraciones |
 
