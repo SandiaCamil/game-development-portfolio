@@ -1,58 +1,60 @@
-# 🚀 Cómo subir este portafolio a GitHub (paso a paso)
+# Cómo subir este portafolio a GitHub (paso a paso)
 
-Esta guía es solo para ti, Camilo — no es parte del portafolio en sí. Bórrala (o déjala, no afecta la evaluación) una vez que hayas subido todo.
+Esta guía es solo para ti, Camilo — no es parte del portafolio en sí. Bórrala del repo cuando termines de seguir los pasos.
+
+**Importante:** en esta versión los README ya tienen botones "Jugar" que apuntan directo a `https://sandiacamil.github.io/game-development-portfolio/...`. Para que esos botones funcionen, **el paso 4 (GitHub Pages) ya no es opcional** — sin eso, los botones "Jugar" no van a abrir nada.
 
 ## 1. Crear el repositorio en GitHub
 
 1. Entra a [github.com/new](https://github.com/new) con tu cuenta **SandiaCamil**.
-2. Nombre sugerido: `game-development-portfolio` (coincide con el que pide la guía de práctica).
-3. Marca el repositorio como **Público**.
-4. Agrega una descripción breve, por ejemplo:
-   > Portafolio de prototipos de Game Development — UPV, Gestión 2-2026.
-5. **No** inicialices con README (ya tienes uno listo aquí) — déjalo vacío y dale "Create repository".
+2. Nombre del repositorio: `game-development-portfolio` — **usa exactamente este nombre**, porque todos los enlaces "Jugar" del README ya están escritos asumiendo esta URL. Si le pones otro nombre, tienes que reemplazar `game-development-portfolio` por el nombre real en todos los README (buscar y reemplazar).
+3. Márcalo como **Público**.
+4. **No** inicialices con README — déjalo vacío y dale "Create repository".
 
 ## 2. Subir los archivos
 
-Desde la carpeta `portfolio/` que te generé, abre una terminal ahí mismo y ejecuta:
+**Sube el contenido que está dentro de esta carpeta** (`README.md`, `assets/`, `games/`, etc.), no la carpeta contenedora en sí. Puedes arrastrarlos desde la web de GitHub, o usar git:
 
 ```bash
 git init
 git add .
-git commit -m "Primera entrega: portafolio con 3 prototipos y sus betas"
+git commit -m "Portafolio con botones de jugar y código por versión"
 git branch -M main
 git remote add origin https://github.com/SandiaCamil/game-development-portfolio.git
 git push -u origin main
 ```
 
-Si te pide autenticación, usa un **Personal Access Token** (no tu contraseña normal) — GitHub ya no acepta contraseña por HTTPS. Lo generas en `Settings → Developer settings → Personal access tokens`.
+Si te pide autenticación, usa un **Personal Access Token** (no tu contraseña normal) — se genera en `Settings → Developer settings → Personal access tokens`.
 
-## 3. Verificar que todo se vea bien
+## 3. Activar GitHub Pages (obligatorio para los botones "Jugar")
 
-Una vez subido, entra a `https://github.com/SandiaCamil/game-development-portfolio` y revisa que:
-
-- [ ] El README principal muestre el banner y las imágenes correctamente (a veces GitHub tarda unos segundos en cachear las imágenes nuevas).
-- [ ] Los links a `games/dungeonmathquest/`, `games/trashketball/` y `games/gotitas-magicas/` funcionen.
-- [ ] Los links "▶ Jugar" abran el HTML del juego (GitHub no ejecuta JS en la vista normal del repo — para que sea jugable *en línea* sin descargar, ver el paso 4).
-
-## 4. (Opcional pero recomendado) Activar GitHub Pages para jugar en línea
-
-Ahora mismo, el enlace "para jugarlo" que pide la guía de práctica solo funciona si alguien descarga el repo. Si quieres que sea jugable con un link directo en el navegador:
-
-1. Ve a `Settings → Pages` en tu repositorio.
+1. En tu repositorio, ve a `Settings → Pages`.
 2. En "Branch", selecciona `main` y la carpeta `/ (root)`.
-3. Guarda. GitHub te dará una URL tipo `https://sandiacamil.github.io/game-development-portfolio/`.
-4. Cada juego quedará jugable en, por ejemplo:
-   `https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/`
+3. Guarda. GitHub tarda uno o dos minutos en publicar y te da una URL tipo `https://sandiacamil.github.io/game-development-portfolio/`.
+4. Recién ahí los botones "JUGAR" de todos los README van a abrir el juego real y jugable, no el código.
 
-Si activas esto, actualiza los enlaces "▶ Jugar" en los README para que apunten a esa URL en vez de al archivo local — así cualquiera puede jugar sin clonar el repo, que es justo lo que valora la guía de práctica.
+## 4. Verificar que todo funcione
 
-## 5. Ítems de la guía que quedan pendientes de tu parte
+Entra a `https://github.com/SandiaCamil/game-development-portfolio` y revisa:
 
-Ya cubrí la mayoría de los requerimientos (README principal, README individual por juego, galería, historial de versiones, controles, tecnología, logos). Todavía te falta decidir/agregar:
+- [ ] El README principal muestra la portada y las imágenes correctamente (a veces GitHub tarda unos segundos en cachear imágenes nuevas).
+- [ ] Los botones "JUGAR" de la portada abren el juego jugable (no código) — solo funciona después del paso 3.
+- [ ] Los botones "Código" abren el archivo fuente en la vista de GitHub — estos funcionan siempre, incluso sin Pages.
+- [ ] La tabla "Jugar cualquier versión" del README principal: probar al menos un enlace de cada juego (v1, v2, v3).
 
-- Una **foto o avatar tuyo** (o ilustración) en la sección de presentación del README principal, si quieres algo más personal que el banner.
-- Revisar si quieres agregar **GIFs animados** en vez de solo capturas estáticas (se ve muy bien en READMEs de portafolio, pero requiere grabar pantalla y convertir a GIF).
-- El **enlace real para jugar** una vez actives GitHub Pages (paso 4).
+## 5. Si usas otro nombre de repositorio
+
+Todos los enlaces "Jugar" en `README.md`, `games/dungeonmathquest/README.md`, `games/trashketball/README.md` y `games/gotitas-magicas/README.md` tienen la forma:
+
+```
+https://sandiacamil.github.io/game-development-portfolio/...
+```
+
+Si tu repo se llama distinto, reemplaza `game-development-portfolio` por el nombre real en esa parte de la URL (el usuario `sandiacamil` no cambia). Los botones "Código" no necesitan cambios si el repo se llama igual que el `blob/main/...` que ya está en los enlaces — si cambia el nombre, ahí también hay que actualizarlo.
+
+## 6. Pendiente opcional
+
+- GIFs animados en vez de capturas estáticas (se ve bien en portafolios, pero requiere grabar pantalla y convertir a GIF) — no es necesario, las capturas ya cumplen el requisito.
 
 ---
 

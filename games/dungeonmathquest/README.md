@@ -7,118 +7,116 @@
 ![Niveles](https://img.shields.io/badge/Niveles-10-ffd23f?style=flat-square)
 ![Versiones](https://img.shields.io/badge/Versiones_documentadas-3-3ddc97?style=flat-square)
 
-[◀ Volver al portafolio](../../README.md)
+[![Jugar versión final](https://img.shields.io/badge/JUGAR_VERSIÓN_FINAL-00f5d4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/)
+[![Ver código](https://img.shields.io/badge/VER_CÓDIGO-2a2450?style=for-the-badge)](index.html)
+
+[Volver al portafolio](../../README.md)
 
 </div>
 
 ---
 
-## 🏰 Sobre el juego
+## El caso de negocio
 
-Un dragón numérico encerró el reino en una **torre de acertijos**. Como último aventurero capaz de descifrar sus enigmas, debes escalar la torre piso a piso, saltando entre plataformas suspendidas y resolviendo **operaciones matemáticas combinadas** para desbloquear el camino hacia la cima.
+Esta práctica planteaba el siguiente problema: *GameEdu*, una empresa dedicada a soluciones educativas mediante videojuegos, recibió el encargo de una institución de secundaria de crear un juego para repasar operaciones aritméticas de forma entretenida. El cliente pedía específicamente:
 
-Cada nivel plantea una operación (suma, resta, multiplicación, división y uso de paréntesis) y varios cofres esparcidos entre las plataformas: solo uno tiene la respuesta correcta, los demás son **cofres falsos** que te harán perder el intento. La combinación de reflejos de plataformas + cálculo mental es la esencia del juego: no basta con saber la respuesta, hay que llegar hasta el cofre correcto antes de resbalar.
+- Dirigido a estudiantes de 1ro de secundaria.
+- Temática de aventura de plataformas inspirada en videojuegos clásicos.
+- 10 preguntas de suma, resta, multiplicación y división, con 4 alternativas cada una.
+- 1 punto por respuesta correcta, puntuación final sobre 10.
+- Feedback inmediato de si la respuesta es correcta o incorrecta.
+- Funcionar directamente en un navegador, generado mediante IA a partir de un prompt.
 
-- **¿De qué trata?** De escalar una torre resolviendo matemáticas mientras controlas a un personaje en un entorno de plataformas.
-- **¿Cuál es el objetivo del jugador?** Completar los 10 niveles eligiendo siempre el cofre con el resultado correcto, para obtener el mejor rango posible al final.
-- **¿Cuál es la mecánica principal?** Movimiento lateral + salto entre plataformas, combinado con lectura y resolución de una operación aritmética por nivel.
+## Sobre el juego
 
-## 🎮 Género
+Un dragón numérico encerró el reino en una torre de acertijos. El jugador escala la torre saltando entre plataformas y debe tocar el **cofre con la respuesta correcta** de cada operación combinada — los demás cofres son señuelos que hacen perder el intento si se tocan primero.
 
-`Platformer` · `Puzzle educativo`
+- **De qué trata:** escalar una torre resolviendo matemáticas mientras se controla a un personaje en un entorno de plataformas.
+- **Objetivo del jugador:** completar los 10 niveles eligiendo siempre el cofre correcto, para obtener el mejor rango posible al final.
+- **Mecánica principal:** movimiento lateral + salto entre plataformas, combinado con la resolución de una operación aritmética por nivel.
 
-## ⌨️ Controles
+## Controles
 
 | Acción | Tecla |
 |---|---|
 | Moverse a la izquierda | `←` / `A` |
 | Moverse a la derecha | `→` / `D` |
 | Saltar | `↑` / `W` / `ESPACIO` |
-| Avanzar / continuar | Botón en pantalla `▶` |
+| Avanzar / continuar | Botón en pantalla |
 
-*También cuenta con botones táctiles en pantalla (◀ ▶ SALTAR) para jugar desde dispositivos móviles.*
+También tiene botones táctiles en pantalla para jugar desde el celular.
 
-## 🏆 Sistema de puntaje
-
-Al completar los 10 niveles se otorga un rango según los aciertos:
+## Sistema de puntaje
 
 | Puntaje | Rango |
 |---|---|
-| 10/10 | 🏆 Gran Maestro del Reino |
-| 8-9/10 | ⚔️ Caballero Calculador |
-| 6-7/10 | 🛡️ Aprendiz Valiente |
-| 4-5/10 | 🗡️ Escudero en Entrenamiento |
+| 10/10 | Gran Maestro del Reino |
+| 8-9/10 | Caballero Calculador |
+| 6-7/10 | Aprendiz Valiente |
+| 4-5/10 | Escudero en Entrenamiento |
 | menos de 4 | Sigue practicando |
 
-## 🛠️ Tecnología utilizada
+## Tecnología
 
-- **HTML5** (`<canvas>` para el renderizado del personaje y las plataformas)
-- **CSS3** (estética retro pixel-art con las fuentes `Press Start 2P` y `VT323`)
-- **JavaScript** vanilla — física de salto, detección de colisiones plataforma/cofre, generación de niveles y validación de operaciones
+- HTML5 (`<canvas>` para el renderizado del personaje y las plataformas)
+- CSS3 (estética retro pixel-art, fuentes `Press Start 2P` y `VT323`)
+- JavaScript vanilla — física de salto, colisiones plataforma/cofre, generación de niveles y validación de operaciones
 
-## 📸 Capturas de pantalla
+---
+
+## Historial de versiones
+
+<table>
+<tr><th align="left">Versión</th><th align="left">Qué cambió</th><th align="center">Jugar</th><th align="center">Código</th></tr>
+<tr>
+<td><b>v1 — Quiz</b></td>
+<td>Prototipo inicial: sin plataformas ni movimiento del personaje. Se mostraba la operación y 4 posibles resultados para elegir. Sirvió para validar la lógica de generación de operaciones y el sistema de puntaje antes de invertir tiempo en física.</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/versions/v1-quiz.html">Jugar</a></td>
+<td align="center"><a href="versions/v1-quiz.html">Ver</a></td>
+</tr>
+<tr>
+<td><b>v2 — Nivel plano</b></td>
+<td>Primer entorno de plataformas real: el personaje ya se mueve y salta físicamente, y hay que tocar el cofre correcto entre varios distribuidos en el nivel. Todos los cofres están al ras del suelo — el salto existe pero el diseño de nivel aún no lo exige.</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/versions/v2-flatlevel.html">Jugar</a></td>
+<td align="center"><a href="versions/v2-flatlevel.html">Ver</a></td>
+</tr>
+<tr>
+<td><b>v3 — Final</b></td>
+<td>Se agregaron plataformas a distinta altura, obligando a saltar entre ellas. Se sumaron cofres falsos como factor de riesgo y controles táctiles para jugar desde el celular.</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/">Jugar</a></td>
+<td align="center"><a href="index.html">Ver</a></td>
+</tr>
+</table>
+
+### v1 — Quiz
+
+<div align="center">
+<img src="versions/v1-quiz.png" width="420"/>
+<br/><sub>Pantalla de bienvenida — se elige la respuesta entre 4 opciones, sin plataformas</sub>
+</div>
+
+### v2 — Nivel plano
 
 <div align="center">
 <table>
 <tr>
-<td align="center"><img src="screenshots/v3-menu.png" width="380"/><br/><sub>Pantalla inicial</sub></td>
-<td align="center"><img src="screenshots/v3-gameplay.png" width="380"/><br/><sub>Gameplay — nivel con operación combinada</sub></td>
+<td align="center"><img src="versions/v2-flatlevel-intro.png" width="380"/><br/><sub>Pantalla de bienvenida</sub></td>
+<td align="center"><img src="versions/v2-flatlevel.png" width="380"/><br/><sub>Gameplay — cofres al ras del suelo</sub></td>
+</tr>
+</table>
+</div>
+
+### v3 — Final
+
+<div align="center">
+<table>
+<tr>
+<td align="center"><img src="screenshots/v3-menu.png" width="380"/><br/><sub>Pantalla de bienvenida</sub></td>
+<td align="center"><img src="screenshots/v3-gameplay.png" width="380"/><br/><sub>Gameplay — plataformas y operación combinada</sub></td>
 </tr>
 </table>
 </div>
 
 ---
 
-## 🧪 Historial de versiones (betas)
-
-### 🔹 v1 — Modo Quiz (prototipo inicial)
-
-La primera beta fue mucho más simple: sin plataformas ni movimiento del personaje, era básicamente un **quiz de opción múltiple**. Se mostraba la operación y 4 posibles resultados para elegir, sirvió para validar la lógica de generación de operaciones y el sistema de niveles/puntaje antes de invertir tiempo en la física del juego.
-
-<div align="center">
-<img src="versions/v1-quiz.png" width="420"/>
-<br/><sub>v1 — Modo Quiz: se elige la respuesta entre 4 opciones, sin plataformas</sub>
-</div>
-
-📄 Código de esta versión: [`versions/v1-quiz.html`](versions/v1-quiz.html)
-
-### 🔹 v2 — Primer prototipo jugable (nivel plano)
-
-Se reemplazó el quiz por el primer **entorno de plataformas real**: el jugador ya controla un personaje que se mueve y salta físicamente por el escenario, y en vez de elegir de una lista, debe tocar el cofre correcto entre varios distribuidos en el nivel. En esta versión todos los cofres todavía están al **ras del suelo, sin plataformas a distinta altura** — el salto existe como mecánica, pero el diseño de nivel aún no lo exige.
-
-**Cambios clave respecto a v1:**
-- ✅ Movimiento y salto real del personaje (física simple, aunque el nivel es plano)
-- ✅ Cofres múltiples distribuidos en el escenario en vez de opciones en una lista
-- ✅ Barra de progreso de niveles (1 al 10) visible en la parte superior
-
-<div align="center">
-<img src="versions/v2-flatlevel.png" width="420"/>
-<br/><sub>v2 — Primer prototipo jugable: cofres al ras del suelo, sin plataformas elevadas</sub>
-</div>
-
-📄 Código de esta versión: [`versions/v2-flatlevel.html`](versions/v2-flatlevel.html)
-
-### 🔹 v3 — Versión final (Platformer completo)
-
-Se rediseñó el nivel para agregar **plataformas suspendidas a distintas alturas**, obligando a saltar entre ellas para alcanzar el cofre correcto — ya no basta con moverse en línea recta como en la v2. También se sumaron cofres falsos como factor de riesgo adicional y controles táctiles para poder jugarlo desde el celular.
-
-**Cambios clave respecto a v2:**
-- ✅ Plataformas a distintas alturas (el salto ahora es indispensable, no opcional)
-- ✅ Cofres falsos como factor de riesgo/tensión adicional
-- ✅ Controles táctiles en pantalla para móvil
-- ✅ Ambientación retro pixel-art más trabajada (paleta de colores, tipografía)
-
-<div align="center">
-<img src="screenshots/v3-gameplay.png" width="420"/>
-<br/><sub>v3 — Versión final: plataformas, cofres y operación combinada visible</sub>
-</div>
-
-📄 Código de esta versión: [`index.html`](index.html)
-
----
-
-## ▶️ Cómo jugar
-
-Descarga o clona el repositorio y abre el archivo `index.html` de esta carpeta directamente en tu navegador — no requiere instalación ni servidor.
-
-[◀ Volver al portafolio principal](../../README.md)
+[Volver al portafolio principal](../../README.md)
