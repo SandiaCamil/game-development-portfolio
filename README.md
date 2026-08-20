@@ -17,7 +17,6 @@ Game Development · Gestión 2 – 2026 · Paralelo A
 
 ---
 
-> **Nota sobre los enlaces de esta página:** los botones "Jugar" abren la versión publicada con GitHub Pages (`sandiacamil.github.io/game-development-portfolio/...`). Si el nombre de tu repositorio es distinto, o todavía no activaste GitHub Pages, esos enlaces no van a funcionar hasta que sigas los pasos de [`CONFIGURACION.md`](CONFIGURACION.md). Los botones "Código" sí funcionan siempre, apuntan directo al archivo fuente en GitHub.
 
 ## Sobre mí
 
