@@ -120,7 +120,7 @@ El resultado es un arcade tipo *catcher*: se mueve una canasta para atrapar gota
 <tr>
 <td width="45%">
 
-**Proyecto propio (fuera de las prácticas guiadas):** roguelike tipo *survivor* donde Verdu-chan, una zanahoria protagonista, resiste oleadas crecientes de comida chatarra con ataque automático, sube de nivel recogiendo verduras y elige mejoras entre oleada y oleada.
+**VidaSana (Practica 3 - Mecanicas de juego): ** esta practica nos dio paso a entender las mecanicas escenciales de un juego, y como puede afectar a los usuarios para que este pueda adaptase de manera correcta, en este juego especifico se utilizo el genero Bullet Heaven o estilo Vampire Survivors.
 
 Este proyecto tuvo tres iteraciones propias: desde la versión original con fruta genérica como recolectable, pasando por un ajuste de balance de enemigos, hasta la versión final donde las verduras temáticas también curan vida — reforzando el mensaje de alimentación saludable.
 
