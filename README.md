@@ -85,35 +85,6 @@ El resultado es un arcade de puntería donde se lanza cada residuo a su contened
 </div>
 
 ---
-
-### Gotitas Mágicas — Salva a Ajolí
-
-<table>
-<tr>
-<td width="45%">
-
-**Metodología aplicada (Práctica 3 — Mecánicas de juego):** esta práctica exige justificar primero el género y la mecánica principal usando el marco **MDA** (Mecánica, Dinámica, Estética) antes de programar nada, analizando un caso real (*Polarity Switch*) como referencia. Se aplicó ese mismo proceso de justificación de diseño a un tema de concientización sobre el cuidado del agua.
-
-El resultado es un arcade tipo *catcher*: se mueve una canasta para atrapar gotas de agua pura (y power-ups) que purifican el agua necesaria para que Ajolí, un ajolote, pueda sobrevivir.
-
-</td>
-<td width="55%" align="center">
-<img src="games/gotitas-magicas/screenshots/menu.png" width="100%"/>
-<sub>Pantalla de bienvenida</sub>
-</td>
-</tr>
-</table>
-
-<div align="center">
-
-[![Jugar](https://img.shields.io/badge/JUGAR-2563EB?style=for-the-badge)](https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/)
-[![Código](https://img.shields.io/badge/CÓDIGO_FUENTE-7C3AED?style=for-the-badge)](https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/gotitas-magicas/index.html)
-[![Detalle](https://img.shields.io/badge/DETALLE-DB2777?style=for-the-badge)](games/gotitas-magicas/)
-
-</div>
-
----
-
 ### Verdu-chan — Guerra Contra la Comida Chatarra
 
 <table>
@@ -139,6 +110,35 @@ Este proyecto tuvo tres iteraciones propias: desde la versión original con frut
 [![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ff2fb3?style=for-the-badge)](games/verdu-chan/)
 
 </div>
+
+---
+
+### Gotitas Mágicas — Salva a Ajolí
+
+<table>
+<tr>
+<td width="45%">
+
+**Metodología aplicada (Práctica 4 — Player Persona):** esta práctica exige definir y caracterizar primero el perfil del jugador objetivo (Player Persona) mediante el análisis de sus motivaciones, frustraciones y hábitos de juego antes de desarrollar cualquier propuesta visual o técnica, tomando como referencia el público de Polarity Switch. Se aplicó este mismo proceso de perfilado de usuarios para entender cómo conectar empáticamente con un público específico en un tema de concientización sobre el cuidado del agua.
+
+El resultado es un arcade tipo *catcher*: se mueve una canasta para atrapar gotas de agua pura (y power-ups) que purifican el agua necesaria para que Ajolí, un ajolote, pueda sobrevivir.
+
+</td>
+<td width="55%" align="center">
+<img src="games/gotitas-magicas/screenshots/menu.png" width="100%"/>
+<sub>Pantalla de bienvenida</sub>
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+[![Jugar](https://img.shields.io/badge/JUGAR-2563EB?style=for-the-badge)](https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/)
+[![Código](https://img.shields.io/badge/CÓDIGO_FUENTE-7C3AED?style=for-the-badge)](https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/gotitas-magicas/index.html)
+[![Detalle](https://img.shields.io/badge/DETALLE-DB2777?style=for-the-badge)](games/gotitas-magicas/)
+
+</div>
+
 
 ---
 
