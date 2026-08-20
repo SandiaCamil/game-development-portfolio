@@ -190,14 +190,6 @@ Cada juego pasó por versiones intermedias antes de llegar a su forma final. Tod
 </tr>
 
 <tr>
-<td><b>Gotitas Mágicas</b></td>
-<td>v1 — Única</td>
-<td>Versión inicial, ciclo completo de juego con power-ups</td>
-<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/">Jugar</a></td>
-<td align="center"><a href="https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/gotitas-magicas/index.html">Ver</a></td>
-</tr>
-
-<tr>
 <td rowspan="3"><b>Verdu-chan</b></td>
 <td>v1 — Original</td>
 <td>Fruta genérica como recolectable, solo otorga experiencia</td>
@@ -216,6 +208,15 @@ Cada juego pasó por versiones intermedias antes de llegar a su forma final. Tod
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/">Jugar</a></td>
 <td align="center"><a href="https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/verdu-chan/index.html">Ver</a></td>
 </tr>
+
+<tr>
+<td><b>Gotitas Mágicas</b></td>
+<td>v1 — Única</td>
+<td>Versión inicial, ciclo completo de juego con power-ups</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/">Jugar</a></td>
+<td align="center"><a href="https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/gotitas-magicas/index.html">Ver</a></td>
+</tr>
+
 
 </table>
 
