@@ -10,13 +10,14 @@
 Game Development · Gestión 2 – 2026 · Paralelo A
 
 [![GitHub](https://img.shields.io/badge/GitHub-SandiaCamil-181717?style=for-the-badge&logo=github)](https://github.com/SandiaCamil)
-![Juegos](https://img.shields.io/badge/Prototipos-3-00f5d4?style=for-the-badge)
+![Juegos](https://img.shields.io/badge/Prototipos-4-00f5d4?style=for-the-badge)
 ![Estado](https://img.shields.io/badge/Estado-En_construcción-ffd23f?style=for-the-badge)
 
 </div>
 
 ---
 
+> **Nota sobre los enlaces de esta página:** los botones "Jugar" abren la versión publicada con GitHub Pages (`sandiacamil.github.io/game-development-portfolio/...`). Si el nombre de tu repositorio es distinto, o todavía no activaste GitHub Pages, esos enlaces no van a funcionar hasta que sigas los pasos de [`CONFIGURACION.md`](CONFIGURACION.md). Los botones "Código" sí funcionan siempre, apuntan directo al archivo fuente en GitHub.
 
 ## Sobre mí
 
@@ -114,6 +115,34 @@ El resultado es un arcade tipo *catcher*: se mueve una canasta para atrapar gota
 
 ---
 
+### Verdu-chan — Guerra Contra la Comida Chatarra
+
+<table>
+<tr>
+<td width="45%">
+
+**Proyecto propio (fuera de las prácticas guiadas):** roguelike tipo *survivor* donde Verdu-chan, una zanahoria protagonista, resiste oleadas crecientes de comida chatarra con ataque automático, sube de nivel recogiendo verduras y elige mejoras entre oleada y oleada.
+
+Este proyecto tuvo tres iteraciones propias: desde la versión original con fruta genérica como recolectable, pasando por un ajuste de balance de enemigos, hasta la versión final donde las verduras temáticas también curan vida — reforzando el mensaje de alimentación saludable.
+
+</td>
+<td width="55%" align="center">
+<img src="games/verdu-chan/screenshots/v3-menu.png" width="100%"/>
+<sub>Pantalla de bienvenida — versión final</sub>
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+[![Jugar](https://img.shields.io/badge/JUGAR-39ff88?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/)
+[![Código](https://img.shields.io/badge/CÓDIGO_FUENTE-120a22?style=for-the-badge)](https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/verdu-chan/index.html)
+[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ff2fb3?style=for-the-badge)](games/verdu-chan/)
+
+</div>
+
+---
+
 ## Jugar cualquier versión (betas incluidas)
 
 Cada juego pasó por versiones intermedias antes de llegar a su forma final. Todas son jugables individualmente, no solo la última:
@@ -169,9 +198,29 @@ Cada juego pasó por versiones intermedias antes de llegar a su forma final. Tod
 <td align="center"><a href="https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/gotitas-magicas/index.html">Ver</a></td>
 </tr>
 
+<tr>
+<td rowspan="3"><b>Verdu-chan</b></td>
+<td>v1 — Original</td>
+<td>Fruta genérica como recolectable, solo otorga experiencia</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/versions/v1-original.html">Jugar</a></td>
+<td align="center"><a href="https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/verdu-chan/versions/v1-original.html">Ver</a></td>
+</tr>
+<tr>
+<td>v2 — Balance</td>
+<td>Enemigos reescalados, paleta de mejoras invertida, más variedad de fruta</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/versions/v2-balance.html">Jugar</a></td>
+<td align="center"><a href="https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/verdu-chan/versions/v2-balance.html">Ver</a></td>
+</tr>
+<tr>
+<td>v3 — Final</td>
+<td>Verduras temáticas que curan vida, personaje con aura y animación pulida</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/">Jugar</a></td>
+<td align="center"><a href="https://github.com/SandiaCamil/game-development-portfolio/blob/main/games/verdu-chan/index.html">Ver</a></td>
+</tr>
+
 </table>
 
-Más detalle de cada beta (con capturas comparadas) en el README de cada juego: [DungeonMathQuest](games/dungeonmathquest/) · [Trashketball](games/trashketball/) · [Gotitas Mágicas](games/gotitas-magicas/)
+Más detalle de cada beta (con capturas comparadas) en el README de cada juego: [DungeonMathQuest](games/dungeonmathquest/) · [Trashketball](games/trashketball/) · [Gotitas Mágicas](games/gotitas-magicas/) · [Verdu-chan](games/verdu-chan/)
 
 ---
 

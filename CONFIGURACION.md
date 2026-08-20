@@ -44,7 +44,7 @@ Entra a `https://github.com/SandiaCamil/game-development-portfolio` y revisa:
 
 ## 5. Si usas otro nombre de repositorio
 
-Todos los enlaces "Jugar" en `README.md`, `games/dungeonmathquest/README.md`, `games/trashketball/README.md` y `games/gotitas-magicas/README.md` tienen la forma:
+Todos los enlaces "Jugar" en `README.md`, `games/dungeonmathquest/README.md`, `games/trashketball/README.md`, `games/gotitas-magicas/README.md` y `games/verdu-chan/README.md` tienen la forma:
 
 ```
 https://sandiacamil.github.io/game-development-portfolio/...
