@@ -20,7 +20,7 @@ Game Development · Gestión 2 – 2026 · Paralelo A
 
 ## Sobre mí
 
-Soy **Hugo Camilo**, conocido en internet como **SandiaCamil**. Estudio Ingeniería de Software y curso la asignatura de Game Development, donde estoy dando mis primeros pasos en diseño y programación de videojuegos generados con apoyo de IA a partir de casos de negocio reales planteados por la materia.
+Soy **Hugo Camilo**, conocido en internet como **SandiaCamil**. Estudio Ingeniería de Software y curso la asignatura de Game Development, donde estoy dando mis primeros pasos en diseño y programación de videojuegos a partir de casos de negocio reales planteados por la materia.
 
 Me interesan especialmente los **shooters tácticos** y los juegos de **aventura**; fuera de esta materia también trabajo en desarrollo Android, desarrollo web y ciberseguridad.
 
