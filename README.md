@@ -17,8 +17,6 @@ Game Development · Gestión 2 – 2026 · Paralelo A
 
 ---
 
-> **Nota sobre los enlaces de esta página:** los botones "Jugar" abren la versión publicada con GitHub Pages (`sandiacamil.github.io/game-development-portfolio/...`). Si el nombre de tu repositorio es distinto, o todavía no activaste GitHub Pages, esos enlaces no van a funcionar hasta que sigas los pasos de [`CONFIGURACION.md`](CONFIGURACION.md).
-
 ## Sobre mí
 
 Soy **Hugo Camilo**, conocido en internet como **SandiaCamil**. Estudio Ingeniería de Software y curso la asignatura de Game Development, donde estoy dando mis primeros pasos en diseño y programación de videojuegos generados con apoyo de IA a partir de casos reales.
