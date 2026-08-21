@@ -8,7 +8,6 @@
 ![Versiones](https://img.shields.io/badge/Versiones_documentadas-3-ff2fb3?style=flat-square)
 
 [![Jugar versión final](https://img.shields.io/badge/JUGAR_VERSIÓN_FINAL-39ff88?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/)
-[![Ver código](https://img.shields.io/badge/VER_CÓDIGO-120a22?style=for-the-badge)](index.html)
 
 [Volver al portafolio](../../README.md)
 
@@ -53,24 +52,21 @@
 ## Historial de versiones
 
 <table>
-<tr><th align="left">Versión</th><th align="left">Qué cambió</th><th align="center">Jugar</th><th align="center">Código</th></tr>
+<tr><th align="left">Versión</th><th align="left">Qué cambió</th><th align="center">Jugar</th></tr>
 <tr>
 <td><b>v1 — Original</b></td>
 <td>Primera versión jugable completa: oleadas, ataque automático, sistema de mejoras y recolección de fruta genérica (🍎🍌🍓🍊) que solo otorgaba experiencia.</td>
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/versions/v1-original.html">Jugar</a></td>
-<td align="center"><a href="versions/v1-original.html">Ver</a></td>
 </tr>
 <tr>
 <td><b>v2 — Balance</b></td>
 <td>Ajuste de tamaños de enemigos y colores de la interfaz de mejoras (se invirtió la paleta cian/rosa de las cartas), y se amplió la variedad de fruta recolectable de 4 a 6 tipos.</td>
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/versions/v2-balance.html">Jugar</a></td>
-<td align="center"><a href="versions/v2-balance.html">Ver</a></td>
 </tr>
 <tr>
 <td><b>v3 — Final</b></td>
 <td>Se reemplazó la fruta genérica por verduras temáticas (brócoli, tomate, palta, zanahoria) que además de dar experiencia ahora también curan vida al recogerlas, reforzando el mensaje de alimentación saludable. Se rehizo el renderizado del personaje con un aura de doble anillo y animación más pulida.</td>
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/">Jugar</a></td>
-<td align="center"><a href="index.html">Ver</a></td>
 </tr>
 </table>
 

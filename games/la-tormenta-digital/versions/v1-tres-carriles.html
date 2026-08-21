@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tres carriles</title>
+<style>
+  :root{
+    --bg: #0d1120;
+    --panel: #151b30;
+    --screenbg: #161d38;
+    --ink: #eef1fb;
+    --dim: #8a92b8;
+    --coral: #ff6b5b;
+    --mint: #7fe3c4;
+    --amber: #ffcf6b;
+    --lane-l: rgba(255,107,91,0.05);
+    --lane-c: rgba(255,255,255,0.02);
+    --lane-r: rgba(122,166,255,0.06);
+    --serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', serif;
+    --mono: 'Courier New', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{height:100%; margin:0;}
+  body{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(ellipse at 20% -10%, #1a2140 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 110%, #1a1530 0%, transparent 55%),
+      var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    padding: 20px 10px;
+    user-select:none;
+  }
+
+  .frame{
+    width: 460px; max-width:100%;
+    background: var(--panel);
+    border-radius: 34px;
+    padding: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .notch{ width:90px; height:18px; background:#000; border-radius:12px; margin:0 auto 10px; }
+
+  .screen{
+    background: var(--screenbg);
+    border-radius: 22px;
+    height: 600px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- HUD ---------- */
+  .hud{
+    padding: 12px 14px 8px;
+    display:flex; flex-direction:column; gap:6px;
+    position:relative; z-index:5;
+  }
+  .hud-row{ display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--dim); font-family:var(--mono); }
+  .barbg{ height:7px; border-radius:5px; background:rgba(255,255,255,0.08); overflow:hidden; }
+  .barfill{ height:100%; border-radius:5px; transition: width 0.25s ease, background 0.4s ease; }
+  #focusFill{ background: var(--mint); }
+  #dayFill{ background: var(--amber); }
+
+  /* ---------- Game area ---------- */
+  .gamewrap{ flex:1; position:relative; overflow:hidden; }
+  .filterlayer{
+    position:absolute; inset:0;
+    transition: filter 0.4s ease;
+  }
+  .lanes{
+    position:absolute; inset:0;
+    display:flex;
+  }
+  .lane{ flex:1; position:relative; height:100%; }
+  .lane.l{ background: var(--lane-l); }
+  .lane.c{ background: var(--lane-c); }
+  .lane.r{ background: var(--lane-r); }
+  .lane::after{
+    content:''; position:absolute; top:0; bottom:0; right:0; width:1px;
+    background: rgba(255,255,255,0.05);
+  }
+  .lane.r::after{ display:none; }
+
+  .comment{
+    position:absolute;
+    left:6%; right:6%;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height:1.35;
+    text-align:center;
+    font-weight:600;
+    pointer-events:none;
+  }
+  .comment.positive{ background: rgba(127,227,196,0.16); color: var(--mint); border:1px solid rgba(127,227,196,0.4); }
+  .comment.negative{ background: rgba(255,107,91,0.16); color: var(--coral); border:1px solid rgba(255,107,91,0.4); }
+  .comment.neutral{ background: rgba(255,255,255,0.06); color: var(--dim); border:1px solid rgba(255,255,255,0.12); font-weight:400; }
+  .comment.power{ background: rgba(255,207,107,0.2); color: var(--amber); border:1px solid rgba(255,207,107,0.55); font-weight:700; }
+
+  .player{
+    position:absolute;
+    bottom: 34px;
+    width: 40px; height:40px;
+    left: calc(16.66% - 20px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff, var(--coral) 60%);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    box-shadow: 0 6px 18px rgba(255,107,91,0.4);
+    transition: left 0.16s cubic-bezier(.3,.9,.4,1);
+    z-index:3;
+  }
+
+  .floattext{
+    position:absolute;
+    font-weight:800;
+    font-size: 15px;
+    pointer-events:none;
+    animation: floatup 0.7s ease forwards;
+    z-index:4;
+  }
+  @keyframes floatup{ from{opacity:1; transform:translateY(0);} to{opacity:0; transform:translateY(-32px);} }
+
+  .low-focus-shake{ animation: shake 0.35s infinite; }
+  @keyframes shake{
+    0%,100%{ transform:translate(0,0); }
+    25%{ transform:translate(-1.5px,1px); }
+    75%{ transform:translate(1.5px,-1px); }
+  }
+
+  .boost-glow{
+    position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,207,107,0.22), transparent 70%);
+    opacity:0; transition: opacity 0.3s ease; z-index:2;
+  }
+  .boost-glow.on{ opacity:1; }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex; gap:8px; padding: 10px 14px 14px;
+    position:relative; z-index:5;
+  }
+  .ctrlbtn{
+    flex:1; background: rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    color: var(--ink); font-size:20px; padding:12px;
+    border-radius:12px; cursor:pointer;
+  }
+  .ctrlbtn:active{ background: rgba(255,107,91,0.18); border-color: var(--coral); }
+
+  /* ---------- Overlays (title / vignette / summary / ending) ---------- */
+  .overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, #10152a 0%, #161d38 100%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding: 30px 22px;
+    z-index:10;
+  }
+  .overlay .eyebrow{ font-family:var(--mono); font-size:10.5px; letter-spacing:1.5px; color:var(--amber); text-transform:uppercase; margin-bottom:10px; }
+  .overlay h1{ font-family: var(--serif); font-size: 24px; margin: 0 0 14px; font-weight:400; }
+  .overlay p{ font-family: var(--serif); font-style: italic; color: var(--dim); font-size: 14px; line-height:1.6; max-width: 340px; margin: 0 0 22px; }
+  .overlay .stat{ color: var(--mint); font-family: var(--serif); font-style: normal; font-weight:700; }
+  .primary-btn{
+    background: var(--coral); color:#1a0e0b; border:none;
+    padding: 13px 26px; border-radius: 12px; font-weight:700;
+    font-size: 13.5px; cursor:pointer; letter-spacing:0.3px;
+  }
+
+  .diff-select{ display:flex; flex-direction:column; gap:8px; width:100%; margin-bottom: 4px; }
+  .diff-btn{
+    display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+    background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12);
+    color: var(--ink); padding: 11px 14px; border-radius: 12px; cursor:pointer;
+    text-align:left; font-family:inherit;
+  }
+  .diff-btn .diff-name{ font-weight:700; font-size:14px; }
+  .diff-btn .diff-sub{ font-family: var(--mono); font-size: 10px; color: var(--dim); }
+  .diff-btn:hover{ border-color: var(--coral); background: rgba(255,107,91,0.1); }
+  .diff-btn[data-tier="amable"] .diff-name{ color: var(--mint); }
+  .diff-btn[data-tier="retador"] .diff-name{ color: var(--amber); }
+  .diff-btn[data-tier="acosador"] .diff-name{ color: var(--coral); }
+  .instructions{ font-family: var(--mono); font-size:10.5px; color:var(--dim); margin-top:16px; line-height:1.7; }
+  .instructions b{ color: var(--ink); }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="notch"></div>
+  <div class="screen" id="screen">
+
+    <div class="hud">
+      <div class="hud-row"><span id="dayLabel">Día 1 · amable</span><span id="focusLabel">enfoque 50</span></div>
+      <div class="barbg"><div class="barfill" id="focusFill" style="width:50%"></div></div>
+      <div class="barbg"><div class="barfill" id="dayFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="gamewrap">
+      <div class="filterlayer" id="filterLayer">
+        <div class="lanes">
+          <div class="lane l"></div>
+          <div class="lane c"></div>
+          <div class="lane r"></div>
+        </div>
+        <div class="boost-glow" id="boostGlow"></div>
+        <div class="player" id="player">🙂</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="ctrlbtn" id="btnLeft">◀</button>
+      <button class="ctrlbtn" id="btnRight">▶</button>
+    </div>
+
+    <!-- Overlays -->
+    <div class="overlay" id="ov-title">
+      <div class="eyebrow">prototipo · elige dificultad</div>
+      <h1>Tres carriles</h1>
+      <p>Cada ronda llegan comentarios. Los verdes (<span class="stat">🟢 positivos</span>) suben tu enfoque, los rojos (<span class="stat" style="color:var(--coral)">🔴 negativos</span>) te lo bajan.</p>
+      <div class="diff-select">
+        <button class="diff-btn" id="btnAmable" data-tier="amable">
+          <span class="diff-name">Amable</span><span class="diff-sub">fácil · más positivos que negativos</span>
+        </button>
+        <button class="diff-btn" id="btnRetador" data-tier="retador">
+          <span class="diff-name">Retador</span><span class="diff-sub">medio · negativos disfrazados de broma</span>
+        </button>
+        <button class="diff-btn" id="btnAcosador" data-tier="acosador">
+          <span class="diff-name">Acosador</span><span class="diff-sub">difícil · te persiguen de carril</span>
+        </button>
+      </div>
+      <div class="instructions">muévete con <b>◀ ▶</b> o <b>A / D</b><br>atrapa lo verde, esquiva lo rojo</div>
+    </div>
+
+    <div class="overlay hidden" id="ov-vignette">
+      <div class="eyebrow" id="vgEyebrow">fin del día</div>
+      <h1 id="vgTitle">—</h1>
+      <p id="vgBody">—</p>
+      <button class="primary-btn" id="btnNextDay">siguiente día</button>
+    </div>
+
+    <div class="overlay hidden" id="ov-ending">
+      <div class="eyebrow">fin del prototipo</div>
+      <h1 id="endTitle">—</h1>
+      <p id="endBody">—</p>
+      <button class="primary-btn" id="btnRestart">jugar otra vez</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const TIERS = {
+  amable: [
+    {label:'Amable · ronda 1/2', tier:'amable', spawnMs:1150, negRatio:0.35, neutralRatio:0.22, speed:95,  duration:20000, disguise:false, chase:false},
+    {label:'Amable · ronda 2/2', tier:'amable', spawnMs:1000, negRatio:0.40, neutralRatio:0.18, speed:105, duration:20000, disguise:false, chase:false},
+  ],
+  retador: [
+    {label:'Retador · ronda 1/2', tier:'retador', spawnMs:850, negRatio:0.55, neutralRatio:0.10, speed:130, duration:22000, disguise:true, chase:false},
+    {label:'Retador · ronda 2/2', tier:'retador', spawnMs:750, negRatio:0.60, neutralRatio:0.08, speed:145, duration:22000, disguise:true, chase:false},
+  ],
+  acosador: [
+    {label:'Acosador · ronda 1/2', tier:'acosador', spawnMs:620, negRatio:0.70, neutralRatio:0.04, speed:170, duration:24000, disguise:true, chase:true},
+    {label:'Acosador · ronda 2/2', tier:'acosador', spawnMs:520, negRatio:0.75, neutralRatio:0.02, speed:190, duration:24000, disguise:true, chase:true},
+  ],
+};
+let currentDays = TIERS.amable;
+let currentTier = 'amable';
+
+const TEXTS = {
+  positive: [
+    'qué buena onda','jaja me encantó','cuenta conmigo','se te ve bien hoy','buena esa',
+    'gracias por ayer','eres un crack','nos vemos en el recreo?','tranquilo, yo te banco',
+    'en serio, admiro eso de ti','me hiciste el día','qué buena vibra tienes',
+    'gracias por escucharme ayer','te quedó increíble','sigue así, vas bien',
+    'cuenta conmigo para el proyecto','me caes súper bien','qué risa contigo jajaja',
+    'eres muy buena gente','no cambies nunca','se nota que le pusiste ganas',
+  ],
+  neutral: [
+    'vi tu historia','qué tarea nos tocó?','alguien tiene el apunte?','a qué hora salimos?',
+    'viste el partido?','hay clase mañana?','qué canción es esa?','prestame el cuaderno?',
+    'dónde estás?','llegaste a la casa?','viste las notas?','a qué hora es el examen?',
+  ],
+  negative: {
+    // burlas directas
+    l: [
+      'JAJAJA no puede ser real','bro qué es esto','esto no se puede ni ver','cringe total',
+      'borra eso ya','qué oso ajeno','te crees gracioso o qué','JAJAJA para el carro',
+      'qué vergüenza total','no te la crees ni tú','asu qué fail','JAJA esto se guarda',
+      'qué papelón','0 personalidad',
+    ],
+    // comparaciones
+    c: [
+      'tu hermano sí que la tiene clara','hasta los de 1ro lo hacen mejor',
+      'otra vez la misma flojera','compáralo, da hasta pena','todos avanzaron menos tú',
+      'hasta tu compañero de banco lo hace mejor','el otro grupo sí que se esforzó',
+      'siempre el último en todo','ya quisieras ser como los otros',
+      'en el otro salón esto ni pasa','tu prima sí que rinde',
+    ],
+    // exclusión
+    r: [
+      'obvio no te iban a avisar','el grupo bueno es aparte, ya sabes',
+      'ni que fueras parte del equipo','para eso están los que sí importan',
+      'mejor ahórrate venir','ese plan no es para ti','como que no cuentas para esto',
+      'ni en la foto sales','el chat bueno es otro, este es el descarte',
+      'no calificas para el equipo','quédate en tu rincón nomás',
+    ],
+  },
+  disguiseSuffix: [
+    ' ntc es broma', ' ya, no seas dramático', ' cálmate, es chiste no más', ' jaja relájate',
+    ' no seas sensible', ' ay ya, no es para tanto', ' era sarcasmo', ' jaja ok ya bájale',
+  ],
+};
+
+/* ================= STATE ================= */
+let dayIndex = 0;
+let focus = 50;
+let playerLane = 1;
+let comments = [];
+let running = false;
+let spawnTimer = null;
+let rafId = null;
+let dayStartTime = 0;
+let dayElapsed = 0;
+let lastFrame = 0;
+let boostUntil = 0;
+let dayEndFocusHistory = [];
+
+const el = id => document.getElementById(id);
+const gamewrap = document.querySelector('.gamewrap');
+const filterLayer = el('filterLayer');
+const player = el('player');
+const focusFill = el('focusFill');
+const focusLabel = el('focusLabel');
+const dayFill = el('dayFill');
+const dayLabel = el('dayLabel');
+const boostGlow = el('boostGlow');
+
+const laneCenters = () => {
+  const w = gamewrap.clientWidth;
+  return [w/6, w/2, w*5/6];
+};
+
+/* ================= HELPERS ================= */
+function setPlayerLane(lane){
+  playerLane = Math.max(0, Math.min(2, lane));
+  const w = gamewrap.clientWidth || 352;
+  const laneW = w/3;
+  player.style.left = (laneW*playerLane + laneW/2 - 20) + 'px';
+}
+
+function updateFocusUI(){
+  focus = Math.max(0, Math.min(100, focus));
+  focusFill.style.width = focus + '%';
+  focusLabel.textContent = 'enfoque ' + Math.round(focus);
+  let color = '#7fe3c4';
+  if(focus < 30) color = '#ff6b5b';
+  else if(focus < 60) color = '#ffcf6b';
+  focusFill.style.background = color;
+
+  // visual effect on the whole game layer
+  let blur = 0, gray = 0;
+  if(focus < 55){
+    const t = (55-focus)/55; // 0..1
+    blur = t*4.5;
+    gray = t*55;
+  }
+  filterLayer.style.filter = `blur(${blur}px) grayscale(${gray}%) saturate(${100-gray*0.5}%)`;
+  filterLayer.classList.toggle('low-focus-shake', focus < 20);
+}
+
+function floatFeedback(x, y, text, color){
+  const f = document.createElement('div');
+  f.className = 'floattext';
+  f.style.left = x+'px';
+  f.style.top = y+'px';
+  f.style.color = color;
+  f.textContent = text;
+  gamewrap.appendChild(f);
+  setTimeout(()=> f.remove(), 700);
+}
+
+function pickNegativeLaneText(laneIdx, disguise){
+  const keys = ['l','c','r'];
+  const pool = TEXTS.negative[keys[laneIdx]];
+  let text = pool[Math.floor(Math.random()*pool.length)];
+  if(disguise && Math.random() < 0.5){
+    text += TEXTS.disguiseSuffix[Math.floor(Math.random()*TEXTS.disguiseSuffix.length)];
+  }
+  return text;
+}
+
+/* ================= SPAWN ================= */
+function spawnComment(cfg){
+  const lane = Math.floor(Math.random()*3);
+  const roll = Math.random();
+  let type, text;
+
+  const powerChance = 0.045;
+  if(roll < powerChance){
+    type = 'power';
+    text = '💛 alguien te escribe';
+  } else {
+    const r2 = Math.random();
+    if(r2 < cfg.neutralRatio){
+      type = 'neutral';
+      text = TEXTS.neutral[Math.floor(Math.random()*TEXTS.neutral.length)];
+    } else if(r2 < cfg.neutralRatio + cfg.negRatio){
+      type = 'negative';
+      text = pickNegativeLaneText(lane, cfg.disguise);
+    } else {
+      type = 'positive';
+      text = TEXTS.positive[Math.floor(Math.random()*TEXTS.positive.length)];
+    }
+  }
+
+  const div = document.createElement('div');
+  div.className = 'comment ' + type;
+  div.textContent = text;
+  filterLayer.appendChild(div);
+
+  const laneW = (gamewrap.clientWidth||432)/3;
+  div.style.left = (laneW*lane + 6) + 'px';
+  div.style.width = (laneW - 12) + 'px';
+  div.style.top = '-40px';
+
+  comments.push({
+    el: div, lane, type, y: -40, speed: cfg.speed,
+    chase: cfg.chase && type==='negative' && Math.random() < 0.5,
+    chased: false,
+  });
+}
+
+/* ================= GAME LOOP ================= */
+function frame(ts){
+  if(!running) return;
+  if(!lastFrame) lastFrame = ts;
+  const dt = (ts - lastFrame)/1000;
+  lastFrame = ts;
+
+  const h = gamewrap.clientHeight;
+  const playerY = h - 34 - 40; // player bottom offset area
+  const laneW = (gamewrap.clientWidth||432)/3;
+
+  for(let i=comments.length-1; i>=0; i--){
+    const c = comments[i];
+    c.y += c.speed*dt;
+
+    if(c.chase && !c.chased && c.y > h*0.35){
+      c.chased = true;
+      c.lane = playerLane;
+      c.el.style.left = (laneW*c.lane + 6) + 'px';
+      c.el.style.transition = 'left 0.25s ease';
+    }
+
+    c.el.style.top = c.y + 'px';
+
+    // collision with player
+    if(c.y+20 >= playerY && c.y <= playerY+40 && c.lane === playerLane){
+      const wasPower = c.type === 'power';
+      handleCatch(c);
+      if(wasPower){
+        // handleCatch ya vació el tablero (incluido este elemento): no seguir
+        // iterando sobre el arreglo viejo, o el resto de comentarios queda
+        // "congelado" arriba porque el bucle se rompe a mitad de camino.
+        break;
+      }
+      c.el.remove();
+      comments.splice(i,1);
+      continue;
+    }
+    // offscreen
+    if(c.y > h+20){
+      c.el.remove();
+      comments.splice(i,1);
+    }
+  }
+
+  // day progress
+  dayElapsed = ts - dayStartTime;
+  const cfg = currentDays[dayIndex];
+  const pct = Math.min(100, (dayElapsed/cfg.duration)*100);
+  dayFill.style.width = pct + '%';
+
+  if(boostUntil && ts > boostUntil){
+    boostGlow.classList.remove('on');
+    boostUntil = 0;
+  }
+
+  if(dayElapsed >= cfg.duration){
+    endDay();
+    return;
+  }
+
+  rafId = requestAnimationFrame(frame);
+}
+
+function handleCatch(c){
+  const laneW = (gamewrap.clientWidth||432)/3;
+  const fx = laneW*c.lane + laneW/2 - 10;
+  const fy = (gamewrap.clientHeight) - 34 - 60;
+
+  if(c.type === 'positive'){
+    focus += 8;
+    floatFeedback(fx, fy, '+8', '#7fe3c4');
+  } else if(c.type === 'negative'){
+    focus -= 10;
+    floatFeedback(fx, fy, '-10', '#ff6b5b');
+  } else if(c.type === 'power'){
+    focus += 15;
+    floatFeedback(fx, fy, '+15', '#ffcf6b');
+    clearAllComments();
+    boostGlow.classList.add('on');
+    boostUntil = performance.now() + 2400;
+  }
+  updateFocusUI();
+}
+
+function clearAllComments(){
+  comments.forEach(c => c.el.remove());
+  comments.length = 0;
+}
+
+/* ================= DAY FLOW ================= */
+function startDay(){
+  el('ov-title').classList.add('hidden');
+  el('ov-vignette').classList.add('hidden');
+  el('ov-ending').classList.add('hidden');
+
+  const cfg = currentDays[dayIndex];
+  dayLabel.textContent = cfg.label;
+  dayFill.style.width = '0%';
+  clearAllComments();
+  setPlayerLane(1);
+  updateFocusUI();
+
+  running = true;
+  dayStartTime = performance.now();
+  lastFrame = 0;
+
+  spawnTimer = setInterval(()=> spawnComment(cfg), cfg.spawnMs);
+  rafId = requestAnimationFrame(frame);
+}
+
+function endDay(){
+  running = false;
+  clearInterval(spawnTimer);
+  cancelAnimationFrame(rafId);
+  clearAllComments();
+
+  dayEndFocusHistory.push(focus);
+
+  if(dayIndex === currentDays.length-1){
+    showEnding();
+    return;
+  }
+  showVignette();
+}
+
+function showVignette(){
+  const ov = el('ov-vignette');
+  let title, body;
+  if(focus >= 65){
+    title = 'Cami llega tranquila a casa';
+    body = 'Tira la mochila, revisa el celular un segundo y lo deja a un lado. Se ríe de algo que vio.';
+  } else if(focus >= 35){
+    title = 'Cami se queda un rato en su cuarto';
+    body = 'No dice mucho en la cena. Revisa el celular más veces de las que quisiera.';
+  } else {
+    title = 'Cami no contesta cuando le preguntan qué tal el día';
+    body = 'Deja el celular boca abajo sobre la mesa y no lo vuelve a tocar.';
+  }
+  el('vgEyebrow').textContent = 'fin de ' + currentDays[dayIndex].label.toLowerCase();
+  el('vgTitle').textContent = title;
+  el('vgBody').textContent = body;
+  ov.classList.remove('hidden');
+}
+
+function showEnding(){
+  const avg = dayEndFocusHistory.reduce((a,b)=>a+b,0)/dayEndFocusHistory.length;
+  let title, body;
+  if(avg >= 65){
+    title = 'Lo que la sostuvo';
+    body = 'Nadie le dio un discurso a Cami sobre resiliencia. Fueron los mensajes que sí llegaron a tiempo — los que la ayudaron a seguir viendo la pantalla sin encogerse.';
+  } else if(avg >= 35){
+    title = 'Lo que quedó a medias';
+    body = 'Algunos días Cami pudo más que el ruido. Otros días, el ruido pudo más. No hay una moraleja limpia — así se siente de verdad.';
+  } else {
+    title = 'Lo que no se dijo';
+    body = 'Nadie escribió "esto está mal". Tampoco hizo falta: el celular boca abajo, los días cada vez más cortos en el chat. Eso es lo que se mostró, no lo que se explicó.';
+  }
+  el('endTitle').textContent = title;
+  el('endBody').textContent = body + `  ·  enfoque promedio: ${Math.round(avg)}`;
+  el('ov-ending').classList.remove('hidden');
+}
+
+/* ================= CONTROLS ================= */
+function moveLeft(){ setPlayerLane(playerLane-1); }
+function moveRight(){ setPlayerLane(playerLane+1); }
+
+document.addEventListener('keydown', e=>{
+  if(!running) return;
+  if(e.key==='ArrowLeft' || e.key==='a' || e.key==='A') moveLeft();
+  if(e.key==='ArrowRight' || e.key==='d' || e.key==='D') moveRight();
+});
+el('btnLeft').addEventListener('click', moveLeft);
+el('btnRight').addEventListener('click', moveRight);
+
+function beginTier(tier){
+  currentTier = tier;
+  currentDays = TIERS[tier];
+  dayIndex = 0;
+  focus = 50;
+  dayEndFocusHistory = [];
+  startDay();
+}
+
+document.querySelectorAll('.diff-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> beginTier(btn.dataset.tier));
+});
+el('btnNextDay').addEventListener('click', ()=>{ dayIndex++; startDay(); });
+el('btnRestart').addEventListener('click', ()=>{
+  el('ov-ending').classList.add('hidden');
+  el('ov-title').classList.remove('hidden');
+});
+
+window.addEventListener('resize', ()=> setPlayerLane(playerLane));
+setPlayerLane(1);
+updateFocusUI();
+</script>
+</body>
+</html>

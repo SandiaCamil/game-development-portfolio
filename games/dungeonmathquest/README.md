@@ -8,7 +8,6 @@
 ![Versiones](https://img.shields.io/badge/Versiones_documentadas-3-3ddc97?style=flat-square)
 
 [![Jugar versión final](https://img.shields.io/badge/JUGAR_VERSIÓN_FINAL-00f5d4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/)
-[![Ver código](https://img.shields.io/badge/VER_CÓDIGO-2a2450?style=for-the-badge)](index.html)
 
 [Volver al portafolio](../../README.md)
 
@@ -16,16 +15,13 @@
 
 ---
 
-## El caso de negocio
+## En qué se enfoca
 
-Esta práctica planteaba el siguiente problema: *GameEdu*, una empresa dedicada a soluciones educativas mediante videojuegos, recibió el encargo de una institución de secundaria de crear un juego para repasar operaciones aritméticas de forma entretenida. El cliente pedía específicamente:
+Este juego nace para resolver un problema puntual: repasar operaciones aritméticas combinadas (suma, resta, multiplicación, división y paréntesis) suele ser tedioso cuando se hace con ejercicios sueltos en papel. La idea fue convertir ese repaso en una razón para seguir jugando — 10 niveles con temática de aventura de plataformas, dirigidos a estudiantes de secundaria, donde resolver bien la cuenta es literalmente lo que te deja avanzar de plataforma.
 
-- Dirigido a estudiantes de 1ro de secundaria.
-- Temática de aventura de plataformas inspirada en videojuegos clásicos.
-- 10 preguntas de suma, resta, multiplicación y división, con 4 alternativas cada una.
-- 1 punto por respuesta correcta, puntuación final sobre 10.
-- Feedback inmediato de si la respuesta es correcta o incorrecta.
-- Funcionar directamente en un navegador, generado mediante IA a partir de un prompt.
+- Preguntas de opción múltiple integradas en el mapa (cofres), no en una lista aparte.
+- Feedback inmediato: se sabe al instante si el cofre elegido tenía la respuesta correcta.
+- Puntuación final sobre 10, con un rango narrativo según el desempeño (de "Sigue practicando" a "Gran Maestro del Reino").
 
 ## Sobre el juego
 
@@ -67,24 +63,21 @@ También tiene botones táctiles en pantalla para jugar desde el celular.
 ## Historial de versiones
 
 <table>
-<tr><th align="left">Versión</th><th align="left">Qué cambió</th><th align="center">Jugar</th><th align="center">Código</th></tr>
+<tr><th align="left">Versión</th><th align="left">Qué cambió</th><th align="center">Jugar</th></tr>
 <tr>
 <td><b>v1 — Quiz</b></td>
 <td>Prototipo inicial: sin plataformas ni movimiento del personaje. Se mostraba la operación y 4 posibles resultados para elegir. Sirvió para validar la lógica de generación de operaciones y el sistema de puntaje antes de invertir tiempo en física.</td>
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/versions/v1-quiz.html">Jugar</a></td>
-<td align="center"><a href="versions/v1-quiz.html">Ver</a></td>
 </tr>
 <tr>
 <td><b>v2 — Nivel plano</b></td>
 <td>Primer entorno de plataformas real: el personaje ya se mueve y salta físicamente, y hay que tocar el cofre correcto entre varios distribuidos en el nivel. Todos los cofres están al ras del suelo — el salto existe pero el diseño de nivel aún no lo exige.</td>
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/versions/v2-flatlevel.html">Jugar</a></td>
-<td align="center"><a href="versions/v2-flatlevel.html">Ver</a></td>
 </tr>
 <tr>
 <td><b>v3 — Final</b></td>
 <td>Se agregaron plataformas a distinta altura, obligando a saltar entre ellas. Se sumaron cofres falsos como factor de riesgo y controles táctiles para jugar desde el celular.</td>
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/">Jugar</a></td>
-<td align="center"><a href="index.html">Ver</a></td>
 </tr>
 </table>
 

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gotitas Mágicas 💧 — Salva a Ajolí</title>
+<style>
+  :root{
+    --lavanda: #E4D6F7;
+    --lavanda-deep: #B79CE0;
+    --menta: #C9F2E4;
+    --menta-deep: #7FD9BE;
+    --rosa: #FFD1E6;
+    --rosa-deep: #FF9FC7;
+    --amarillo: #FFF0B8;
+    --amarillo-deep: #FFD966;
+    --texto: #5B4B7A;
+    --texto-suave: #8776A6;
+    --blanco-crema: #FFFBF5;
+    --sombra: rgba(91,75,122,0.18);
+    --font-display: 'Baloo 2', 'Comic Sans MS', cursive, sans-serif;
+    --font-body: 'Quicksand', 'Trebuchet MS', sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@400;600;700&display=swap');
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0; height:100%; overflow:hidden;
+    font-family: var(--font-body);
+    background: linear-gradient(160deg, var(--lavanda) 0%, var(--menta) 55%, var(--rosa) 100%);
+    color: var(--texto);
+  }
+
+  #stage{
+    position:relative;
+    width:100%;
+    height:100vh;
+    max-width: 720px;
+    margin: 0 auto;
+    overflow:hidden;
+    background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.55), transparent 60%);
+  }
+
+  /* floating background clouds/bubbles */
+  .bg-deco{
+    position:absolute; pointer-events:none; opacity:0.55; filter: blur(0.3px);
+    animation: drift linear infinite;
+  }
+  @keyframes drift{
+    from{ transform: translateX(-40px); }
+    to{ transform: translateX(40px); }
+  }
+
+  /* ---------- HUD ---------- */
+  #hud{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    padding: 14px 16px;
+    z-index: 20;
+    pointer-events:none;
+  }
+  .hud-card{
+    background: rgba(255,251,245,0.85);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 18px;
+    padding: 8px 14px;
+    box-shadow: 0 4px 0 var(--sombra);
+    font-family: var(--font-display);
+    font-weight:700;
+    display:flex; align-items:center; gap:8px;
+    backdrop-filter: blur(3px);
+  }
+  #hearts{ font-size: 20px; letter-spacing: 2px; }
+  #hearts .heart{ display:inline-block; transition: transform .25s; }
+  #hearts .lost{ opacity:0.25; transform: scale(0.8); }
+
+  #score-card{ flex-direction:column; align-items:flex-end; gap:2px; }
+  #score-val{ font-size: 22px; color: var(--lavanda-deep); }
+  #score-label{ font-size:11px; font-weight:600; color: var(--texto-suave); font-family: var(--font-body); }
+
+  #level-tag{
+    position:absolute; top:66px; left:50%; transform:translateX(-50%);
+    background: var(--amarillo-deep); color:#6B4A00; font-family:var(--font-display); font-weight:700;
+    padding: 4px 16px; border-radius: 20px; font-size:13px; box-shadow: 0 3px 0 rgba(0,0,0,0.08);
+    z-index: 20; opacity:0; transition: opacity .4s;
+  }
+
+  /* ---------- Companion + meter ---------- */
+  #companion-wrap{
+    position:absolute; bottom: 10px; left: 12px; z-index: 20;
+    display:flex; align-items:center; gap:10px;
+    background: rgba(255,251,245,0.85);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 20px; padding: 6px 12px 6px 6px;
+    box-shadow: 0 4px 0 var(--sombra);
+  }
+  #ajoli{
+    font-size: 34px;
+    animation: bob 2.2s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{ transform: translateY(0) rotate(-3deg);} 50%{ transform: translateY(-6px) rotate(3deg);} }
+  #meter-outer{
+    width: 120px; height: 14px; background: #EFE7FA; border-radius: 10px; overflow:hidden;
+    border: 2px solid #fff;
+  }
+  #meter-inner{
+    height:100%; width:0%; border-radius: 10px;
+    background: linear-gradient(90deg, var(--menta-deep), var(--lavanda-deep));
+    transition: width .3s ease;
+  }
+  #meter-label{ font-size:10px; font-weight:700; color:var(--texto-suave); margin-top:2px; }
+
+  /* ---------- basket / net ---------- */
+  #basket{
+    position:absolute; bottom: 4px; width: 64px; height: 64px;
+    font-size: 46px; text-align:center; line-height:64px;
+    transform: translateX(-50%);
+    z-index: 15; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.15));
+    transition: transform .05s linear;
+  }
+
+  /* ---------- falling items ---------- */
+  .item{
+    position:absolute; font-size: 34px; user-select:none; cursor:pointer;
+    z-index: 10; filter: drop-shadow(0 3px 2px rgba(0,0,0,0.12));
+  }
+  .pop{
+    position:absolute; font-family: var(--font-display); font-weight:800; font-size:18px;
+    pointer-events:none; z-index: 25; animation: floatUp .8s ease-out forwards;
+  }
+  @keyframes floatUp{
+    0%{ opacity:1; transform: translateY(0) scale(1); }
+    100%{ opacity:0; transform: translateY(-50px) scale(1.3); }
+  }
+
+  /* ---------- tip toast ---------- */
+  #tip-toast{
+    position:absolute; left:50%; bottom: 92px; transform: translateX(-50%) translateY(20px);
+    max-width: 86%; background: var(--blanco-crema); border:2px solid var(--rosa-deep);
+    border-radius: 16px; padding: 8px 14px; font-size: 13px; font-weight:600;
+    text-align:center; opacity:0; transition: all .4s ease; z-index: 22; box-shadow: 0 4px 0 var(--sombra);
+  }
+  #tip-toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- overlays ---------- */
+  .overlay{
+    position:absolute; inset:0; z-index:50;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background: linear-gradient(160deg, rgba(228,214,247,0.97), rgba(201,242,228,0.97));
+    text-align:center; padding: 24px;
+  }
+  .hidden{ display:none !important; }
+
+  .title-main{
+    font-family: var(--font-display); font-weight:800; font-size: clamp(28px,7vw,42px);
+    color: var(--lavanda-deep); margin: 6px 0 0;
+    text-shadow: 0 3px 0 #fff;
+  }
+  .subtitle{ font-size: 14px; color: var(--texto-suave); max-width: 340px; margin: 8px 0 22px; font-weight:600; }
+  .big-emoji{ font-size: 70px; animation: bob 2.4s ease-in-out infinite; }
+
+  .diff-row{ display:flex; gap:10px; margin-bottom: 22px; flex-wrap:wrap; justify-content:center; }
+  .diff-btn{
+    font-family: var(--font-display); font-weight:700; font-size:14px;
+    border: none; border-radius:16px; padding: 12px 18px; cursor:pointer;
+    background: #fff; color: var(--texto); box-shadow: 0 4px 0 var(--sombra);
+    transition: transform .12s;
+  }
+  .diff-btn:active{ transform: translateY(3px); box-shadow: 0 1px 0 var(--sombra); }
+  .diff-btn.selected{ background: var(--rosa-deep); color:#fff; }
+  .diff-btn small{ display:block; font-family: var(--font-body); font-weight:600; font-size:10px; opacity:0.85; }
+
+  .cta-btn{
+    font-family: var(--font-display); font-weight:800; font-size:18px;
+    border:none; border-radius:20px; padding: 14px 34px; cursor:pointer;
+    background: linear-gradient(135deg, var(--menta-deep), var(--lavanda-deep)); color:#fff;
+    box-shadow: 0 5px 0 var(--sombra); transition: transform .12s;
+  }
+  .cta-btn:active{ transform: translateY(4px); box-shadow: 0 1px 0 var(--sombra); }
+
+  .legend{
+    display:flex; gap:16px; margin-top:20px; font-size:12px; font-weight:600; flex-wrap:wrap; justify-content:center; max-width:360px;
+  }
+  .legend span{ display:flex; align-items:center; gap:4px; }
+
+  .result-stats{
+    background:#fff; border-radius: 20px; padding: 16px 24px; margin: 14px 0 20px;
+    box-shadow: 0 4px 0 var(--sombra); font-family: var(--font-display); font-size: 15px;
+  }
+  .result-stats div{ margin: 4px 0; }
+  #final-emoji{ font-size: 60px; }
+  #final-tip{ max-width: 360px; font-size:13px; color:var(--texto-suave); font-weight:600; margin-bottom: 18px; }
+
+  @media (max-width:380px){
+    .hud-card{ padding:6px 10px; }
+    #score-val{ font-size:18px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+  <!-- background decorations -->
+  <div class="bg-deco" style="top:8%; left:10%; font-size:40px; animation-duration:9s;">☁️</div>
+  <div class="bg-deco" style="top:16%; left:70%; font-size:30px; animation-duration:12s;">☁️</div>
+  <div class="bg-deco" style="top:4%; left:45%; font-size:22px; animation-duration:7s;">✨</div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-card">
+      <div id="hearts"></div>
+    </div>
+    <div class="hud-card" id="score-card">
+      <div id="score-val">0</div>
+      <div id="score-label">gotitas mágicas 💧</div>
+    </div>
+  </div>
+  <div id="level-tag">Nivel 1</div>
+
+  <!-- tip toast -->
+  <div id="tip-toast"></div>
+
+  <!-- companion -->
+  <div id="companion-wrap">
+    <div id="ajoli">🦎</div>
+    <div>
+      <div id="meter-outer"><div id="meter-inner"></div></div>
+      <div id="meter-label">río de Ajolí</div>
+    </div>
+  </div>
+
+  <!-- basket controlled by cursor -->
+  <div id="basket">🧺</div>
+
+  <!-- ===================== START SCREEN ===================== -->
+  <div class="overlay" id="screen-start">
+    <div class="big-emoji">🦎💧</div>
+    <h1 class="title-main">Gotitas Mágicas</h1>
+    <p class="subtitle">Ayuda a <b>Ajolí</b>, tu ajolotito mágico, a limpiar su río recolectando gotitas de agua ahorrada. ¡Cada gota cuenta, sin culpa, solo amor! 🌿</p>
+
+    <div class="diff-row" id="diff-row">
+      <button class="diff-btn" data-speed="0.7" data-spawn="1350">🌱 Fácil<small>ritmo relax</small></button>
+      <button class="diff-btn selected" data-speed="1" data-spawn="1000">🌸 Medio<small>equilibrado</small></button>
+      <button class="diff-btn" data-speed="1.4" data-spawn="720">🔥 Difícil<small>reto cozy</small></button>
+    </div>
+
+    <button class="cta-btn" id="btn-start">Jugar ✨</button>
+
+    <div class="legend">
+      <span>💧 +5 gotita</span>
+      <span>🌟 +15 mágica</span>
+      <span>🚰 -1 vida</span>
+      <span>🧴 -1 vida</span>
+    </div>
+  </div>
+
+  <!-- ===================== LEVEL UP TOAST ===================== -->
+  <!-- (uses #level-tag) -->
+
+  <!-- ===================== GAME OVER / WIN SCREEN ===================== -->
+  <div class="overlay hidden" id="screen-end">
+    <div id="final-emoji">🏆</div>
+    <h1 class="title-main" id="final-title">¡Lo lograste!</h1>
+    <div class="result-stats">
+      <div>💧 Gotitas recolectadas: <span id="final-score">0</span></div>
+      <div>🧼 Nivel alcanzado: <span id="final-level">1</span></div>
+      <div>🦎 Estado de Ajolí: <span id="final-mood">Feliz</span></div>
+    </div>
+    <p id="final-tip">Tip real: cerrar la llave mientras te enjabonas en la ducha puede ahorrar hasta 90 litros de agua por semana.</p>
+    <button class="cta-btn" id="btn-retry">Jugar otra vez 🔁</button>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const stage = document.getElementById('stage');
+  const basket = document.getElementById('basket');
+  const heartsEl = document.getElementById('hearts');
+  const scoreVal = document.getElementById('score-val');
+  const meterInner = document.getElementById('meter-inner');
+  const ajoliEl = document.getElementById('ajoli');
+  const levelTag = document.getElementById('level-tag');
+  const tipToast = document.getElementById('tip-toast');
+  const screenStart = document.getElementById('screen-start');
+  const screenEnd = document.getElementById('screen-end');
+  const diffRow = document.getElementById('diff-row');
+  const btnStart = document.getElementById('btn-start');
+  const btnRetry = document.getElementById('btn-retry');
+
+  const GOOD_ITEMS = [
+    {emoji:'💧', points:5, weight:6},
+    {emoji:'🌱', points:8, weight:2},
+    {emoji:'🌟', points:15, weight:1, magic:true}
+  ];
+  const BAD_ITEMS = [
+    {emoji:'🚰', bad:true, weight:3},
+    {emoji:'🧴', bad:true, weight:2},
+    {emoji:'🫧', bad:true, weight:2}
+  ];
+
+  const TIPS = [
+    "Cerrar la llave al enjabonarte ahorra hasta 90L por semana 🧼",
+    "Duchas de 5 minutos = río feliz para Ajolí 🚿⏱️",
+    "Regar plantas en la noche evita que el agua se evapore 🌙🌿",
+    "Un balde para lavar el auto ahorra +100L vs manguera abierta 🚗",
+    "Revisa si algún grifo gotea: una gota por segundo = 12L al día 💧",
+    "Lavar ropa con carga completa ahorra agua y energía 👕"
+  ];
+
+  let state = null;
+
+  function resetState(cfg){
+    return {
+      speed: cfg.speed,
+      spawnMs: cfg.spawn,
+      lives: 3,
+      score: 0,
+      level: 1,
+      meter: 0,
+      running: false,
+      basketX: stage.clientWidth/2,
+      spawnTimer: null,
+      loopId: null,
+      elapsedMs: 0,
+      lastTipTime: 0,
+      startTime: 0,
+      won: false
+    };
+  }
+
+  function renderHearts(){
+    let html = '';
+    for(let i=0;i<3;i++){
+      html += `<span class="heart ${i < state.lives ? '' : 'lost'}">❤️</span>`;
+    }
+    heartsEl.innerHTML = html;
+  }
+
+  function renderMeter(){
+    meterInner.style.width = Math.min(100, state.meter) + '%';
+    if(state.meter >= 100) ajoliEl.textContent = '🦎🌸';
+    else if(state.meter >= 60) ajoliEl.textContent = '🦎✨';
+    else ajoliEl.textContent = '🦎';
+  }
+
+  function weightedPick(list){
+    const total = list.reduce((s,i)=>s+i.weight,0);
+    let r = Math.random()*total;
+    for(const item of list){
+      if(r < item.weight) return item;
+      r -= item.weight;
+    }
+    return list[0];
+  }
+
+  function showTip(){
+    const now = Date.now();
+    if(now - state.lastTipTime < 6000) return;
+    state.lastTipTime = now;
+    const tip = TIPS[Math.floor(Math.random()*TIPS.length)];
+    tipToast.textContent = tip;
+    tipToast.classList.add('show');
+    setTimeout(()=> tipToast.classList.remove('show'), 3200);
+  }
+
+  function showLevelTag(text){
+    levelTag.textContent = text;
+    levelTag.style.opacity = 1;
+    setTimeout(()=> levelTag.style.opacity = 0, 1600);
+  }
+
+  function popText(x,y,text,color){
+    const p = document.createElement('div');
+    p.className='pop';
+    p.style.left = x+'px';
+    p.style.top = y+'px';
+    p.style.color = color;
+    p.textContent = text;
+    stage.appendChild(p);
+    setTimeout(()=>p.remove(),800);
+  }
+
+  function spawnItem(){
+    if(!state.running) return;
+    const isBad = Math.random() < 0.32;
+    const pool = isBad ? BAD_ITEMS : GOOD_ITEMS;
+    const def = weightedPick(pool);
+    const el = document.createElement('div');
+    el.className='item';
+    el.textContent = def.emoji;
+    const stageW = stage.clientWidth;
+    const x = 24 + Math.random()*(stageW-48);
+    el.style.left = x+'px';
+    el.style.top = '-40px';
+    stage.appendChild(el);
+
+    const baseSpeed = (1.1 + Math.random()*0.6) * state.speed * (1 + (state.level-1)*0.22);
+    let y = -40;
+    let caught = false;
+
+    function fall(){
+      if(!state.running){ el.remove(); return; }
+      y += baseSpeed * 4.2;
+      el.style.top = y+'px';
+
+      // collision with basket
+      const basketRect = basket.getBoundingClientRect();
+      const itemRect = el.getBoundingClientRect();
+      const overlap = !(itemRect.right < basketRect.left+10 ||
+                         itemRect.left > basketRect.right-10 ||
+                         itemRect.bottom < basketRect.top+10 ||
+                         itemRect.top > basketRect.bottom-6);
+
+      if(overlap && !caught){
+        caught = true;
+        handleCatch(def, x, y);
+        el.remove();
+        return;
+      }
+
+      if(y > stage.clientHeight + 20){
+        el.remove();
+        return;
+      }
+      requestAnimationFrame(fall);
+    }
+    requestAnimationFrame(fall);
+
+    // also allow tap/click catch (mobile friendly)
+    el.addEventListener('click', ()=>{
+      if(caught || !state.running) return;
+      caught = true;
+      handleCatch(def, x, y);
+      el.remove();
+    });
+  }
+
+  function handleCatch(def, x, y){
+    if(def.bad){
+      state.lives -= 1;
+      popText(x, y, '💔', '#FF6B9C');
+      renderHearts();
+      if(state.lives <= 0){
+        endGame(false);
+      }
+    } else {
+      state.score += def.points;
+      state.meter += def.points * 0.6;
+      scoreVal.textContent = state.score;
+      popText(x, y, '+'+def.points, def.magic ? '#B79CE0' : '#4FBF9A');
+      renderMeter();
+      showTip();
+
+      if(state.meter >= 100){
+        state.meter = 0;
+        state.level += 1;
+        state.spawnMs = Math.max(340, state.spawnMs*0.82);
+        showLevelTag('¡Nivel '+state.level+'! 🌟');
+        if(state.level >= 4){
+          endGame(true);
+        }
+      }
+    }
+  }
+
+  function spawnLoop(){
+    spawnItem();
+    if(state.running){
+      state.spawnTimer = setTimeout(spawnLoop, state.spawnMs);
+    }
+  }
+
+  function moveBasket(clientX){
+    const rect = stage.getBoundingClientRect();
+    let x = clientX - rect.left;
+    x = Math.max(30, Math.min(rect.width-30, x));
+    state.basketX = x;
+    basket.style.left = x+'px';
+  }
+
+  stage.addEventListener('mousemove', (e)=>{ if(state && state.running) moveBasket(e.clientX); });
+  stage.addEventListener('touchmove', (e)=>{
+    if(state && state.running && e.touches[0]){ moveBasket(e.touches[0].clientX); e.preventDefault(); }
+  }, {passive:false});
+
+  function startGame(cfg){
+    state = resetState(cfg);
+    state.running = true;
+    screenStart.classList.add('hidden');
+    screenEnd.classList.add('hidden');
+    renderHearts();
+    renderMeter();
+    scoreVal.textContent = '0';
+    ajoliEl.textContent = '🦎';
+    basket.style.left = (stage.clientWidth/2)+'px';
+    showLevelTag('Nivel 1 🌱');
+    spawnLoop();
+  }
+
+  function endGame(won){
+    state.running = false;
+    clearTimeout(state.spawnTimer);
+    document.querySelectorAll('.item').forEach(i=>i.remove());
+
+    document.getElementById('final-score').textContent = state.score;
+    document.getElementById('final-level').textContent = state.level;
+    document.getElementById('final-title').textContent = won ? '¡Río limpio, Ajolí feliz!' : '¡Casi lo logras!';
+    document.getElementById('final-emoji').textContent = won ? '🏆🦎' : '🥲🦎';
+    document.getElementById('final-mood').textContent = won ? 'Radiante ✨' : (state.score > 60 ? 'Contento 🌿' : 'Esperanzado 🌱');
+    document.getElementById('final-tip').textContent = TIPS[Math.floor(Math.random()*TIPS.length)];
+    screenEnd.classList.remove('hidden');
+  }
+
+  // difficulty selection
+  let chosen = {speed:1, spawn:1000};
+  diffRow.querySelectorAll('.diff-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      diffRow.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      chosen = { speed: parseFloat(btn.dataset.speed), spawn: parseInt(btn.dataset.spawn) };
+    });
+  });
+
+  btnStart.addEventListener('click', ()=> startGame(chosen));
+  btnRetry.addEventListener('click', ()=> {
+    screenEnd.classList.add('hidden');
+    screenStart.classList.remove('hidden');
+  });
+
+})();
+</script>
+
+</body>
+</html>

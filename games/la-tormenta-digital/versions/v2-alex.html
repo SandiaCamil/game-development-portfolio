@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex: La Tormenta Digital</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background-color: #030712;
+            color: #f3f4f6;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .app-wrapper {
+            position: relative;
+            z-index: 2;
+            height: 96vh;
+            margin: 2vh auto;
+            max-width: 1400px;
+        }
+
+        .main-card {
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(56, 189, 248, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.2);
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .sidebar-panel {
+            background: rgba(30, 41, 59, 0.6);
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .story-title { font-size: 1.8rem; font-weight: 800; color: #38bdf8; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+        .story-desc { font-size: 1.1rem; line-height: 1.6; color: #cbd5e1; }
+
+        .progress-bar-custom {
+            height: 16px;
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+
+        .feed-panel {
+            height: calc(100% - 65px);
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scroll-behavior: smooth;
+        }
+
+        .post-card {
+            background: #1e293b;
+            border-radius: 14px;
+            padding: 18px 22px;
+            border-left: 6px solid #38bdf8;
+            transition: all 0.2s ease;
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .post-card.hater { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.25); border-left-width: 6px; }
+        .post-card.doxx { border-left-color: #f59e0b; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); border-left-width: 6px; }
+        .post-card.support { border-left-color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.25); border-left-width: 6px; }
+        .post-card.info { border-left-color: #38bdf8; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); }
+
+        .post-author { font-size: 1.15rem; font-weight: 800; color: #fff; }
+        .post-tag { font-size: 0.95rem; color: #94a3b8; font-weight: 500; }
+        .post-content { font-size: 1.15rem; font-weight: 600; line-height: 1.4; color: #f8fafc; margin: 10px 0; }
+
+        .btn-action {
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+        .btn-action:hover { transform: translateY(-2px); }
+
+        .full-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 7, 18, 0.97);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .guide-box {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="container-fluid app-wrapper px-4">
+    <div class="main-card row g-0 position-relative">
+        
+        <!-- MODAL DE INICIO CON GUÍA -->
+        <div id="start-overlay" class="full-overlay text-center">
+            <div style="max-width: 850px;" class="my-auto">
+                <i class="bi bi-shield-slash-fill text-info display-2 mb-2"></i>
+                <h1 class="fw-bold text-white display-5 mb-2">ALEX: LA TORMENTA DIGITAL</h1>
+                <p class="text-secondary fs-5 mb-3">Guía rápida de juego: Aprende a gestionar el acoso antes de empezar.</p>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="guide-box">
+                            <h6 class="text-info fw-bold mb-2"><i class="bi bi-palette-fill me-1"></i> Códigos de Color:</h6>
+                            <p class="mb-1 text-light fs-6"><span class="badge bg-danger me-1">Rojo</span> Comentarios Tóxicos / Burlas</p>
+                            <p class="mb-1 text-light fs-6"><span class="badge bg-warning text-dark me-1">Amarillo</span> Doxxing / Amenazas Graves</p>
+                            <p class="mb-1 text-light fs-6"><span class="badge bg-success me-1">Verde</span> Mensajes de Apoyo Verdadero</p>
+                            <p class="mb-0 text-light fs-6"><span class="badge bg-info text-dark me-1">Azul</span> Consejos de Prevención</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="guide-box">
+                            <h6 class="text-info fw-bold mb-2"><i class="bi bi-sliders me-1"></i> Acciones Disponibles:</h6>
+                            <p class="mb-1 text-light fs-6"><strong>Bloquear:</strong> Frena el odio (+5% Salud).</p>
+                            <p class="mb-1 text-light fs-6"><strong>Evidencia:</strong> Guarda pruebas para el colegio (+10% Salud).</p>
+                            <p class="mb-1 text-danger fs-6"><strong>Responder:</strong> ¡Cuidado! Te resta salud (-25%).</p>
+                            <p class="mb-0 text-light fs-6"><strong>Agradecer:</strong> Recarga tu energía con amigos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-info btn-lg px-5 py-3 rounded-pill fw-bold text-white shadow-lg fs-4" onclick="startGame()">
+                    <i class="bi bi-controller me-2"></i> ¡Entendido, Empezar!
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL DE CAMBIO DE DÍA -->
+        <div id="day-overlay" class="full-overlay text-center d-none">
+            <div style="max-width: 800px;">
+                <span class="badge bg-info text-dark fs-5 px-4 py-2 rounded-pill fw-bold mb-3" id="transition-badge">Día Finalizado</span>
+                <h2 id="transition-title" class="fw-bold text-white display-5 mb-3"></h2>
+                <div class="p-4 bg-dark bg-opacity-75 rounded-4 border border-secondary mb-4 text-start">
+                    <p id="transition-story" class="fs-5 text-light mb-0" style="line-height: 1.8;"></p>
+                </div>
+                <button class="btn btn-success btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg fs-4" onclick="startNextDay()">
+                    <i class="bi bi-play-circle-fill me-2"></i> Continuar al Siguiente Día
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL DE FIN DE JUEGO -->
+        <div id="end-overlay" class="full-overlay text-center d-none">
+            <div style="max-width: 750px;">
+                <i id="end-icon" class="display-1 mb-3"></i>
+                <h2 id="end-title" class="fw-bold display-4 mb-3"></h2>
+                <p id="end-desc" class="text-secondary fs-4 mb-4"></p>
+                <button class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold fs-4" onclick="restartGame()">
+                    <i class="bi bi-arrow-counterclockwise me-2"></i> Reiniciar Historia
+                </button>
+            </div>
+        </div>
+
+        <!-- PANEL IZQUIERDO -->
+        <div class="col-lg-5 sidebar-panel">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-info text-dark fs-5 px-4 py-2 rounded-pill fw-bold" id="ui-day-badge">
+                        Día 1 de 5
+                    </span>
+                </div>
+                <h2 class="story-title mb-3" id="ui-day-title">Iniciando...</h2>
+                <p class="story-desc mb-4" id="ui-day-desc">Cargando...</p>
+
+                <div class="bg-dark p-4 rounded-4 border border-secondary border-opacity-25 mb-4 shadow">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-light fs-5 fw-bold text-uppercase"><i class="bi bi-heart-pulse-fill text-danger me-2"></i> Resistencia Emocional</span>
+                        <span class="fw-bold text-white fs-4" id="hp-text">100%</span>
+                    </div>
+                    <div class="progress bg-black" style="height: 16px;">
+                        <div id="hp-bar" class="progress-bar progress-bar-custom bg-success" style="width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 bg-secondary bg-opacity-10 rounded-4 border border-secondary border-opacity-20">
+                <h6 class="text-info fw-bold mb-2"><i class="bi bi-shield-check me-2"></i> Recordatorio:</h6>
+                <ul class="text-secondary fs-6 mb-0 ps-3">
+                    <li><strong>Bloquea:</strong> Corta el paso al odio anónimo.</li>
+                    <li><strong>Captura:</strong> Registra datos de acoso grave.</li>
+                    <li><strong>Apóyate:</strong> Valora a tus verdaderos amigos.</li>
+                    <li><strong>No enganches:</strong> Responder consume tu salud.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO -->
+        <div class="col-lg-7 p-0 h-100">
+            <div class="p-3 bg-dark bg-opacity-80 border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+                <span class="text-danger fs-6 fw-bold"><i class="bi bi-broadcast me-2"></i> EN VIVO — FEED DIGITAL</span>
+                <span class="badge bg-secondary text-white fs-6">Perfil de @Alex_Dev</span>
+            </div>
+            <div id="feed-container" class="feed-panel">
+                <!-- Comentarios dinámicos -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// CANVA FONDO
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.8 - 0.4;
+        this.speedY = Math.random() * 0.8 - 0.4;
+        this.color = 'rgba(56, 189, 248, ' + (Math.random() * 0.4 + 0.1) + ')';
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+function animateCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animateCanvas);
+}
+animateCanvas();
+
+// NARRATIVA COMPLETA
+const STAGES = [
+    {
+        day: 1,
+        title: "Día 1: La Chispa en Pasillos",
+        desc: "Alex publica las fotos de su prototipo de sensor ambiental. Lo que empezó como entusiasmo se convierte en el blanco de burlas en la escuela.",
+        transitionStory: "El primer día cerró con las primeras risas pesadas en el pasillo. Alex intentó restar importancia, pero al llegar a su casa vio que el post ya tenía decenas de compartidos burlones.",
+        events: [
+            { id: 101, user: "Mateo_V", tag: "@mateo_v", text: "Zzzzzz borra la cuenta mano 💀", type: "hater" },
+            { id: 102, user: "Laura_Tech", tag: "@laura_t", text: "¡Está genial la placa! No hagas caso 🔥", type: "support" },
+            { id: 103, user: "Anon_School", tag: "@anon99", text: "Cero aura el nerd este... da pena ajena 📉", type: "hater" },
+            { id: 104, user: "Alerta_Prevención", tag: "@educacion_digital", text: "💡 CONSEJO: El acoso digital crece cuando la gente comparte por diversión. No seas cómplice.", type: "info" },
+            { id: 105, user: "Carlos_G", tag: "@carlos_g", text: "Ignora a los tontos de siempre Alex, tu proyecto promete.", type: "support" }
+        ]
+    },
+    {
+        day: 2,
+        title: "Día 2: La Funa Escolar",
+        desc: "Crean un grupo anónimo en redes para difundir rumores y falsas acusaciones sobre el proyecto de Alex.",
+        transitionStory: "Durante la noche, un grupo anónimo publicó un montaje diciendo que Alex robó su proyecto de internet. Las notificaciones no dejaron de sonar durante toda la madrugada.",
+        events: [
+            { id: 201, user: "Troll_Fake", tag: "@fake_news", text: "Ese código es robado de GitHub, tremendo fraude 🤡", type: "hater" },
+            { id: 202, user: "Sofi_Amiga", tag: "@sofi_a", text: "Yo vi cuando Alex armó los circuitos. ¡Dejen de inventar!", type: "support" },
+            { id: 203, user: "Shadow_User", tag: "@shadow", text: "Ya sabemos tu salón bro, mañana nos vemos en el recreo...", type: "doxx" },
+            { id: 204, user: "Ciber_Seguridad", tag: "@ciber_info", text: "⚠️ ATENCIÓN: Las amenazas o difusión de datos personales (doxxing) son sancionables por la escuela.", type: "info" },
+            { id: 205, user: "Nerd_Hunter", tag: "@hunter", text: "Retírate de la feria de ciencias mejor, evítate la vergüenza.", type: "hater" }
+        ]
+    },
+    {
+        day: 3,
+        title: "Día 3: El Pico de la Tormenta",
+        desc: "Acoso coordinado y saturación de notificaciones. La presión emocional está en su punto más crítico.",
+        transitionStory: "Alex habló con su familia y guardó capturas de las amenazas. Decidieron presentar el caso a la dirección del colegio al día siguiente.",
+        events: [
+            { id: 301, user: "Bot_Squad", tag: "@bot_1", text: "DESINSTALA LA VIDA, MENOS DE 0 DE AURA 📉", type: "hater" },
+            { id: 302, user: "Profe_Martín", tag: "@prof_martin", text: "Alex, mañana a primera hora revisamos esto en la dirección. Todo estará bien.", type: "support" },
+            { id: 303, user: "Spammer_99", tag: "@spam_99", text: "LA BASURA VA EN EL BASURERO 🗑️🗑️🗑️", type: "hater" },
+            { id: 304, user: "Guía_Convivencia", tag: "@aula_segura", text: "🛡️ ESTRATEGIA: Bloquear y capturar evidencias te da el control sin desgastarte.", type: "info" },
+            { id: 305, user: "Elena_Hermana", tag: "@elena_h", text: "¡Estamos contigo hermanito! No estás solo.", type: "support" }
+        ]
+    },
+    {
+        day: 4,
+        title: "Día 4: El Cambio de Marea",
+        desc: "La escuela interviene. Se identifican las cuentas falsas y varios compañeros empiezan a alzar la voz a favor de Alex.",
+        transitionStory: "La dirección llamó a los responsables del acoso. La comunidad escolar empezó a notar la injusticia y la verdad sobre el proyecto salió a la luz.",
+        events: [
+            { id: 401, user: "Hater_Residuo", tag: "@hater_r", text: "Igual todos saben que exageraste con acusar a la dirección... 😴", type: "hater" },
+            { id: 402, user: "Daniel_Class", tag: "@dani_c", text: "Oigan ya estuvo bueno, el proyecto de Alex está súper útil para el colegio.", type: "support" },
+            { id: 403, user: "Marta_Science", tag: "@marta_s", text: "¡Inspirador lo que hiciste Alex! Cuenta con mi voto en la feria.", type: "support" },
+            { id: 404, user: "Mateo_V", tag: "@mateo_v", text: "Perdón bro... me dejé llevar por el grupo. Ya borré mis comentarios.", type: "support" }
+        ]
+    },
+    {
+        day: 5,
+        title: "Día 5: Apoyo Masivo y Reconocimiento",
+        desc: "Alex presenta su sensor en la Feria de Ciencias. La comunidad escolar se unifica para respaldarlo.",
+        transitionStory: "Alex ganó el primer lugar en la Feria de Ciencias. El muro que antes estaba lleno de insultos se convirtió en una ola de felicitaciones y disculpas.",
+        events: [
+            { id: 501, user: "Colegio_Oficial", tag: "@colegio_news", text: "¡Felicidades a Alex por obtener el 1er lugar con su Sensor Inteligente! 🏆", type: "support" },
+            { id: 502, user: "Comunidad_Estudiantil", tag: "@estudiantes_unidos", text: "¡Un orgullo para el colegio! Fuera el ciberacoso de nuestras aulas ❤️", type: "support" },
+            { id: 503, user: "Carlos_G", tag: "@carlos_g", text: "+100,000 DE AURA PARA EL CAMPEÓN 👑🔥", type: "support" },
+            { id: 504, user: "Sofi_Amiga", tag: "@sofi_a", text: "¡SIEMPRE CONFÍE EN TI DEIDAD DE LA CIENCIA! 🎉", type: "support" }
+        ]
+    }
+];
+
+let currentDay = 0;
+let health = 100;
+let pendingEvents = [];
+let streamInterval = null;
+
+function updateUI() {
+    document.getElementById('ui-day-badge').innerText = `Día ${currentDay + 1} de 5`;
+    document.getElementById('ui-day-title').innerText = STAGES[currentDay].title;
+    document.getElementById('ui-day-desc').innerText = STAGES[currentDay].desc;
+    
+    document.getElementById('hp-text').innerText = `${health}%`;
+    const hpBar = document.getElementById('hp-bar');
+    hpBar.style.width = `${health}%`;
+
+    if (health > 60) hpBar.className = 'progress-bar progress-bar-custom bg-success';
+    else if (health > 30) hpBar.className = 'progress-bar progress-bar-custom bg-warning';
+    else hpBar.className = 'progress-bar progress-bar-custom bg-danger';
+}
+
+function startGame() {
+    document.getElementById('start-overlay').classList.add('d-none');
+    currentDay = 0;
+    health = 100;
+    loadStage();
+}
+
+function loadStage() {
+    if (streamInterval) clearInterval(streamInterval);
+    updateUI();
+    document.getElementById('feed-container').innerHTML = '';
+    pendingEvents = [...STAGES[currentDay].events];
+
+    spawnPost();
+    if (pendingEvents.length > 0) setTimeout(spawnPost, 400);
+
+    streamInterval = setInterval(() => {
+        if (pendingEvents.length > 0) {
+            spawnPost();
+        } else {
+            checkStageCompletion();
+        }
+    }, 1200);
+}
+
+function spawnPost() {
+    if (pendingEvents.length === 0) return;
+    const data = pendingEvents.shift();
+    const feed = document.getElementById('feed-container');
+
+    const card = document.createElement('div');
+    card.className = `post-card ${data.type}`;
+    card.id = `post-${data.id}`;
+
+    let btns = '';
+    if (data.type === 'support') {
+        btns = `<button class="btn btn-success btn-action shadow" onclick="action(${data.id}, 'thanks')"><i class="bi bi-heart-fill"></i> Agradecer (+10 Aura)</button>`;
+    } else if (data.type === 'info') {
+        btns = `<button class="btn btn-info btn-action text-white shadow" onclick="action(${data.id}, 'read')"><i class="bi bi-check2-circle"></i> Entendido</button>`;
+    } else {
+        btns = `
+            <button class="btn btn-danger btn-action shadow" onclick="action(${data.id}, 'block')"><i class="bi bi-shield-x"></i> Bloquear</button>
+            <button class="btn btn-warning btn-action text-dark shadow" onclick="action(${data.id}, 'evidence')"><i class="bi bi-camera-fill"></i> Evidencia</button>
+            <button class="btn btn-outline-secondary btn-action" onclick="action(${data.id}, 'engage')"><i class="bi bi-chat-left-dots-fill"></i> Responder</button>
+        `;
+    }
+
+    card.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <span class="post-author me-2">${data.user}</span>
+                <span class="post-tag">${data.tag}</span>
+            </div>
+            <span class="badge bg-dark text-secondary font-monospace">ahora</span>
+        </div>
+        <div class="post-content">${data.text}</div>
+        <div class="d-flex gap-2 flex-wrap mt-2">${btns}</div>
+    `;
+
+    feed.appendChild(card);
+    feed.scrollTop = feed.scrollHeight;
+}
+
+function action(id, type) {
+    const card = document.getElementById(`post-${id}`);
+    if (!card) return;
+
+    if (type === 'engage') {
+        health -= 25;
+        card.innerHTML += `<div class="mt-2 text-danger fs-6 fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Discutir en redes bajó tu resistencia emocional (-25%).</div>`;
+    } else if (type === 'block') {
+        health = Math.min(100, health + 5);
+        card.remove();
+    } else if (type === 'evidence') {
+        health = Math.min(100, health + 10);
+        card.style.borderColor = '#f59e0b';
+        card.innerHTML += `<div class="mt-2 text-warning fs-6 fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Evidencia registrada (+10 Aura).</div>`;
+        setTimeout(() => {
+            if (card) card.remove();
+            checkStageCompletion();
+        }, 400);
+        return;
+    } else if (type === 'thanks') {
+        health = Math.min(100, health + 10);
+        card.remove();
+    } else if (type === 'read') {
+        card.remove();
+    }
+
+    updateUI();
+
+    if (health <= 0) {
+        endGame(false);
+        return;
+    }
+
+    checkStageCompletion();
+}
+
+function checkStageCompletion() {
+    const feed = document.getElementById('feed-container');
+    if (pendingEvents.length === 0 && feed.children.length === 0) {
+        if (streamInterval) clearInterval(streamInterval);
+        
+        if (currentDay < STAGES.length - 1) {
+            showDayTransition();
+        } else {
+            endGame(true);
+        }
+    }
+}
+
+function showDayTransition() {
+    const overlay = document.getElementById('day-overlay');
+    document.getElementById('transition-badge').innerText = `Día ${currentDay + 1} Completado`;
+    document.getElementById('transition-title').innerText = STAGES[currentDay].title;
+    document.getElementById('transition-story').innerText = STAGES[currentDay].transitionStory;
+    overlay.classList.remove('d-none');
+}
+
+function startNextDay() {
+    document.getElementById('day-overlay').classList.add('d-none');
+    currentDay++;
+    loadStage();
+}
+
+function endGame(win) {
+    if (streamInterval) clearInterval(streamInterval);
+    const overlay = document.getElementById('end-overlay');
+    const icon = document.getElementById('end-icon');
+    const title = document.getElementById('end-title');
+    const desc = document.getElementById('end-desc');
+
+    overlay.classList.remove('d-none');
+    if (win) {
+        icon.className = 'bi bi-trophy-fill text-warning display-1 mb-3';
+        title.innerText = '¡VICTORIA Y APOYO TOTAL!';
+        title.className = 'fw-bold mb-3 text-success display-4';
+        desc.innerText = 'Alex superó la tormenta digital apoyándose en su familia, bloqueando el odio y registrando evidencias. Su proyecto triunfó y la comunidad escolar expulsó el acoso de las redes.';
+    } else {
+        icon.className = 'bi bi-x-circle-fill text-danger display-1 mb-3';
+        title.innerText = 'AGOTAMIENTO EMOCIONAL';
+        title.className = 'fw-bold mb-3 text-danger display-4';
+        desc.innerText = 'Enfrentarse y engancharse a discutir con haters consumió toda la salud mental de Alex. Recuerda: alimentar la agresión digital solo perjudica a quien la recibe.';
+    }
+}
+
+function restartGame() {
+    document.getElementById('end-overlay').classList.add('d-none');
+    startGame();
+}
+</script>
+</body>
+</html>

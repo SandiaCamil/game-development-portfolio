@@ -39,18 +39,17 @@ Entra a `https://github.com/SandiaCamil/game-development-portfolio` y revisa:
 
 - [ ] El README principal muestra la portada y las imágenes correctamente (a veces GitHub tarda unos segundos en cachear imágenes nuevas).
 - [ ] Los botones "JUGAR" de la portada abren el juego jugable (no código) — solo funciona después del paso 3.
-- [ ] Los botones "Código" abren el archivo fuente en la vista de GitHub — estos funcionan siempre, incluso sin Pages.
-- [ ] La tabla "Jugar cualquier versión" del README principal: probar al menos un enlace de cada juego (v1, v2, v3).
+- [ ] La tabla "Jugar cualquier versión" del README principal: probar al menos un enlace de cada juego (v1, v2, v3... hasta v6 en el caso de Sobrevive al Mes).
 
 ## 5. Si usas otro nombre de repositorio
 
-Todos los enlaces "Jugar" en `README.md`, `games/dungeonmathquest/README.md`, `games/trashketball/README.md`, `games/gotitas-magicas/README.md` y `games/verdu-chan/README.md` tienen la forma:
+Todos los enlaces "Jugar" en `README.md` y en el README de cada juego (`games/dungeonmathquest/`, `games/trashketball/`, `games/gotitas-magicas/`, `games/verdu-chan/`, `games/la-tormenta-digital/`, `games/sobrevive-al-mes/`) tienen la forma:
 
 ```
 https://sandiacamil.github.io/game-development-portfolio/...
 ```
 
-Si tu repo se llama distinto, reemplaza `game-development-portfolio` por el nombre real en esa parte de la URL (el usuario `sandiacamil` no cambia). Los botones "Código" no necesitan cambios si el repo se llama igual que el `blob/main/...` que ya está en los enlaces — si cambia el nombre, ahí también hay que actualizarlo.
+Si tu repo se llama distinto, reemplaza `game-development-portfolio` por el nombre real en esa parte de la URL (el usuario `sandiacamil` no cambia).
 
 ## 6. Pendiente opcional
 

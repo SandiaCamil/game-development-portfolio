@@ -1,0 +1,26 @@
+<svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="samBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b0e14"/>
+      <stop offset="100%" stop-color="#030407"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="200" rx="14" fill="url(#samBg)"/>
+  <rect width="480" height="200" rx="14" fill="none" stroke="#b7ff00" stroke-width="1" opacity="0.35"/>
+
+  <!-- calendario / dias -->
+  <g transform="translate(90,100)">
+    <rect x="-42" y="-38" width="84" height="76" rx="8" fill="#0b0e14" stroke="#b7ff00" stroke-width="2.5"/>
+    <line x1="-42" y1="-16" x2="42" y2="-16" stroke="#b7ff00" stroke-width="2"/>
+    <text x="-30" y="4" font-family="monospace" font-size="16" fill="#b7ff00">01</text>
+    <text x="2" y="4" font-family="monospace" font-size="16" fill="#00d0ff">14</text>
+    <text x="-30" y="26" font-family="monospace" font-size="16" fill="#ff006a">21</text>
+    <text x="2" y="26" font-family="monospace" font-size="16" fill="#ffcc00">30</text>
+  </g>
+
+  <!-- Texto con efecto glitch -->
+  <text x="185" y="80" font-family="sans-serif" font-weight="900" font-size="32" fill="#f5f3ee">SOBREVIVE</text>
+  <text x="185" y="118" font-family="sans-serif" font-weight="900" font-size="32" fill="#b7ff00">AL MES</text>
+  <text x="187" y="118" font-family="sans-serif" font-weight="900" font-size="32" fill="#ff006a" opacity="0.55">AL MES</text>
+  <text x="187" y="140" font-family="monospace" font-size="13" fill="#8894ab">Simulador financiero · 30 días</text>
+</svg>

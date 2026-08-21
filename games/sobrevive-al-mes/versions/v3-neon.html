@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobrevive al Mes - Edición Neón</title>
+<style>
+    /* ============================================================
+       TOKENS DE DISEÑO Y ESTILOS NEÓN
+    ============================================================ */
+    :root{
+        --bg:#0a0d14;
+        --surface:#151a25;
+        --surface-2:#1e2535;
+        --ink:#f5f3ee;
+        --muted:#8a90a3;
+        --line:#2a3347;
+
+        --lime:#c6ff3d;
+        --lime-dim:#8fbf2b;
+        --coral:#ff5c6c;
+        --amber:#ffc24b;
+        --blue:#5cc8ff;
+
+        --font-display: -apple-system, "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+        --font-mono: "SF Mono", "Consolas", "Menlo", "Courier New", monospace;
+
+        --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    /* Canvas de fondo */
+    #fondoCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    /* Fondo animado oscuro */
+    @keyframes moverFondo {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    html, body{
+        margin:0; padding:0; min-height:100vh;
+        background: linear-gradient(-45deg, #090c12, #111724, #0d121c, #07090e);
+        background-size: 400% 400%;
+        animation: moverFondo 15s ease infinite;
+        color:var(--ink);
+        font-family:var(--font-display);
+        -webkit-font-smoothing:antialiased;
+        font-size: 115%; 
+    }
+
+    #app{
+        max-width: 580px; 
+        margin:0 auto;
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+        padding:20px 18px 45px;
+    }
+
+    .mono{ font-family:var(--font-mono); }
+    .center{ text-align:center; }
+    .hidden{ display:none !important; }
+    button{ font-family:inherit; cursor:pointer; border:none; outline:none; }
+    button:focus-visible, .choice:focus-visible{ box-shadow: 0 0 15px var(--lime); }
+
+    /* Animaciones extra y de Neón */
+    @keyframes resplandorBoton {
+        0% { box-shadow: 0 0 15px rgba(198,255,61,0.4), inset 0 0 5px rgba(198,255,61,0.2); }
+        50% { box-shadow: 0 0 30px rgba(198,255,61,0.8), inset 0 0 10px rgba(198,255,61,0.4); }
+        100% { box-shadow: 0 0 15px rgba(198,255,61,0.4), inset 0 0 5px rgba(198,255,61,0.2); }
+    }
+
+    @keyframes aparecerArriba {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes flotar {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* PANTALLA DE INICIO Y TUTORIAL */
+    .start-screen, .tutorial-screen {
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        gap:16px;
+        padding:20px 8px;
+        animation: aparecerArriba .7s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .start-badge{
+        font-family:var(--font-mono);
+        letter-spacing:.18em;
+        font-size:14px;
+        color:var(--lime);
+        background:rgba(198,255,61,0.1);
+        border:1px solid rgba(198,255,61,0.6);
+        box-shadow: 0 0 10px rgba(198,255,61,0.3);
+        border-radius:999px;
+        padding:8px 16px;
+        text-transform:uppercase;
+    }
+    .start-title{
+        font-size:55px;
+        font-weight:900;
+        letter-spacing:-0.02em;
+        line-height:1.05;
+        margin:10px 0 0;
+        color: var(--ink);
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 30px var(--lime-dim);
+    }
+    .start-desc{
+        font-size:17px;
+        color:var(--muted);
+        max-width:400px;
+        line-height:1.6;
+        margin:4px 0 12px;
+    }
+    .btn-primary{
+        margin-top:16px;
+        background:var(--lime);
+        color:#10130a;
+        font-weight:800;
+        font-size:18px;
+        letter-spacing:.02em;
+        padding:18px 42px;
+        border-radius:14px;
+        animation: resplandorBoton 2.5s infinite;
+        transition: transform .15s ease, background .15s ease;
+    }
+    .btn-primary:hover{ transform:translateY(-4px) scale(1.02); background: #d4ff5e; }
+    .btn-primary:active{ transform:translateY(0) scale(0.98); }
+
+    /* Cajas del Tutorial */
+    .tut-box {
+        background: rgba(27, 31, 41, 0.7);
+        backdrop-filter: blur(5px);
+        border: 1px solid var(--line);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: left;
+        width: 100%;
+        max-width: 450px;
+        font-size: 15px;
+        color: #c9cddb;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .tut-box:hover {
+        transform: scale(1.02);
+        border-color: rgba(255,255,255,0.2);
+    }
+    .tut-box b { color: var(--lime); font-size: 16px; text-shadow: 0 0 8px rgba(198,255,61,0.5); }
+    .tut-box .icon { font-size: 22px; margin-right: 8px; vertical-align: middle; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
+
+    /* HUD */
+    .hud{ display:flex; flex-direction:column; gap:12px; margin-bottom:20px; animation: aparecerArriba 0.5s ease; }
+    .hud-top{ display:flex; align-items:center; justify-content:space-between; }
+    .day-pill{ font-family:var(--font-mono); font-size:15px; background:var(--surface); border:1px solid var(--line); box-shadow: 0 0 10px rgba(0,0,0,0.5); padding:8px 14px; border-radius:999px; color:var(--muted); }
+    .day-pill b{ color:var(--ink); text-shadow: 0 0 8px rgba(255,255,255,0.4); }
+    .health-wrap{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--muted); flex:1; margin-left:14px; }
+    .health-bars{ display:flex; gap:4px; flex:1; }
+    .health-seg{ height:11px; flex:1; border-radius:3px; background:var(--surface-2); transition: background .3s ease, box-shadow .3s ease; }
+    
+    .stats-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .stat-card{ background:rgba(21, 26, 37, 0.8); backdrop-filter: blur(4px); border:1px solid var(--line); border-radius:14px; padding:12px 10px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .stat-label{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+    .stat-value{ font-family:var(--font-mono); font-weight:700; font-size:22px; margin-top:4px; }
+    .stat-value.money{ color:var(--lime); text-shadow: 0 0 12px rgba(198,255,61,0.6); }
+    .stat-value.savings{ color:var(--blue); text-shadow: 0 0 12px rgba(92,200,255,0.6); }
+    .stat-value.debt{ color:var(--coral); text-shadow: 0 0 12px rgba(255,92,108,0.6); }
+
+    .goal-track{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px; font-size:14px; color:var(--muted); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .goal-track-top{ display:flex; justify-content:space-between; margin-bottom:8px; }
+    .goal-bar-bg{ height:9px; background:var(--surface-2); border-radius:5px; overflow:hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+    .goal-bar-fill{ height:100%; background:linear-gradient(90deg, var(--blue), var(--lime)); border-radius:5px; transition: width .5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px var(--lime); }
+
+    @keyframes destelloPositivo { 0%{ transform:scale(1);} 30%{ transform:scale(1.2); color:var(--lime); text-shadow: 0 0 20px var(--lime);} 100%{ transform:scale(1);} }
+    @keyframes destelloNegativo { 0%{ transform:scale(1);} 30%{ transform:scale(1.2); color:var(--coral); text-shadow: 0 0 20px var(--coral);} 100%{ transform:scale(1);} }
+    .flash-up{ animation: destelloPositivo .6s ease; }
+    .flash-down{ animation: destelloNegativo .6s ease; }
+
+    /* TARJETA "RECIBO" CON EFECTO FLOTANTE */
+    .receipt-wrap{ flex:1; display:flex; flex-direction:column; animation: aparecerArriba .5s ease, flotar 4s ease-in-out infinite; }
+    .receipt{ background:var(--surface); border:1px solid var(--line); border-radius:16px 16px 0 0; padding:24px 24px 20px; position:relative; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
+    .receipt-tag{ font-family:var(--font-mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:12px; }
+    .receipt-emoji{ font-size:46px; line-height:1; margin-bottom:10px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
+    .receipt-title{ font-size:22px; font-weight:800; margin:0 0 10px; line-height:1.3; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+    .receipt-desc{ font-size:16px; color:#c9cddb; line-height:1.5; margin:0; }
+    
+    .perforation{ height:0; border-top:3px dashed var(--line); margin:0 24px; position:relative; }
+    .perforation::before, .perforation::after{ content:""; position:absolute; top:-10px; width:20px; height:20px; background:var(--bg); border-radius:50%; box-shadow: inset 0 4px 10px rgba(0,0,0,0.5); }
+    .perforation::before{ left:-34px; }
+    .perforation::after{ right:-34px; }
+
+    .receipt-options{ background:var(--surface); border:1px solid var(--line); border-top:none; padding:18px 20px 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .choice{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--surface-2); color:var(--ink); border:1px solid var(--line); border-radius:14px; padding:16px 18px; margin-bottom:12px; text-align:left; font-size:16px; font-weight:600; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .choice:hover{ border-color:var(--lime); background:#2a3040; transform:translateY(-3px) scale(1.01); box-shadow: 0 8px 20px rgba(198,255,61,0.2); }
+    .choice:active{ transform:translateY(0) scale(0.99); }
+    .choice-cost{ font-family:var(--font-mono); font-weight:700; font-size:15px; white-space:nowrap; padding:4px 10px; border-radius:8px; }
+    .cost-neg{ color:var(--coral); background:rgba(255,92,108,0.12); text-shadow: 0 0 8px rgba(255,92,108,0.4); }
+    .cost-pos{ color:var(--lime); background:rgba(198,255,61,0.12); text-shadow: 0 0 8px rgba(198,255,61,0.4); }
+    .cost-zero{ color:var(--muted); background:rgba(255,255,255,0.05); }
+
+    .torn-edge{ height:18px; background: linear-gradient(135deg, transparent 50%, var(--bg) 50%) 0 0/18px 18px repeat-x, linear-gradient(-135deg, transparent 50%, var(--bg) 50%) 0 0/18px 18px repeat-x; margin-top:0; }
+
+    /* CONSECUENCIA */
+    .consequence-card{ background:var(--surface); border:1px solid var(--line); box-shadow: 0 10px 40px rgba(0,0,0,0.4); border-radius:18px; padding:26px 24px; animation: aparecerArriba .4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .consequence-title{ font-size:19px; font-weight:800; margin:0 0 10px; }
+    .consequence-text{ font-size:16px; color:#c9cddb; line-height:1.6; margin:0 0 18px; }
+    .tip-box{ display:flex; gap:12px; align-items:flex-start; background:rgba(92,200,255,0.08); border:1px solid rgba(92,200,255,0.3); box-shadow: 0 0 15px rgba(92,200,255,0.1); border-radius:12px; padding:14px 16px; font-size:15px; color:#cfe9fb; line-height:1.5; }
+    .tip-box b{ color:var(--blue); text-shadow: 0 0 8px rgba(92,200,255,0.5); }
+    .btn-continue{ width:100%; margin-top:22px; background:var(--ink); color:#12141b; font-weight:800; font-size:17px; padding:16px; border-radius:14px; transition: background 0.2s, transform 0.2s, box-shadow 0.2s; }
+    .btn-continue:hover{ background:var(--lime); transform:translateY(-2px); box-shadow: 0 8px 20px rgba(198,255,61,0.3); }
+
+    /* DIA LIBRE / OBLIGATORIO */
+    .info-card{ background:var(--surface); border:1px solid var(--line); box-shadow: 0 10px 40px rgba(0,0,0,0.4); border-radius:18px; padding:30px 24px; text-align:center; animation: aparecerArriba .4s ease, flotar 4s ease-in-out infinite; }
+    .info-emoji{ font-size:48px; margin-bottom:12px; filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));}
+    .info-title{ font-size:20px; font-weight:800; margin:0 0 8px; }
+    .info-text{ font-size:16px; color:var(--muted); margin:0 0 8px; line-height:1.6; }
+    .mandatory-amount{ font-family:var(--font-mono); font-size:30px; font-weight:800; color:var(--coral); margin:12px 0; text-shadow: 0 0 15px rgba(255,92,108,0.6); }
+
+    /* PANTALLA FINAL */
+    .end-screen{ flex:1; display:flex; flex-direction:column; animation: aparecerArriba .6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .end-header{ text-align:center; margin-bottom:20px; }
+    .end-title{ font-size:34px; font-weight:900; margin:0 0 6px; text-shadow: 0 0 15px rgba(255,255,255,0.3); }
+    .end-rank{ display:inline-block; margin-top:10px; font-family:var(--font-mono); font-size:16px; font-weight:700; padding:10px 22px; border-radius:999px; border:1px solid var(--line); box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+    
+    .end-stats{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0; }
+    .end-stat{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; text-align:center; transition: transform 0.3s; }
+    .end-stat:hover{ transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+    .end-stat-label{ font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+    .end-stat-value{ font-family:var(--font-mono); font-weight:800; font-size:22px; margin-top:4px; }
+
+    .end-notes{ display:flex; flex-direction:column; gap:12px; margin:8px 0 22px; }
+    .note-row{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px; font-size:15px; line-height:1.5; }
+    .note-row b{ display:block; font-size:13px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+    .note-good b{ color:var(--lime); text-shadow: 0 0 8px rgba(198,255,61,0.4); }
+    .note-bad b{ color:var(--coral); text-shadow: 0 0 8px rgba(255,92,108,0.4); }
+    .note-tip b{ color:var(--blue); text-shadow: 0 0 8px rgba(92,200,255,0.4); }
+
+    .end-actions{ display:flex; gap:12px; margin-top:auto; }
+    .end-actions button{ flex:1; padding: 16px; font-size: 15px; border-radius: 12px; font-weight: bold; }
+    
+    /* Colores barra salud con brillo extra */
+    .seg-green{ background:var(--lime) !important; box-shadow: 0 0 12px rgba(198,255,61,0.6); }
+    .seg-yellow{ background:var(--amber) !important; box-shadow: 0 0 12px rgba(255,194,75,0.6); }
+    .seg-red{ background:var(--coral) !important; box-shadow: 0 0 12px rgba(255,92,108,0.6); }
+</style>
+</head>
+<body>
+<!-- Canvas para la constelación neón -->
+<canvas id="fondoCanvas"></canvas>
+
+<div id="app"></div>
+
+<script>
+/* =====================================================================
+   SOBREVIVE AL MES — Edición Neón
+===================================================================== */
+
+/* ---------------------------------------------------------------
+   CANVAS BACKGROUND (Constelación Neón Interactiva)
+---------------------------------------------------------------- */
+const lienzo = document.getElementById('fondoCanvas');
+const contexto = lienzo.getContext('2d');
+let arregloParticulas = [];
+const coloresNeon = ['#c6ff3d', '#5cc8ff', '#ff5c6c']; // Lima, Azul, Coral
+
+function ajustarTamanoLienzo() {
+    lienzo.width = window.innerWidth;
+    lienzo.height = window.innerHeight;
+}
+window.addEventListener('resize', ajustarTamanoLienzo);
+ajustarTamanoLienzo();
+
+// Inicializar particulas
+for(let i = 0; i < 50; i++) {
+    arregloParticulas.push({
+        x: Math.random() * lienzo.width,
+        y: Math.random() * lienzo.height,
+        radio: Math.random() * 2 + 1,
+        velocidadX: (Math.random() - 0.5) * 0.7,
+        velocidadY: (Math.random() - 0.5) * 0.7,
+        color: coloresNeon[Math.floor(Math.random() * coloresNeon.length)]
+    });
+}
+
+// Bucle principal de animacion del fondo
+function dibujarFondoAnimado() {
+    contexto.clearRect(0, 0, lienzo.width, lienzo.height);
+    
+    // Conectar particulas con lineas si estan cerca
+    for(let i = 0; i < arregloParticulas.length; i++) {
+        for(let j = i; j < arregloParticulas.length; j++) {
+            const dx = arregloParticulas[i].x - arregloParticulas[j].x;
+            const dy = arregloParticulas[i].y - arregloParticulas[j].y;
+            const distancia = Math.sqrt(dx * dx + dy * dy);
+            
+            if(distancia < 120) {
+                contexto.beginPath();
+                contexto.strokeStyle = arregloParticulas[i].color;
+                contexto.globalAlpha = 1 - (distancia / 120);
+                contexto.lineWidth = 0.5;
+                contexto.moveTo(arregloParticulas[i].x, arregloParticulas[i].y);
+                contexto.lineTo(arregloParticulas[j].x, arregloParticulas[j].y);
+                contexto.stroke();
+            }
+        }
+    }
+
+    // Dibujar cada particula individual
+    arregloParticulas.forEach(p => {
+        contexto.globalAlpha = 1;
+        contexto.shadowBlur = 10;
+        contexto.shadowColor = p.color;
+        contexto.fillStyle = p.color;
+        contexto.beginPath();
+        contexto.arc(p.x, p.y, p.radio, 0, Math.PI * 2);
+        contexto.fill();
+        contexto.shadowBlur = 0; // reset
+        
+        // Movimiento suave
+        p.x += p.velocidadX;
+        p.y += p.velocidadY;
+        
+        // Rebote en los bordes
+        if(p.x < 0 || p.x > lienzo.width) p.velocidadX *= -1;
+        if(p.y < 0 || p.y > lienzo.height) p.velocidadY *= -1;
+    });
+
+    requestAnimationFrame(dibujarFondoAnimado);
+}
+dibujarFondoAnimado();
+
+/* ---------------------------------------------------------------
+   1. ESTADO DEL JUEGO
+---------------------------------------------------------------- */
+const TOTAL_DAYS = 30;
+const GOAL_AMOUNT = 200;
+
+let state = null;
+
+function getInitialState(){
+    return {
+        day: 1,
+        money: 600,
+        savings: 100,
+        debt: 0,
+        goal: GOAL_AMOUNT,
+        health: 68,
+        impulsiveSpent: 0,
+        goodDecisions: 0,
+        badDecisions: 0,
+        usedEventIds: [],
+        lastEventId: null,
+        decisions: [],
+        pendingEvent: null,
+        gameOver: false
+    };
+}
+
+const MANDATORY_EXPENSES = {
+    7:  { label: "Alquiler / cuota de vivienda", amount: 150 },
+    14: { label: "Factura del celular",          amount: 30  },
+    21: { label: "Internet",                     amount: 25  },
+    28: { label: "Suscripción de streaming",     amount: 15  }
+};
+
+/* ---------------------------------------------------------------
+   2. BANCO DE EVENTOS
+---------------------------------------------------------------- */
+const EVENTS = [
+    {
+        id: "salida_amigos", emoji: "🎉", title: "Tus amigos te invitaron a salir", desc: "Una noche completa con ellos cuesta $40.",
+        options: [
+            { label:"Salir toda la noche", cost:"-$40", apply:()=>({ money:-40, quality:-1, impulse:true, consequence:"Decidiste salir. Te divertiste, pero gastaste $40.", tip:"Divertirte también importa, pero cada salida cara reduce lo que puedes ahorrar." }) },
+            { label:"Buscar un plan barato", cost:"-$15", apply:()=>({ money:-15, quality:1, consequence:"Encontraste una alternativa más económica.", tip:"Buscar alternativas más baratas te permite disfrutar sin sacrificar tus metas." }) },
+            { label:"No salir esta vez", cost:"$0", apply:()=>({ money:0, quality:2, consequence:"Te quedaste en casa.", tip:"Decir 'no' a un gasto de vez en cuando es una herramienta válida." }) }
+        ]
+    },
+    {
+        id: "ropa_impulsiva", emoji: "🧥", title: "Compra impulsiva de ropa", desc: "Viste una chaqueta con descuento por $70.",
+        options: [
+            { label:"Comprarla ahora", cost:"-$70", apply:()=>({ money:-70, quality:-2, impulse:true, consequence:"Compraste la chaqueta.", tip:"Las compras impulsivas suelen sentirse bien por poco tiempo." }) },
+            { label:"Pensarlo 24 horas", cost:"$0", apply:()=>({ money:0, quality:2, consequence:"Esperaste un día y decidiste no comprar.", tip:"La regla de las 24 horas ayuda a separar un deseo de una necesidad." }) },
+            { label:"Buscar más barato", cost:"-$30", apply:()=>({ money:-30, quality:0, consequence:"Encontraste algo parecido por menos dinero.", tip:"Comparar precios antes de comprar es un hábito simple que ahorra bastante." }) }
+        ]
+    },
+    {
+        id: "mascota_enferma", emoji: "🐕", title: "Visita al veterinario", desc: "Tu mascota amaneció mal. La consulta cuesta $60.",
+        options: [
+            { label:"Pagar consulta", cost:"-$60", apply:()=>({ money:-60, quality:1, consequence:"La salud de tu mascota es importante. Fue un gasto necesario.", tip:"Tener mascotas implica gastos imprevistos. Un fondo de emergencia ayuda aquí." }) },
+            { label:"Pedir prestado", cost:"+$60 deuda", apply:()=>({ debt:60, quality:-1, consequence:"Pediste prestado para la consulta. Adquiriste deuda.", tip:"Evitar endeudarte es ideal, pero la salud es prioridad." }) },
+            { label:"Esperar a ver si mejora", cost:"$0", apply:()=>({ money:0, quality:-2, consequence:"Esperaste. Afortunadamente mejoró, pero fue un riesgo alto.", tip:"Posponer emergencias médicas puede agravar el problema." }) }
+        ]
+    },
+    {
+        id: "curso_online", emoji: "🎓", title: "Oferta de Curso", desc: "Un curso útil para ti está en descuento a $40.",
+        options: [
+            { label:"Comprar el curso", cost:"-$40", apply:()=>({ money:-40, quality:2, consequence:"Invertiste en educación.", tip:"Gastar en educación es una inversión, no una pérdida." }) },
+            { label:"Tutoriales gratis", cost:"$0", apply:()=>({ money:0, quality:1, consequence:"Decidiste aprender por tu cuenta.", tip:"Ser autodidacta ahorra dinero." }) },
+            { label:"Comprar curso + extras", cost:"-$65", apply:()=>({ money:-65, quality:0, impulse:true, consequence:"Compraste extras que no necesitabas.", tip:"Aprovecha ofertas sin excederte comprando complementos innecesarios." }) }
+        ]
+    },
+    {
+        id: "reparacion_hogar", emoji: "🔧", title: "Fuga de agua en casa", desc: "Se rompió una tubería. El plomero cobra $55.",
+        options: [
+            { label:"Llamar al plomero", cost:"-$55", apply:()=>({ money:-55, quality:1, consequence:"El plomero lo arregló rápido.", tip:"El mantenimiento es un gasto fijo encubierto." }) },
+            { label:"Arreglarlo tú mismo", cost:"-$15", apply:()=>({ money:-15, quality:0, consequence:"Lo arreglaste de forma temporal.", tip:"Hacerlo tú mismo ahorra dinero si sabes lo que haces." }) },
+            { label:"Poner un balde", cost:"$0", apply:()=>({ money:0, quality:-2, consequence:"Pusiste un balde. El problema empeorará.", tip:"Ignorar problemas de mantenimiento resulta en gastos mayores." }) }
+        ]
+    }
+];
+
+const SPECIAL_EVENT_DAY17 = {
+    id: "celular_roto", emoji: "🚨", title: "EMERGENCIA: tu celular falló", desc: "Lo necesitas para estudiar.", special: true,
+    options: [
+        { label:"Repararlo", cost:"-$80", apply:(s)=>({ money:-80, quality:1, consequence: "Lo reparaste.", tip:"Un fondo de emergencia existe para momentos como este." }) },
+        { label:"Comprar uno nuevo", cost:"-$300", apply:()=>({ money:-300, quality:-2, impulse:true, consequence:"Compraste uno nuevo muy caro. Fue impulsivo.", tip:"En una emergencia, la opción más cara no siempre es la mejor." }) },
+        { label:"Pedir prestado", cost:"$0", apply:()=>({ money:0, quality:0, consequence:"Pediste prestado un celular.", tip:"No todas las emergencias requieren una solución costosa." }) }
+    ]
+};
+
+/* ---------------------------------------------------------------
+   3. LOGICA PRINCIPAL
+---------------------------------------------------------------- */
+function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+function fmt(n){ return (n<0?"-$":"$") + Math.abs(Math.round(n)); }
+
+function pickEvent(){
+    if(state.day === 17) return SPECIAL_EVENT_DAY17;
+    if(Math.random() < 0.15) return null; 
+
+    const pool = EVENTS.filter(e => e.id !== state.lastEventId);
+    return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function recomputeHealth(){
+    let h = 50;
+    h += (state.money/600)*22;
+    h += (state.savings/state.goal)*20;
+    h -= (state.debt/300)*28;
+    h -= Math.min(20, (state.impulsiveSpent/25));
+    h += state.goodDecisions*1.2;
+    h -= state.badDecisions*1.5;
+    state.health = clamp(Math.round(h), 0, 100);
+}
+
+function healthColorClass(){
+    if(state.health >= 60) return "seg-green";
+    if(state.health >= 30) return "seg-yellow";
+    return "seg-red";
+}
+
+/* ---------------------------------------------------------------
+   4. RENDERIZADO
+---------------------------------------------------------------- */
+const app = document.getElementById("app");
+
+function renderStart(){
+    app.innerHTML = `
+    <div class="start-screen">
+        <div class="start-badge">Simulador Neón · 30 días</div>
+        <h1 class="start-title">SOBREVIVE<br>AL MES</h1>
+        <p class="start-desc">Administra tu dinero, toma decisiones y pon a prueba tus habilidades.</p>
+        <button class="btn-primary" id="startBtn">COMENZAR EL RETO</button>
+    </div>`;
+    document.getElementById("startBtn").addEventListener("click", mostrarTutorial);
+}
+
+function mostrarTutorial(){
+    app.innerHTML = `
+    <div class="tutorial-screen">
+        <h2 style="margin: 0; font-size: 32px; text-shadow: 0 0 10px rgba(255,255,255,0.3);">¿Cómo jugar?</h2>
+        
+        <div class="tut-box"><span class="icon">💰</span> <b>Dinero:</b> Empiezas con $600. Si llegas a $0, pierdes.</div>
+        <div class="tut-box"><span class="icon">🎯</span> <b>Meta:</b> Intenta acumular $200 ahorrados.</div>
+        <div class="tut-box"><span class="icon">🧾</span> <b>Fijos:</b> Los días 7, 14, 21 y 28 te cobran automáticamente.</div>
+        <div class="tut-box"><span class="icon">❤️</span> <b>Salud:</b> Tus decisiones afectan tu puntaje.</div>
+
+        <button class="btn-primary" id="playBtn">¡A JUGAR!</button>
+    </div>`;
+    document.getElementById("playBtn").addEventListener("click", startGame);
+}
+
+function startGame(){
+    state = getInitialState();
+    runDay();
+}
+
+function hudHtml(){
+    const segCount = 10;
+    const filled = Math.round(state.health/10);
+    const colorClass = healthColorClass();
+    let segs = "";
+    for(let i=0;i<segCount;i++){
+        segs += `<div class="health-seg ${i<filled?colorClass:''}"></div>`;
+    }
+    const goalPct = clamp(Math.round((state.savings/state.goal)*100),0,100);
+    return `
+    <div class="hud">
+        <div class="hud-top">
+            <div class="day-pill">📅 Día <b>${state.day}</b>/${TOTAL_DAYS}</div>
+            <div class="health-wrap">
+                <span>Salud</span>
+                <div class="health-bars">${segs}</div>
+            </div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-label">💰 Dinero</div><div class="stat-value money" id="statMoney">${fmt(state.money)}</div></div>
+            <div class="stat-card"><div class="stat-label">🏦 Ahorro</div><div class="stat-value savings" id="statSavings">${fmt(state.savings)}</div></div>
+            <div class="stat-card"><div class="stat-label">💳 Deuda</div><div class="stat-value debt" id="statDebt">${fmt(state.debt)}</div></div>
+        </div>
+        <div class="goal-track">
+            <div class="goal-track-top"><span>🎯 Progreso meta</span><span>${goalPct}%</span></div>
+            <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${goalPct}%"></div></div>
+        </div>
+    </div>`;
+}
+
+function renderGameShell(innerHtml){
+    app.innerHTML = `${hudHtml()}<div class="receipt-wrap">${innerHtml}</div>`;
+}
+
+function runDay(){
+    if(state.day > TOTAL_DAYS) return endGame("victory");
+    const mandatory = MANDATORY_EXPENSES[state.day];
+    if(mandatory) return showMandatoryExpense(mandatory);
+    proceedToEvent();
+}
+
+function showMandatoryExpense(mandatory){
+    const html = `
+    <div class="info-card">
+        <div class="info-emoji">🧾</div>
+        <div class="info-title">Gasto fijo</div>
+        <div class="info-text">${mandatory.label}</div>
+        <div class="mandatory-amount">-${fmt(mandatory.amount)}</div>
+        <button class="btn-continue" id="mandatoryContinue">PAGAR</button>
+    </div>`;
+    renderGameShell(html);
+    document.getElementById("mandatoryContinue").addEventListener("click", ()=>{
+        state.money -= mandatory.amount;
+        recomputeHealth();
+        if(state.money < 0) return endGame("defeat", `No pudiste cubrir "${mandatory.label}".`);
+        proceedToEvent();
+    });
+}
+
+function proceedToEvent(){
+    const evt = pickEvent();
+    if(!evt) return showFreeDay();
+    state.pendingEvent = evt;
+    showEvent(evt);
+}
+
+function showFreeDay(){
+    const html = `
+    <div class="info-card">
+        <div class="info-emoji">🌤️</div>
+        <div class="info-title">Día tranquilo</div>
+        <div class="info-text">No ocurrió ningún imprevisto hoy.</div>
+        <button class="btn-continue" id="freeDayContinue">SIGUIENTE</button>
+    </div>`;
+    renderGameShell(html);
+    document.getElementById("freeDayContinue").addEventListener("click", advanceDay);
+}
+
+function showEvent(evt){
+    const optionsHtml = evt.options.map((opt, idx)=>{
+        let costClass = "cost-zero";
+        if(opt.cost.trim().startsWith("-")) costClass = "cost-neg";
+        else if(opt.cost.trim().startsWith("+")) costClass = "cost-pos";
+        return `<button class="choice" data-idx="${idx}">
+                    <span>${opt.label}</span>
+                    <span class="choice-cost ${costClass}">${opt.cost}</span>
+                </button>`;
+    }).join("");
+
+    const html = `
+    <div class="receipt">
+        <div class="receipt-tag"><span>TICKET DÍA ${state.day}</span><span>${evt.special?"⚠ ESPECIAL":"EVENTO"}</span></div>
+        <div class="receipt-emoji">${evt.emoji}</div>
+        <h2 class="receipt-title">${evt.title}</h2>
+        <p class="receipt-desc">${evt.desc}</p>
+    </div>
+    <div class="perforation"></div>
+    <div class="receipt-options">${optionsHtml}</div>
+    <div class="torn-edge"></div>`;
+
+    renderGameShell(html);
+
+    document.querySelectorAll(".choice").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+            resolveChoice(evt, evt.options[parseInt(btn.dataset.idx, 10)]);
+        });
+    });
+}
+
+function resolveChoice(evt, opt){
+    const result = opt.apply(state);
+    if(result.money) state.money += result.money;
+    if(result.savings) state.savings += result.savings;
+    if(result.debt) state.debt += result.debt;
+    if(result.impulse && result.money) state.impulsiveSpent += Math.abs(result.money);
+
+    if(result.quality >= 1) state.goodDecisions++;
+    if(result.quality <= -1) state.badDecisions++;
+
+    state.decisions.push({ day: state.day, label: opt.label, quality: result.quality, text: result.consequence });
+    state.lastEventId = evt.id;
+    if(!state.usedEventIds.includes(evt.id)) state.usedEventIds.push(evt.id);
+
+    recomputeHealth();
+    showConsequence(evt, opt, result);
+}
+
+function showConsequence(evt, opt, result){
+    const html = `
+    <div class="consequence-card">
+        <h3 class="consequence-title">${result.quality>=1 ? "✅" : (result.quality<=-1 ? "⚠️" : "➖")} ${opt.label}</h3>
+        <p class="consequence-text">${result.consequence}</p>
+        <div class="tip-box"><span>💡</span><div><b>Lección:</b> ${result.tip}</div></div>
+        <button class="btn-continue" id="consequenceContinue">CONTINUAR</button>
+    </div>`;
+    renderGameShell(html);
+
+    if(result.money && result.money !== 0) flashStat("statMoney", result.money > 0);
+    if(result.savings) flashStat("statSavings", true);
+    if(result.debt) flashStat("statDebt", false);
+
+    document.getElementById("consequenceContinue").addEventListener("click", ()=>{
+        if(state.money < 0) return endGame("defeat", `Te quedaste sin dinero.`);
+        advanceDay();
+    });
+}
+
+function flashStat(id, positive){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove("flash-up","flash-down");
+    void el.offsetWidth;
+    el.classList.add(positive ? "flash-up" : "flash-down");
+}
+
+function advanceDay(){
+    state.day++;
+    runDay();
+}
+
+function computeFinalScore(){
+    recomputeHealth();
+    let score = state.health * 0.55;
+    score += clamp((state.savings/state.goal)*100, 0, 100) * 0.25;
+    score += (state.debt === 0 ? 20 : Math.max(0, 20 - state.debt/15));
+    score -= Math.min(15, state.impulsiveSpent/20);
+    return clamp(Math.round(score), 0, 100);
+}
+
+function rankFor(score){
+    if(score >= 90) return { emoji:"🏆", label:"EXPERTO FINANCIERO", color:"var(--lime)" };
+    if(score >= 70) return { emoji:"🥇", label:"BUEN ADMINISTRADOR", color:"var(--blue)" };
+    if(score >= 50) return { emoji:"🥈", label:"EN APRENDIZAJE", color:"var(--amber)" };
+    return { emoji:"🚨", label:"NECESITAS UN PLAN", color:"var(--coral)" };
+}
+
+function bestAndWorstDecision(){
+    if(state.decisions.length === 0) return { best:null, worst:null };
+    let best = state.decisions[0], worst = state.decisions[0];
+    state.decisions.forEach(d=>{
+        if(d.quality > best.quality) best = d;
+        if(d.quality < worst.quality) worst = d;
+    });
+    return { best, worst };
+}
+
+function endGame(type, defeatReason){
+    const score = computeFinalScore();
+    const rank = rankFor(score);
+    const { best, worst } = bestAndWorstDecision();
+
+    const headline = type === "victory" ? "MES COMPLETADO" : "💸 SIN DINERO";
+    const subline = type === "victory" ? "Así quedaron tus finanzas:" : (defeatReason || "Gastaste más de lo que tenías.");
+
+    const html = `
+    <div class="end-screen">
+        <div class="end-header">
+            <h1 class="end-title">${headline}</h1>
+            <p class="info-text">${subline}</p>
+            <div class="end-rank" style="color:${rank.color}; border-color:${rank.color}; text-shadow: 0 0 10px ${rank.color}">${rank.emoji} ${rank.label}</div>
+        </div>
+
+        <div class="end-stats">
+            <div class="end-stat"><div class="end-stat-label">💰 Dinero</div><div class="end-stat-value" style="color:var(--lime); text-shadow: 0 0 10px var(--lime)">${fmt(Math.max(0,state.money))}</div></div>
+            <div class="end-stat"><div class="end-stat-label">🏦 Ahorros</div><div class="end-stat-value" style="color:var(--blue); text-shadow: 0 0 10px var(--blue)">${fmt(state.savings)}</div></div>
+            <div class="end-stat"><div class="end-stat-label">💳 Deuda</div><div class="end-stat-value" style="color:var(--coral); text-shadow: 0 0 10px var(--coral)">${fmt(state.debt)}</div></div>
+            <div class="end-stat"><div class="end-stat-label">📊 Salud</div><div class="end-stat-value">${state.health}/100</div></div>
+        </div>
+
+        <div class="end-notes">
+            ${best ? `<div class="note-row note-good"><b>Mejor decisión</b>Día ${best.day} · ${best.label}</div>` : ""}
+            ${worst ? `<div class="note-row note-bad"><b>Mayor error</b>Día ${worst.day} · ${worst.label}</div>` : ""}
+        </div>
+
+        <div class="end-actions">
+            <button class="btn-primary" id="replayBtn">REINTENTAR</button>
+        </div>
+    </div>`;
+    app.innerHTML = html;
+    document.getElementById("replayBtn").addEventListener("click", startGame);
+}
+
+renderStart();
+</script>
+</body>
+</html>

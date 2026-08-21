@@ -4,11 +4,10 @@
 
 ![Genero](https://img.shields.io/badge/Género-Arcade_%2F_Catcher-2563EB?style=flat-square)
 ![Tech](https://img.shields.io/badge/Tech-HTML5_%2B_JS-7C3AED?style=flat-square)
-![Tema](https://img.shields.io/badge/Tema-Cuidado_del_agua-059669?style=flat-square)
-![Versiones](https://img.shields.io/badge/Versiones_documentadas-1-DB2777?style=flat-square)
+![Tema](https://img.shields.io/badge/Tema-Ahorro_de_agua-059669?style=flat-square)
+![Versiones](https://img.shields.io/badge/Versiones_documentadas-3-DB2777?style=flat-square)
 
-[![Jugar](https://img.shields.io/badge/JUGAR-2563EB?style=for-the-badge)](https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/)
-[![Ver código](https://img.shields.io/badge/VER_CÓDIGO-7C3AED?style=for-the-badge)](index.html)
+[![Jugar versión final](https://img.shields.io/badge/JUGAR_VERSIÓN_FINAL-2563EB?style=for-the-badge)](https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/)
 
 [Volver al portafolio](../../README.md)
 
@@ -16,17 +15,15 @@
 
 ---
 
-## La metodología aplicada
-
-Esta práctica (Mecánicas de juego) exigía diferenciar mecánica, dinámica y estética (marco **MDA**) y clasificar géneros de videojuegos, analizando primero un caso real (*Polarity Switch*) antes de diseñar el propio prototipo. El punto central de la práctica era justificar el género y la mecánica principal **antes de programar nada** — evitando el error del caso planteado en la guía, donde un juego anterior fracasó porque nadie entendía qué debía hacer para "ganar". Ese mismo proceso de justificación de diseño se aplicó aquí a un tema de concientización sobre el cuidado del agua.
-
 ## Sobre el juego
 
-**Gotitas Mágicas** es un arcade tipo catcher: Ajolí, un pequeño ajolote, necesita agua pura para sobrevivir, y el jugador mueve una canasta a lo largo de la parte inferior de la pantalla para atrapar gotas de agua limpia mientras evita otros elementos que caen. El juego intercala mensajes educativos reales sobre consumo de agua directamente en la experiencia, no como texto aparte.
+**Gotitas Mágicas** convierte el mensaje de "no desperdicies agua" —el tipo de campaña que la mayoría de la gente joven ignora en un afiche o spot— en un arcade rápido y directo: Ajolí, un ajolotito, necesita que su río se mantenga limpio, y el jugador mueve una canasta para atrapar únicamente las gotas de agua limpia que caen, evitando el resto de objetos que no son agua. Dejar caer una gota o atrapar algo que no corresponde cuesta una vida, acompañado de un mensaje breve sobre el desperdicio del recurso.
 
-- **De qué trata:** purificar agua para Ajolí atrapando gotas limpias con una canasta, aprendiendo sobre el cuidado del recurso hídrico en el proceso.
-- **Objetivo del jugador:** llenar la barra de progreso de "agua pura" antes de quedarse sin las 3 vidas, subiendo de nivel a medida que avanza.
-- **Mecánica principal:** mover la canasta horizontalmente para atrapar gotas y power-ups que caen desde la parte superior de la pantalla.
+La idea es que el jugador entienda, jugando y sin que se sienta una lección, que **cada gota que se deja caer es agua que se pierde** — el mismo mensaje que las campañas tradicionales de ahorro de agua no logran transmitir a un público joven que las ignora por completo.
+
+- **De qué trata:** atrapar únicamente gotas de agua limpia con una canasta, evitando el resto de elementos que caen, para mantener a Ajolí a salvo.
+- **Objetivo del jugador:** acumular la mayor cantidad de "agua ahorrada" posible antes de quedarse sin vidas o sin tiempo.
+- **Mecánica principal:** mover la canasta horizontalmente para atrapar gotas de agua entre una cantidad creciente de objetos que caen, con dificultad progresiva tanto en velocidad como en cantidad simultánea de objetos.
 
 ## Controles
 
@@ -35,13 +32,14 @@ Esta práctica (Mecánicas de juego) exigía diferenciar mecánica, dinámica y 
 | Mover la canasta | Mover el mouse horizontalmente |
 | En móvil | Deslizar el dedo horizontalmente |
 
-## Power-ups
+## Sistema de juego
 
-| Power-up | Efecto |
+| Elemento | Descripción |
 |---|---|
-| Hielo | Ralentiza la caída de elementos |
-| Escudo | Protege una vida ante un fallo |
-| Vida extra | Suma una vida adicional |
+| Vidas | Se pierde una vida al dejar caer una gota de agua o atrapar algo que no es agua |
+| Tiempo | Cada nivel tiene un límite de tiempo; si se acaba, se pasa automáticamente al siguiente |
+| Dificultad | Sube por velocidad de caída y por cantidad de objetos simultáneos en pantalla |
+| Niveles de dificultad | Fácil, Medio y Difícil, seleccionables antes de jugar |
 
 ## Tecnología
 
@@ -54,14 +52,47 @@ Esta práctica (Mecánicas de juego) exigía diferenciar mecánica, dinámica y 
 ## Historial de versiones
 
 <table>
-<tr><th align="left">Versión</th><th align="left">Qué incluye</th><th align="center">Jugar</th><th align="center">Código</th></tr>
+<tr><th align="left">Versión</th><th align="left">Qué cambió</th><th align="center">Jugar</th></tr>
 <tr>
-<td><b>v1 — Única</b></td>
-<td>Ciclo completo de juego: vidas, power-ups, niveles progresivos, mensajes educativos y persistencia del puntaje más alto.</td>
+<td><b>v1 — Original</b></td>
+<td>Primera versión jugable: selección de dificultad, recolección de gotas con la canasta. La barra de progreso ("río de Ajolí") estaba ubicada abajo, cerca de la zona de juego, y no había panel de reglas ni cronómetro visible.</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/versions/v1-original.html">Jugar</a></td>
+</tr>
+<tr>
+<td><b>v2</b></td>
+<td>Se agregó un panel de reglas rápidas antes de empezar, un cronómetro visible por nivel, y la barra de progreso se renombró a "agua ahorrada" y se movió arriba para dejar libre la zona de juego. Los elementos decorativos (plantas, hongo) se reubicaron fuera del área jugable.</td>
+<td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/versions/v2-reglas.html">Jugar</a></td>
+</tr>
+<tr>
+<td><b>v3 — Final</b></td>
+<td>Ciclo de juego completo: power-ups, niveles progresivos, mensajes educativos y persistencia del puntaje más alto.</td>
 <td align="center"><a href="https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/">Jugar</a></td>
-<td align="center"><a href="index.html">Ver</a></td>
 </tr>
 </table>
+
+### v1 — Original
+
+<div align="center">
+<table>
+<tr>
+<td align="center"><img src="versions/v1-original-intro.png" width="380"/><br/><sub>Pantalla de bienvenida</sub></td>
+<td align="center"><img src="versions/v1-original-gameplay.png" width="380"/><br/><sub>Gameplay — barra "río de Ajolí" abajo</sub></td>
+</tr>
+</table>
+</div>
+
+### v2
+
+<div align="center">
+<table>
+<tr>
+<td align="center"><img src="versions/v2-reglas-intro.png" width="380"/><br/><sub>Pantalla de bienvenida — nuevo panel de reglas</sub></td>
+<td align="center"><img src="versions/v2-reglas-gameplay.png" width="380"/><br/><sub>Gameplay — barra "agua ahorrada" arriba, cronómetro visible</sub></td>
+</tr>
+</table>
+</div>
+
+### v3 — Final
 
 <div align="center">
 <table>
@@ -71,8 +102,6 @@ Esta práctica (Mecánicas de juego) exigía diferenciar mecánica, dinámica y 
 </tr>
 </table>
 </div>
-
-> A diferencia de DungeonMathQuest y Trashketball, Gotitas Mágicas todavía no tiene betas intermedias documentadas — es el prototipo más reciente del portafolio. Queda como base para las siguientes iteraciones.
 
 ---
 

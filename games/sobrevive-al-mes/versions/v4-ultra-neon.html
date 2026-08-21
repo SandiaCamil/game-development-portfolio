@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobrevive al Mes - Ultra Neón</title>
+<style>
+    :root{
+        --bg:#05070a;
+        --surface:#101520;
+        --surface-2:#182030;
+        --ink:#f5f3ee;
+        --muted:#8a90a3;
+        --line:#20283d;
+        --lime:#c6ff3d;
+        --coral:#ff2a5f;
+        --amber:#ffc24b;
+        --blue:#00f0ff;
+        --magenta:#ff2a85;
+        --gold:#ffd700;
+        --font-display: -apple-system, "Segoe UI", system-ui, sans-serif;
+        --font-mono: "SF Mono", "Consolas", monospace;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html, body{
+        margin:0; padding:0; min-height:100vh;
+        background: linear-gradient(-45deg, #05070a, #100b14, #061114, #050a0f);
+        background-size: 400% 400%;
+        animation: animBg 15s ease infinite;
+        color:var(--ink);
+        font-family:var(--font-display);
+        font-size: 115%;
+        overflow-x: hidden;
+    }
+
+    @keyframes animBg {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    #bgCanvas {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: -2; pointer-events: none;
+    }
+
+    #fx-layer {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: 9999; pointer-events: none; overflow: hidden;
+    }
+
+    #app{
+        max-width: 580px; margin:0 auto; min-height:100vh;
+        display:flex; flex-direction:column; padding:20px 18px 45px;
+    }
+
+    button{ font-family:inherit; cursor:pointer; border:none; outline:none; }
+    
+    @keyframes btnGlow {
+        0% { box-shadow: 0 0 15px rgba(198,255,61,0.4), inset 0 0 5px rgba(198,255,61,0.2); }
+        50% { box-shadow: 0 0 35px rgba(198,255,61,0.9), inset 0 0 15px rgba(198,255,61,0.5); }
+        100% { box-shadow: 0 0 15px rgba(198,255,61,0.4), inset 0 0 5px rgba(198,255,61,0.2); }
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .start-screen, .tutorial-screen {
+        flex:1; display:flex; flex-direction:column; align-items:center;
+        justify-content:center; text-align:center; gap:16px;
+        padding:20px 8px; animation: slideUp .7s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .start-badge{
+        font-family:var(--font-mono); letter-spacing:.18em; font-size:14px;
+        color:var(--magenta); background:rgba(255,42,133,0.1);
+        border:1px solid rgba(255,42,133,0.6); box-shadow: 0 0 15px rgba(255,42,133,0.4);
+        border-radius:999px; padding:8px 16px; text-transform:uppercase;
+    }
+
+    .start-title{
+        font-size:58px; font-weight:900; letter-spacing:-0.02em; line-height:1.05;
+        margin:10px 0 0; color: var(--ink);
+        text-shadow: 0 0 15px rgba(0,240,255,0.5), 0 0 40px var(--blue);
+    }
+
+    .start-desc{
+        font-size:17px; color:var(--muted); max-width:400px;
+        line-height:1.6; margin:4px 0 12px;
+    }
+
+    .btn-primary{
+        margin-top:16px; background:var(--lime); color:#000;
+        font-weight:900; font-size:18px; letter-spacing:.04em;
+        padding:18px 42px; border-radius:14px; text-transform: uppercase;
+        animation: btnGlow 2s infinite; transition: transform .15s, background .15s;
+    }
+    .btn-primary:hover{ transform:translateY(-5px) scale(1.03); background: #d4ff5e; }
+    .btn-primary:active{ transform:translateY(0) scale(0.98); }
+
+    .tut-box {
+        background: rgba(16, 21, 32, 0.85); backdrop-filter: blur(8px);
+        border: 1px solid var(--line); box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        border-radius: 12px; padding: 16px; text-align: left;
+        width: 100%; max-width: 450px; font-size: 15px; color: #c9cddb;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+    .tut-box:hover { transform: scale(1.03); border-color: var(--blue); box-shadow: 0 0 15px rgba(0,240,255,0.3); }
+    .tut-box b { color: var(--gold); font-size: 16px; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+    .tut-box .icon { font-size: 24px; margin-right: 10px; vertical-align: middle; }
+
+    .hud{ display:flex; flex-direction:column; gap:12px; margin-bottom:20px; animation: slideUp 0.5s ease; }
+    .hud-top{ display:flex; align-items:center; justify-content:space-between; }
+    .day-pill{ font-family:var(--font-mono); font-size:15px; background:var(--surface); border:1px solid var(--magenta); box-shadow: 0 0 15px rgba(255,42,133,0.3); padding:8px 14px; border-radius:999px; color:var(--magenta); }
+    .day-pill b{ color:var(--ink); text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+    .health-wrap{ display:flex; align-items:center; gap:10px; font-size:13px; color:var(--muted); flex:1; margin-left:14px; }
+    .health-bars{ display:flex; gap:4px; flex:1; }
+    .health-seg{ height:12px; flex:1; border-radius:4px; background:var(--surface-2); transition: all .3s; }
+    
+    .stats-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .stat-card{ background:rgba(16, 21, 32, 0.85); backdrop-filter: blur(5px); border:1px solid var(--line); border-radius:14px; padding:12px 10px; text-align:center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: transform .2s; }
+    .stat-label{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+    .stat-value{ font-family:var(--font-mono); font-weight:900; font-size:24px; margin-top:4px; }
+    .stat-value.money{ color:var(--lime); text-shadow: 0 0 15px rgba(198,255,61,0.7); }
+    .stat-value.savings{ color:var(--blue); text-shadow: 0 0 15px rgba(0,240,255,0.7); }
+    .stat-value.debt{ color:var(--coral); text-shadow: 0 0 15px rgba(255,42,95,0.7); }
+
+    .goal-track{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; font-size:14px; color:var(--muted); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .goal-track-top{ display:flex; justify-content:space-between; margin-bottom:10px; }
+    .goal-bar-bg{ height:10px; background:var(--surface-2); border-radius:5px; overflow:hidden; }
+    .goal-bar-fill{ height:100%; background:linear-gradient(90deg, var(--magenta), var(--blue), var(--lime)); border-radius:5px; transition: width .5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 15px var(--blue); }
+
+    @keyframes flashUp{ 0%{ transform:scale(1);} 30%{ transform:scale(1.25); color:var(--lime); text-shadow: 0 0 25px var(--lime);} 100%{ transform:scale(1);} }
+    @keyframes flashDown{ 0%{ transform:scale(1);} 30%{ transform:scale(1.25); color:var(--coral); text-shadow: 0 0 25px var(--coral);} 100%{ transform:scale(1);} }
+    .flash-up{ animation: flashUp .6s ease; }
+    .flash-down{ animation: flashDown .6s ease; }
+
+    .receipt-wrap{ flex:1; display:flex; flex-direction:column; animation: slideUp .5s ease, float 4s ease-in-out infinite; }
+    .receipt{ background:var(--surface); border:1px solid var(--line); border-radius:16px 16px 0 0; padding:26px 24px 20px; position:relative; box-shadow: 0 -10px 40px rgba(0,0,0,0.4); }
+    .receipt-tag{ font-family:var(--font-mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--blue); display:flex; justify-content:space-between; margin-bottom:14px; text-shadow: 0 0 10px rgba(0,240,255,0.4); }
+    .receipt-emoji{ font-size:50px; line-height:1; margin-bottom:12px; filter: drop-shadow(0 0 12px rgba(255,255,255,0.3)); }
+    .receipt-title{ font-size:24px; font-weight:900; margin:0 0 10px; line-height:1.3; color: var(--ink); text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+    .receipt-desc{ font-size:16px; color:#c9cddb; line-height:1.5; margin:0; }
+    
+    .perforation{ height:0; border-top:3px dashed var(--line); margin:0 24px; position:relative; }
+    .perforation::before, .perforation::after{ content:""; position:absolute; top:-10px; width:20px; height:20px; background:var(--bg); border-radius:50%; box-shadow: inset 0 4px 10px rgba(0,0,0,0.8); }
+    .perforation::before{ left:-34px; }
+    .perforation::after{ right:-34px; }
+
+    .receipt-options{ background:var(--surface); border:1px solid var(--line); border-top:none; padding:20px 20px 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+    .choice{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--surface-2); color:var(--ink); border:1px solid var(--line); border-radius:14px; padding:18px 20px; margin-bottom:14px; text-align:left; font-size:16px; font-weight:700; transition: all .2s cubic-bezier(0.4, 0, 0.2, 1); }
+    .choice:hover{ border-color:var(--lime); background:#1d263b; transform:translateY(-4px) scale(1.02); box-shadow: 0 8px 25px rgba(198,255,61,0.25); }
+    .choice:active{ transform:translateY(0) scale(0.98); }
+    .choice-cost{ font-family:var(--font-mono); font-weight:900; font-size:16px; padding:6px 12px; border-radius:8px; }
+    .cost-neg{ color:var(--coral); background:rgba(255,42,95,0.15); text-shadow: 0 0 10px rgba(255,42,95,0.5); }
+    .cost-pos{ color:var(--lime); background:rgba(198,255,61,0.15); text-shadow: 0 0 10px rgba(198,255,61,0.5); }
+    .cost-zero{ color:var(--muted); background:rgba(255,255,255,0.08); }
+
+    .torn-edge{ height:18px; background: linear-gradient(135deg, transparent 50%, var(--bg) 50%) 0 0/18px 18px repeat-x, linear-gradient(-135deg, transparent 50%, var(--bg) 50%) 0 0/18px 18px repeat-x; margin-top:0; }
+
+    .consequence-card{ background:var(--surface); border:1px solid var(--line); box-shadow: 0 10px 50px rgba(0,0,0,0.6); border-radius:18px; padding:28px 24px; animation: slideUp .4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .consequence-title{ font-size:20px; font-weight:900; margin:0 0 12px; }
+    .consequence-text{ font-size:16px; color:#c9cddb; line-height:1.6; margin:0 0 20px; }
+    .tip-box{ display:flex; gap:12px; align-items:flex-start; background:rgba(255,215,0,0.08); border:1px solid rgba(255,215,0,0.3); box-shadow: 0 0 20px rgba(255,215,0,0.1); border-radius:12px; padding:16px; font-size:15px; color:#fff9e6; line-height:1.5; }
+    .tip-box b{ color:var(--gold); text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+    .btn-continue{ width:100%; margin-top:24px; background:var(--ink); color:#000; font-weight:900; font-size:17px; padding:18px; border-radius:14px; text-transform: uppercase; transition: all 0.2s; }
+    .btn-continue:hover{ background:var(--blue); transform:translateY(-3px); box-shadow: 0 8px 25px rgba(0,240,255,0.4); }
+
+    .info-card{ background:var(--surface); border:1px solid var(--line); box-shadow: 0 10px 50px rgba(0,0,0,0.5); border-radius:18px; padding:32px 24px; text-align:center; animation: slideUp .4s ease, float 4s ease-in-out infinite; }
+    .info-emoji{ font-size:55px; margin-bottom:16px; filter: drop-shadow(0 0 20px rgba(255,255,255,0.4));}
+    .info-title{ font-size:22px; font-weight:900; margin:0 0 10px; }
+    .info-text{ font-size:16px; color:var(--muted); margin:0 0 10px; line-height:1.6; }
+    .mandatory-amount{ font-family:var(--font-mono); font-size:36px; font-weight:900; color:var(--coral); margin:16px 0; text-shadow: 0 0 20px rgba(255,42,95,0.7); }
+
+    .end-screen{ flex:1; display:flex; flex-direction:column; animation: slideUp .6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+    .end-header{ text-align:center; margin-bottom:24px; }
+    .end-title{ font-size:38px; font-weight:900; margin:0 0 8px; text-shadow: 0 0 20px rgba(255,255,255,0.4); }
+    .end-rank{ display:inline-block; margin-top:12px; font-family:var(--font-mono); font-size:18px; font-weight:900; padding:12px 26px; border-radius:999px; border:2px solid; box-shadow: 0 0 30px rgba(0,0,0,0.4); }
+    
+    .end-stats{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:24px 0; }
+    .end-stat{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; text-align:center; transition: transform 0.3s; }
+    .end-stat:hover{ transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+    .end-stat-label{ font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; font-weight: 700; }
+    .end-stat-value{ font-family:var(--font-mono); font-weight:900; font-size:26px; margin-top:6px; }
+
+    .end-notes{ display:flex; flex-direction:column; gap:14px; margin:10px 0 26px; }
+    .note-row{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px 18px; font-size:15px; line-height:1.5; }
+    .note-row b{ display:block; font-size:13px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+    .note-good b{ color:var(--lime); text-shadow: 0 0 10px rgba(198,255,61,0.5); }
+    .note-bad b{ color:var(--coral); text-shadow: 0 0 10px rgba(255,42,95,0.5); }
+    .note-tip b{ color:var(--blue); text-shadow: 0 0 10px rgba(0,240,255,0.5); }
+
+    .end-actions{ display:flex; gap:14px; margin-top:auto; }
+    .end-actions button{ flex:1; padding: 18px; font-size: 16px; border-radius: 12px; font-weight: 900; text-transform: uppercase; }
+    
+    .seg-green{ background:var(--lime) !important; box-shadow: 0 0 15px rgba(198,255,61,0.8); }
+    .seg-yellow{ background:var(--amber) !important; box-shadow: 0 0 15px rgba(255,194,75,0.8); }
+    .seg-red{ background:var(--coral) !important; box-shadow: 0 0 15px rgba(255,42,95,0.8); }
+
+    @keyframes billFall {
+        0% { transform: translateY(-10vh) rotate(0deg) scale(1); opacity: 1; }
+        100% { transform: translateY(110vh) rotate(360deg) scale(1.5); opacity: 0; }
+    }
+    .fx-bill {
+        position: absolute; font-size: 3rem; filter: drop-shadow(0 0 10px rgba(255,42,95,0.5));
+    }
+
+    @keyframes stonksAnim {
+        0% { transform: translate(-20vw, 100vh) scale(0.5) rotate(-15deg); opacity: 0; }
+        20% { opacity: 1; transform: translate(10vw, 60vh) scale(1.2) rotate(-5deg); }
+        80% { opacity: 1; transform: translate(70vw, 10vh) scale(1.5) rotate(5deg); }
+        100% { transform: translate(120vw, -20vh) scale(2) rotate(15deg); opacity: 0; }
+    }
+    .fx-stonks {
+        position: absolute; display: flex; align-items: center; gap: 20px;
+        font-family: var(--font-display); font-weight: 900; font-size: 5rem;
+        color: var(--lime); text-shadow: 0 0 40px var(--lime), 0 0 80px rgba(198,255,61,0.8);
+        filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+    }
+    .fx-stonks span { font-size: 6rem; }
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<div id="fx-layer"></div>
+<div id="app"></div>
+<script>
+const cvs = document.getElementById('bgCanvas');
+const ctx = cvs.getContext('2d');
+let chars = [];
+const cols = ['#c6ff3d', '#ff2a85', '#00f0ff', '#ffd700'];
+
+function resize(){ cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+window.addEventListener('resize', resize); resize();
+
+for(let i=0; i<60; i++){
+    chars.push({
+        x: Math.random() * cvs.width,
+        y: Math.random() * cvs.height,
+        s: Math.random() * 20 + 10,
+        vx: (Math.random() - 0.5) * 1,
+        vy: (Math.random() - 0.5) * 1,
+        c: cols[Math.floor(Math.random() * cols.length)]
+    });
+}
+
+function drawBg(){
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    for(let i=0; i<chars.length; i++){
+        for(let j=i; j<chars.length; j++){
+            let dx = chars[i].x - chars[j].x, dy = chars[i].y - chars[j].y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 150){
+                ctx.beginPath(); ctx.strokeStyle = chars[i].c;
+                ctx.globalAlpha = 1 - (dist/150); ctx.lineWidth = 1;
+                ctx.moveTo(chars[i].x, chars[i].y); ctx.lineTo(chars[j].x, chars[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+    chars.forEach(p => {
+        ctx.globalAlpha = 1; ctx.shadowBlur = 15; ctx.shadowColor = p.c;
+        ctx.fillStyle = p.c; ctx.font = p.s + "px monospace";
+        ctx.fillText("$", p.x, p.y); ctx.shadowBlur = 0;
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -30) p.x = cvs.width + 30; if(p.x > cvs.width + 30) p.x = -30;
+        if(p.y < -30) p.y = cvs.height + 30; if(p.y > cvs.height + 30) p.y = -30;
+    });
+    requestAnimationFrame(drawBg);
+}
+drawBg();
+
+function fxGastos(){
+    const layer = document.getElementById('fx-layer');
+    for(let i=0; i<25; i++){
+        let b = document.createElement('div');
+        b.className = 'fx-bill';
+        b.innerText = ['💸','📉','🧾','🩸'][Math.floor(Math.random()*4)];
+        b.style.left = (Math.random() * 100) + 'vw';
+        b.style.animation = `billFall ${Math.random()*1.5 + 1.5}s linear ${Math.random()*0.5}s forwards`;
+        layer.appendChild(b);
+        setTimeout(()=>b.remove(), 4000);
+    }
+}
+
+function fxStonks(){
+    const layer = document.getElementById('fx-layer');
+    let s = document.createElement('div');
+    s.className = 'fx-stonks';
+    s.innerHTML = '<span>📈</span> STONKS';
+    s.style.animation = 'stonksAnim 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards';
+    layer.appendChild(s);
+    setTimeout(()=>s.remove(), 3000);
+}
+
+const TOTAL_DAYS = 30, GOAL_AMOUNT = 200;
+let state = null;
+
+function getInitialState(){
+    return { day: 1, money: 600, savings: 100, debt: 0, goal: GOAL_AMOUNT, health: 68, impulsiveSpent: 0, goodDecisions: 0, badDecisions: 0, usedEventIds: [], lastEventId: null, decisions: [], pendingEvent: null, gameOver: false };
+}
+
+const MANDATORY_EXPENSES = {
+    7: { label: "Alquiler / vivienda", amount: 150 }, 14: { label: "Celular", amount: 30 },
+    21: { label: "Internet", amount: 25 }, 28: { label: "Streaming", amount: 15 }
+};
+
+const EVENTS = [
+    { id:"e1", emoji:"🎉", title:"Salida", desc:"Amigos te invitan. $40.", options:[ {label:"Salir",cost:"-$40",apply:()=>({money:-40,quality:-1,impulse:true,consequence:"Te divertiste y gastaste.",tip:"Divertirte importa, pero cuesta."})}, {label:"Plan barato",cost:"-$15",apply:()=>({money:-15,quality:1,consequence:"Alternativa económica.",tip:"Opciones baratas salvan la meta."})}, {label:"No salir",cost:"$0",apply:()=>({money:0,quality:2,consequence:"Te quedaste en casa.",tip:"Saber decir 'no' es vital."})} ]},
+    { id:"e2", emoji:"🧥", title:"Ropa", desc:"Chaqueta en rebaja por $70.", options:[ {label:"Comprar",cost:"-$70",apply:()=>({money:-70,quality:-2,impulse:true,consequence:"Compraste impulsivamente.",tip:"Las compras impulsivas duelen."})}, {label:"Pensarlo",cost:"$0",apply:()=>({money:0,quality:2,consequence:"Esperaste y no compraste.",tip:"La regla de 24h ayuda."})}, {label:"Buscar barato",cost:"-$30",apply:()=>({money:-30,quality:0,consequence:"Compraste algo similar.",tip:"Comparar siempre es bueno."})} ]},
+    { id:"e3", emoji:"🐕", title:"Veterinario", desc:"Mascota mal. $60.", options:[ {label:"Pagar",cost:"-$60",apply:()=>({money:-60,quality:1,consequence:"Gasto necesario en salud.",tip:"Para esto es el fondo de emergencia."})}, {label:"Prestar",cost:"+$60 deuda",apply:()=>({debt:60,quality:-1,consequence:"Adquiriste deuda por urgencia.",tip:"A veces la deuda es inevitable."})}, {label:"Esperar",cost:"$0",apply:()=>({money:0,quality:-2,consequence:"Esperaste y fue riesgoso.",tip:"No pospongas emergencias."})} ]},
+    { id:"e4", emoji:"🎓", title:"Curso", desc:"Curso en oferta $40.", options:[ {label:"Comprar",cost:"-$40",apply:()=>({money:-40,quality:2,consequence:"Invertiste en educación.",tip:"Educación es inversión."})}, {label:"Gratis",cost:"$0",apply:()=>({money:0,quality:1,consequence:"Aprenderás solo.",tip:"Autodidacta ahorra dinero."})}, {label:"Extras",cost:"-$65",apply:()=>({money:-65,quality:0,impulse:true,consequence:"Compraste de más.",tip:"No te excedas en ofertas."})} ]},
+    { id:"e5", emoji:"🔧", title:"Hogar", desc:"Fuga de agua. $55.", options:[ {label:"Plomero",cost:"-$55",apply:()=>({money:-55,quality:1,consequence:"Se arregló rápido.",tip:"Mantenimiento es gasto fijo."})}, {label:"Tu mismo",cost:"-$15",apply:()=>({money:-15,quality:0,consequence:"Arreglo temporal.",tip:"Ahorras si sabes hacerlo."})}, {label:"Ignorar",cost:"$0",apply:()=>({money:0,quality:-2,consequence:"Empeorará pronto.",tip:"Ignorar problemas cuesta caro."})} ]}
+];
+
+const SPECIAL = { id:"esp", emoji:"🚨", title:"EMERGENCIA", desc:"Celular falló.", special:true, options:[ {label:"Reparar",cost:"-$80",apply:()=>({money:-80,quality:1,consequence:"Reparado.",tip:"Usa tu fondo."})}, {label:"Nuevo",cost:"-$300",apply:()=>({money:-300,quality:-2,impulse:true,consequence:"Gasto gigante.",tip:"Piensa en crisis."})}, {label:"Prestar",cost:"$0",apply:()=>({money:0,quality:0,consequence:"Te prestaron uno.",tip:"Solución creativa."})} ]};
+
+function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+function fmt(n){ return (n<0?"-$":"$") + Math.abs(Math.round(n)); }
+
+function pickEvent(){
+    if(state.day === 17) return SPECIAL;
+    if(Math.random() < 0.15) return null; 
+    const pool = EVENTS.filter(e => e.id !== state.lastEventId);
+    return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function recompute(){
+    let h = 50 + (state.money/600)*22 + (state.savings/state.goal)*20 - (state.debt/300)*28 - Math.min(20, state.impulsiveSpent/25) + state.goodDecisions*1.2 - state.badDecisions*1.5;
+    state.health = clamp(Math.round(h), 0, 100);
+}
+
+function hColor(){ return state.health>=60?"seg-green":state.health>=30?"seg-yellow":"seg-red"; }
+
+const app = document.getElementById("app");
+
+function renderStart(){
+    app.innerHTML = `<div class="start-screen"><div class="start-badge">Simulador Neón</div><h1 class="start-title">SOBREVIVE<br>AL MES</h1><p class="start-desc">Administra tu dinero, toma decisiones y pon a prueba tus habilidades.</p><button class="btn-primary" id="startBtn">COMENZAR EL RETO</button></div>`;
+    document.getElementById("startBtn").addEventListener("click", tutorial);
+}
+
+function tutorial(){
+    app.innerHTML = `<div class="tutorial-screen"><h2 style="margin:0;font-size:36px;text-shadow:0 0 15px rgba(0,240,255,0.5);color:var(--blue);">Instrucciones</h2><div class="tut-box"><span class="icon">💰</span> <b>Dinero:</b> Empiezas con $600. Llegas a $0 = pierdes.</div><div class="tut-box"><span class="icon">🎯</span> <b>Meta:</b> Acumula $200 ahorrados.</div><div class="tut-box"><span class="icon">🧾</span> <b>Fijos:</b> Cobros automáticos días 7, 14, 21, 28.</div><div class="tut-box"><span class="icon">❤️</span> <b>Salud:</b> Buenas decisiones = gráfica arriba.</div><button class="btn-primary" id="playBtn">¡A JUGAR!</button></div>`;
+    document.getElementById("playBtn").addEventListener("click", ()=>{ state = getInitialState(); runDay(); });
+}
+
+function hudHtml(){
+    let segs = "";
+    for(let i=0;i<10;i++) segs += `<div class="health-seg ${i<Math.round(state.health/10)?hColor():''}"></div>`;
+    let pct = clamp(Math.round((state.savings/state.goal)*100),0,100);
+    return `<div class="hud"><div class="hud-top"><div class="day-pill">📅 Día <b>${state.day}</b>/${TOTAL_DAYS}</div><div class="health-wrap"><span>Salud</span><div class="health-bars">${segs}</div></div></div><div class="stats-row"><div class="stat-card"><div class="stat-label">💰 Dinero</div><div class="stat-value money" id="statMoney">${fmt(state.money)}</div></div><div class="stat-card"><div class="stat-label">🏦 Ahorro</div><div class="stat-value savings" id="statSavings">${fmt(state.savings)}</div></div><div class="stat-card"><div class="stat-label">💳 Deuda</div><div class="stat-value debt" id="statDebt">${fmt(state.debt)}</div></div></div><div class="goal-track"><div class="goal-track-top"><span>🎯 Progreso meta</span><span>${pct}%</span></div><div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${pct}%"></div></div></div></div>`;
+}
+
+function runDay(){
+    if(state.day > TOTAL_DAYS) return end("victory");
+    let m = MANDATORY_EXPENSES[state.day];
+    if(m){
+        app.innerHTML = `${hudHtml()}<div class="receipt-wrap"><div class="info-card"><div class="info-emoji">🧾</div><div class="info-title">Gasto fijo</div><div class="info-text">${m.label}</div><div class="mandatory-amount">-${fmt(m.amount)}</div><button class="btn-continue" id="mBtn">PAGAR</button></div></div>`;
+        document.getElementById("mBtn").addEventListener("click", ()=>{ fxGastos(); state.money -= m.amount; recompute(); if(state.money<0) return end("defeat"); doEvt(); });
+    } else doEvt();
+}
+
+function doEvt(){
+    let e = pickEvent();
+    if(!e){
+        app.innerHTML = `${hudHtml()}<div class="receipt-wrap"><div class="info-card"><div class="info-emoji">🌤️</div><div class="info-title">Día tranquilo</div><div class="info-text">Sin gastos extra.</div><button class="btn-continue" id="fBtn">AVANZAR</button></div></div>`;
+        document.getElementById("fBtn").addEventListener("click", ()=>{ state.day++; runDay(); });
+        return;
+    }
+    state.pendingEvent = e;
+    let opts = e.options.map((o,i)=>{
+        let c = o.cost.includes("-")?"cost-neg":o.cost.includes("+")?"cost-pos":"cost-zero";
+        return `<button class="choice" data-i="${i}"><span>${o.label}</span><span class="choice-cost ${c}">${o.cost}</span></button>`;
+    }).join("");
+    app.innerHTML = `${hudHtml()}<div class="receipt-wrap"><div class="receipt"><div class="receipt-tag"><span>DÍA ${state.day}</span><span>EVENTO</span></div><div class="receipt-emoji">${e.emoji}</div><h2 class="receipt-title">${e.title}</h2><p class="receipt-desc">${e.desc}</p></div><div class="perforation"></div><div class="receipt-options">${opts}</div><div class="torn-edge"></div></div>`;
+    document.querySelectorAll(".choice").forEach(b=>b.addEventListener("click", ()=>resolve(e, e.options[b.dataset.i])));
+}
+
+function resolve(e, o){
+    let r = o.apply();
+    if(r.money) state.money += r.money; if(r.savings) state.savings += r.savings; if(r.debt) state.debt += r.debt;
+    if(r.impulse && r.money) state.impulsiveSpent += Math.abs(r.money);
+    if(r.quality >= 1) state.goodDecisions++; if(r.quality <= -1) state.badDecisions++;
+    state.decisions.push({day:state.day, label:o.label, quality:r.quality}); state.lastEventId = e.id;
+    recompute();
+    if(r.money < 0) fxGastos(); if(r.quality >= 1) fxStonks();
+    app.innerHTML = `${hudHtml()}<div class="receipt-wrap"><div class="consequence-card"><h3 class="consequence-title">${r.quality>=1?"✅":r.quality<=-1?"⚠️":"➖"} ${o.label}</h3><p class="consequence-text">${r.consequence}</p><div class="tip-box"><span>💡</span><div><b>Lección:</b> ${r.tip}</div></div><button class="btn-continue" id="cBtn">CONTINUAR</button></div></div>`;
+    let fm = document.getElementById("statMoney"), fs = document.getElementById("statSavings"), fd = document.getElementById("statDebt");
+    if(r.money) { fm.classList.remove("flash-up","flash-down"); void fm.offsetWidth; fm.classList.add(r.money>0?"flash-up":"flash-down"); }
+    if(r.savings){ fs.classList.remove("flash-up","flash-down"); void fs.offsetWidth; fs.classList.add("flash-up"); }
+    if(r.debt){ fd.classList.remove("flash-up","flash-down"); void fd.offsetWidth; fd.classList.add("flash-down"); }
+    document.getElementById("cBtn").addEventListener("click", ()=>{ if(state.money<0) return end("defeat"); state.day++; runDay(); });
+}
+
+function end(t){
+    recompute();
+    let s = clamp(Math.round(state.health*0.55 + clamp((state.savings/state.goal)*100,0,100)*0.25 + (state.debt===0?20:Math.max(0,20-state.debt/15)) - Math.min(15,state.impulsiveSpent/20)),0,100);
+    let r = s>=90?{e:"🏆",l:"EXPERTO",c:"var(--lime)"}:s>=70?{e:"🥇",l:"BUENO",c:"var(--blue)"}:s>=50?{e:"🥈",l:"APRENDIZ",c:"var(--amber)"}:{e:"🚨",l:"PELIGRO",c:"var(--coral)"};
+    let b = state.decisions.reduce((p,c)=>p.quality>c.quality?p:c,state.decisions[0]);
+    let w = state.decisions.reduce((p,c)=>p.quality<c.quality?p:c,state.decisions[0]);
+    app.innerHTML = `<div class="end-screen"><div class="end-header"><h1 class="end-title">${t==="victory"?"COMPLETADO":"SIN DINERO"}</h1><div class="end-rank" style="color:${r.c};border-color:${r.c};text-shadow:0 0 15px ${r.c}">${r.e} ${r.l}</div></div><div class="end-stats"><div class="end-stat"><div class="end-stat-label">💰 Dinero</div><div class="end-stat-value money">${fmt(Math.max(0,state.money))}</div></div><div class="end-stat"><div class="end-stat-label">🏦 Ahorros</div><div class="end-stat-value savings">${fmt(state.savings)}</div></div><div class="end-stat"><div class="end-stat-label">💳 Deuda</div><div class="end-stat-value debt">${fmt(state.debt)}</div></div><div class="end-stat"><div class="end-stat-label">📊 Salud</div><div class="end-stat-value">${state.health}/100</div></div></div><div class="end-notes">${b?`<div class="note-row note-good"><b>Mejor</b>Día ${b.day}: ${b.label}</div>`:""}${w?`<div class="note-row note-bad"><b>Peor</b>Día ${w.day}: ${w.label}</div>`:""}</div><button class="btn-primary" id="rBtn">REINTENTAR</button></div>`;
+    document.getElementById("rBtn").addEventListener("click", renderStart);
+}
+renderStart();
+</script>
+</body>
+</html>

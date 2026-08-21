@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobrevive al Mes</title>
+<style>
+    /* ============================================================
+       TOKENS DE DISEÑO
+       Estética: "ticket / recibo de caja registradora" — cada evento
+       se presenta como un recibo que se "imprime" y luego se arranca.
+       Los números usan tipografía monoespaciada (estilo cajero/ATM),
+       los títulos usan una tipografía de sistema bien pesada.
+    ============================================================ */
+    :root{
+        --bg:#10131a;
+        --surface:#1b1f29;
+        --surface-2:#242938;
+        --ink:#f5f3ee;
+        --muted:#8a90a3;
+        --line:#333a4d;
+
+        --lime:#c6ff3d;       /* dinero / positivo */
+        --lime-dim:#8fbf2b;
+        --coral:#ff5c6c;      /* deuda / peligro */
+        --amber:#ffc24b;      /* precaución */
+        --blue:#5cc8ff;       /* ahorro / meta */
+
+        --font-display: -apple-system, "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+        --font-mono: "SF Mono", "Consolas", "Menlo", "Courier New", monospace;
+
+        --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    @media (prefers-reduced-motion: reduce){
+        *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+
+    html, body{
+        margin:0; padding:0; min-height:100vh;
+        background:
+            radial-gradient(circle at 15% 0%, #1a2030 0%, transparent 45%),
+            radial-gradient(circle at 90% 100%, #1a1d2a 0%, transparent 45%),
+            var(--bg);
+        color:var(--ink);
+        font-family:var(--font-display);
+        -webkit-font-smoothing:antialiased;
+    }
+
+    #app{
+        max-width:520px;
+        margin:0 auto;
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+        padding:18px 16px 40px;
+    }
+
+    /* ---------- utilidades ---------- */
+    .mono{ font-family:var(--font-mono); }
+    .center{ text-align:center; }
+    .hidden{ display:none !important; }
+    button{ font-family:inherit; cursor:pointer; border:none; outline:none; }
+    button:focus-visible, .choice:focus-visible{ box-shadow: 0 0 0 3px var(--lime); }
+
+    /* ============================================================
+       PANTALLA DE INICIO
+    ============================================================ */
+    .start-screen{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        text-align:center;
+        gap:14px;
+        padding:20px 8px;
+        animation: fadeIn .5s ease;
+    }
+    .start-badge{
+        font-family:var(--font-mono);
+        letter-spacing:.18em;
+        font-size:12px;
+        color:var(--lime);
+        background:rgba(198,255,61,0.1);
+        border:1px solid rgba(198,255,61,0.35);
+        border-radius:999px;
+        padding:6px 14px;
+        text-transform:uppercase;
+    }
+    .start-title{
+        font-size:44px;
+        font-weight:900;
+        letter-spacing:-0.02em;
+        line-height:1.05;
+        margin:6px 0 0;
+        background:linear-gradient(120deg, var(--ink), var(--lime) 90%);
+        -webkit-background-clip:text;
+        background-clip:text;
+        color:transparent;
+    }
+    .start-sub{
+        font-size:17px;
+        color:var(--muted);
+        margin:0;
+        max-width:340px;
+    }
+    .start-desc{
+        font-size:14.5px;
+        color:var(--muted);
+        max-width:360px;
+        line-height:1.5;
+        margin:2px 0 10px;
+    }
+    .goal-chip{
+        display:flex; align-items:center; gap:8px;
+        background:var(--surface);
+        border:1px solid var(--line);
+        border-radius:14px;
+        padding:10px 16px;
+        font-size:14px;
+    }
+    .goal-chip b{ color:var(--blue); }
+    .btn-primary{
+        margin-top:14px;
+        background:var(--lime);
+        color:#10130a;
+        font-weight:800;
+        font-size:16px;
+        letter-spacing:.02em;
+        padding:15px 38px;
+        border-radius:14px;
+        box-shadow: 0 8px 24px rgba(198,255,61,0.25);
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(198,255,61,0.35); }
+    .btn-primary:active{ transform:translateY(0); }
+    .btn-secondary{
+        background:transparent;
+        color:var(--ink);
+        border:1px solid var(--line);
+        font-weight:600;
+        font-size:14px;
+        padding:12px 26px;
+        border-radius:12px;
+        margin-top:10px;
+        transition: border-color .15s ease, background .15s ease;
+    }
+    .btn-secondary:hover{ border-color:var(--lime); background:rgba(198,255,61,0.06); }
+
+    /* ============================================================
+       HUD
+    ============================================================ */
+    .hud{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        margin-bottom:16px;
+    }
+    .hud-top{
+        display:flex; align-items:center; justify-content:space-between;
+    }
+    .day-pill{
+        font-family:var(--font-mono);
+        font-size:13px;
+        background:var(--surface);
+        border:1px solid var(--line);
+        padding:6px 12px;
+        border-radius:999px;
+        color:var(--muted);
+    }
+    .day-pill b{ color:var(--ink); }
+    .health-wrap{
+        display:flex; align-items:center; gap:8px;
+        font-size:11px; color:var(--muted); flex:1; margin-left:12px;
+    }
+    .health-bars{
+        display:flex; gap:3px; flex:1;
+    }
+    .health-seg{
+        height:9px; flex:1; border-radius:2px;
+        background:var(--surface-2);
+        transition: background .3s ease;
+    }
+    .stats-row{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:8px;
+    }
+    .stat-card{
+        background:var(--surface);
+        border:1px solid var(--line);
+        border-radius:12px;
+        padding:9px 8px;
+        text-align:center;
+        transition: transform .2s ease;
+    }
+    .stat-label{ font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+    .stat-value{ font-family:var(--font-mono); font-weight:700; font-size:16px; margin-top:2px; }
+    .stat-value.money{ color:var(--lime); }
+    .stat-value.savings{ color:var(--blue); }
+    .stat-value.debt{ color:var(--coral); }
+
+    .goal-track{
+        background:var(--surface);
+        border:1px solid var(--line);
+        border-radius:12px;
+        padding:10px 12px;
+        font-size:12px;
+        color:var(--muted);
+    }
+    .goal-track-top{ display:flex; justify-content:space-between; margin-bottom:6px; }
+    .goal-bar-bg{ height:7px; background:var(--surface-2); border-radius:4px; overflow:hidden; }
+    .goal-bar-fill{ height:100%; background:linear-gradient(90deg, var(--blue), var(--lime)); border-radius:4px; transition: width .5s ease; }
+
+    /* flash animations for stat changes */
+    @keyframes flashUp{ 0%{ transform:scale(1);} 30%{ transform:scale(1.12); color:var(--lime);} 100%{ transform:scale(1);} }
+    @keyframes flashDown{ 0%{ transform:scale(1);} 30%{ transform:scale(1.12); color:var(--coral);} 100%{ transform:scale(1);} }
+    .flash-up{ animation: flashUp .5s ease; }
+    .flash-down{ animation: flashDown .5s ease; }
+    @keyframes cardPop{ 0%{ transform:scale(1);} 50%{ transform:scale(1.03);} 100%{ transform:scale(1);} }
+    .card-pop{ animation:cardPop .35s ease; }
+
+    /* ============================================================
+       TARJETA "RECIBO" — elemento distintivo del juego
+    ============================================================ */
+    .receipt-wrap{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        animation: dropIn .4s ease;
+    }
+    @keyframes dropIn{
+        from{ opacity:0; transform:translateY(-14px);}
+        to{ opacity:1; transform:translateY(0);}
+    }
+    .receipt{
+        background:var(--surface);
+        border:1px solid var(--line);
+        border-radius:14px 14px 0 0;
+        padding:20px 20px 16px;
+        position:relative;
+    }
+    .receipt-tag{
+        font-family:var(--font-mono);
+        font-size:11px;
+        letter-spacing:.14em;
+        text-transform:uppercase;
+        color:var(--muted);
+        display:flex; justify-content:space-between;
+        margin-bottom:10px;
+    }
+    .receipt-emoji{ font-size:38px; line-height:1; margin-bottom:6px; }
+    .receipt-title{ font-size:19px; font-weight:800; margin:0 0 8px; line-height:1.3; }
+    .receipt-desc{ font-size:14.5px; color:#c9cddb; line-height:1.5; margin:0; }
+    .receipt-note{
+        margin-top:12px;
+        font-family:var(--font-mono);
+        font-size:12px;
+        color:var(--amber);
+        background:rgba(255,194,75,0.08);
+        border:1px dashed rgba(255,194,75,0.4);
+        border-radius:8px;
+        padding:8px 10px;
+    }
+    /* borde perforado tipo boleto */
+    .perforation{
+        height:0;
+        border-top:2px dashed var(--line);
+        margin:0 20px;
+        position:relative;
+    }
+    .perforation::before, .perforation::after{
+        content:"";
+        position:absolute; top:-8px;
+        width:16px; height:16px;
+        background:var(--bg);
+        border-radius:50%;
+    }
+    .perforation::before{ left:-28px; }
+    .perforation::after{ right:-28px; }
+
+    .receipt-options{
+        background:var(--surface);
+        border:1px solid var(--line);
+        border-top:none;
+        padding:14px 16px 4px;
+    }
+    .choice{
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        background:var(--surface-2);
+        color:var(--ink);
+        border:1px solid var(--line);
+        border-radius:12px;
+        padding:13px 15px;
+        margin-bottom:10px;
+        text-align:left;
+        font-size:14.5px;
+        font-weight:600;
+        transition: border-color .15s ease, transform .1s ease, background .15s ease;
+    }
+    .choice:hover{ border-color:var(--lime); background:#2a3040; transform:translateY(-1px); }
+    .choice:active{ transform:translateY(0); }
+    .choice-cost{
+        font-family:var(--font-mono);
+        font-weight:700;
+        font-size:13.5px;
+        white-space:nowrap;
+        padding:3px 9px;
+        border-radius:7px;
+    }
+    .cost-neg{ color:var(--coral); background:rgba(255,92,108,0.12); }
+    .cost-pos{ color:var(--lime); background:rgba(198,255,61,0.12); }
+    .cost-zero{ color:var(--muted); background:rgba(255,255,255,0.05); }
+
+    .torn-edge{
+        height:14px;
+        background:
+            linear-gradient(135deg, transparent 50%, var(--bg) 50%) 0 0/14px 14px repeat-x,
+            linear-gradient(-135deg, transparent 50%, var(--bg) 50%) 0 0/14px 14px repeat-x;
+        margin-top:0;
+    }
+
+    /* pantalla de consecuencia */
+    .consequence-card{
+        background:var(--surface);
+        border:1px solid var(--line);
+        border-radius:16px;
+        padding:22px 20px;
+        animation: dropIn .35s ease;
+    }
+    .consequence-title{ font-size:16px; font-weight:800; margin:0 0 8px; }
+    .consequence-text{ font-size:14.5px; color:#c9cddb; line-height:1.55; margin:0 0 14px; }
+    .tip-box{
+        display:flex; gap:10px; align-items:flex-start;
+        background:rgba(92,200,255,0.08);
+        border:1px solid rgba(92,200,255,0.3);
+        border-radius:10px;
+        padding:11px 13px;
+        font-size:13px;
+        color:#cfe9fb;
+        line-height:1.5;
+    }
+    .tip-box b{ color:var(--blue); }
+    .btn-continue{
+        width:100%;
+        margin-top:18px;
+        background:var(--ink);
+        color:#12141b;
+        font-weight:800;
+        font-size:15px;
+        padding:14px;
+        border-radius:12px;
+    }
+    .btn-continue:hover{ background:var(--lime); }
+
+    /* pantalla dia libre / gasto obligatorio */
+    .info-card{
+        background:var(--surface);
+        border:1px solid var(--line);
+        border-radius:16px;
+        padding:26px 20px;
+        text-align:center;
+        animation: dropIn .35s ease;
+    }
+    .info-emoji{ font-size:40px; margin-bottom:8px;}
+    .info-title{ font-size:17px; font-weight:800; margin:0 0 6px; }
+    .info-text{ font-size:14px; color:var(--muted); margin:0 0 6px; line-height:1.5; }
+    .mandatory-amount{ font-family:var(--font-mono); font-size:26px; font-weight:800; color:var(--coral); margin:8px 0; }
+
+    /* ============================================================
+       PANTALLA FINAL
+    ============================================================ */
+    .end-screen{ flex:1; display:flex; flex-direction:column; animation: fadeIn .5s ease; }
+    @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+    .end-header{ text-align:center; margin-bottom:18px; }
+    .end-title{ font-size:30px; font-weight:900; margin:0 0 4px; }
+    .end-rank{
+        display:inline-block; margin-top:8px;
+        font-family:var(--font-mono);
+        font-size:14px; font-weight:700;
+        padding:8px 18px; border-radius:999px;
+        border:1px solid var(--line);
+    }
+    .end-score{ font-size:13px; color:var(--muted); margin-top:8px; }
+    .end-score b{ font-family:var(--font-mono); font-size:20px; color:var(--ink); }
+
+    .end-stats{
+        display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0;
+    }
+    .end-stat{
+        background:var(--surface); border:1px solid var(--line); border-radius:12px;
+        padding:12px; text-align:center;
+    }
+    .end-stat-label{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+    .end-stat-value{ font-family:var(--font-mono); font-weight:800; font-size:19px; margin-top:3px; }
+
+    .end-notes{ display:flex; flex-direction:column; gap:10px; margin:6px 0 18px; }
+    .note-row{
+        background:var(--surface); border:1px solid var(--line); border-radius:12px;
+        padding:12px 14px; font-size:13.5px; line-height:1.5;
+    }
+    .note-row b{ display:block; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+    .note-good b{ color:var(--lime); }
+    .note-bad b{ color:var(--coral); }
+    .note-tip b{ color:var(--blue); }
+
+    .end-actions{ display:flex; gap:10px; margin-top:auto; }
+    .end-actions button{ flex:1; }
+
+    footer.credits{ text-align:center; font-size:11px; color:var(--muted); margin-top:22px; opacity:.6; }
+
+    /* health bar colors applied via JS through classes */
+    .seg-green{ background:var(--lime) !important; }
+    .seg-yellow{ background:var(--amber) !important; }
+    .seg-red{ background:var(--coral) !important; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =====================================================================
+   SOBREVIVE AL MES — juego educativo de finanzas personales
+   Vanilla JS, un solo archivo, sin dependencias externas.
+===================================================================== */
+
+/* ---------------------------------------------------------------
+   1. ESTADO DEL JUEGO
+---------------------------------------------------------------- */
+const TOTAL_DAYS = 30;
+const GOAL_AMOUNT = 200;
+
+let state = null;
+
+function getInitialState(){
+    return {
+        day: 1,
+        money: 600,
+        savings: 100,
+        debt: 0,
+        goal: GOAL_AMOUNT,
+        health: 68,               // salud financiera 0-100
+        impulsiveSpent: 0,        // total gastado en decisiones impulsivas
+        goodDecisions: 0,
+        badDecisions: 0,
+        usedEventIds: [],         // eventos ya usados (para no repetir)
+        lastEventId: null,
+        decisions: [],            // {label, quality, text}
+        pendingEvent: null,
+        gameOver: false
+    };
+}
+
+/* Gastos obligatorios automáticos en días fijos */
+const MANDATORY_EXPENSES = {
+    7:  { label: "Alquiler / cuota de vivienda", amount: 150 },
+    14: { label: "Factura del celular",          amount: 30  },
+    21: { label: "Internet",                     amount: 25  },
+    28: { label: "Suscripción de streaming",      amount: 15  }
+};
+
+/* ---------------------------------------------------------------
+   2. BANCO DE EVENTOS (15+ eventos aleatorios)
+   Cada opción define: label, cost (texto para mostrar),
+   apply(state) -> {money, savings, debt, quality, impulse, consequence, tip}
+---------------------------------------------------------------- */
+const EVENTS = [
+    {
+        id: "salida_amigos",
+        emoji: "🎉",
+        title: "Tus amigos te invitaron a salir",
+        desc: "Una noche completa con ellos cuesta $40.",
+        options: [
+            { label:"Salir toda la noche", cost:"-$40",
+              apply:()=>({ money:-40, quality:-1, impulse:true,
+                  consequence:"Decidiste salir. Te divertiste, pero gastaste $40 que podrías haber destinado a tu meta de ahorro.",
+                  tip:"Divertirte también importa, pero cada salida cara reduce lo que puedes ahorrar ese mes." }) },
+            { label:"Buscar un plan barato", cost:"-$15",
+              apply:()=>({ money:-15, quality:1,
+                  consequence:"Encontraste una alternativa más económica. Pasaste tiempo con tus amigos sin gastar de más.",
+                  tip:"Buscar alternativas más baratas te permite disfrutar sin sacrificar tus metas." }) },
+            { label:"No salir esta vez", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"Te quedaste en casa. No fue tan divertido, pero tu billetera te lo agradece.",
+                  tip:"Decir 'no' a un gasto de vez en cuando es una herramienta válida, no un fracaso social." }) }
+        ]
+    },
+    {
+        id: "ropa_impulsiva",
+        emoji: "🧥",
+        title: "Compra impulsiva de ropa",
+        desc: "Viste una chaqueta con descuento por $70. No la necesitas, pero te encantó.",
+        options: [
+            { label:"Comprarla ahora mismo", cost:"-$70",
+              apply:()=>({ money:-70, quality:-2, impulse:true,
+                  consequence:"Compraste la chaqueta. Se ve bien, pero no estaba en tu plan de gastos.",
+                  tip:"Las compras impulsivas suelen sentirse bien por poco tiempo y afectan tu presupuesto por mucho más." }) },
+            { label:"Pensarlo 24 horas", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"Esperaste un día. Al final decidiste que no la necesitabas tanto como creías.",
+                  tip:"La regla de las 24 horas ayuda a separar un deseo pasajero de una necesidad real." }) },
+            { label:"Buscar una opción más barata", cost:"-$30",
+              apply:()=>({ money:-30, quality:0,
+                  consequence:"Encontraste algo parecido por menos dinero. Buen punto medio.",
+                  tip:"Comparar precios antes de comprar es un hábito simple que ahorra bastante con el tiempo." }) }
+        ]
+    },
+    {
+        id: "emergencia_medica",
+        emoji: "🤒",
+        title: "Emergencia médica",
+        desc: "Te sientes mal desde ayer y no mejora. Una consulta cuesta $50.",
+        options: [
+            { label:"Ir al médico", cost:"-$50",
+              apply:(s)=>({ money:-50, quality:1,
+                  consequence: s.savings>=100
+                    ? "Fuiste al médico. Gracias a tu fondo de emergencia, este gasto no puso en riesgo tu mes."
+                    : "Fuiste al médico. El gasto dolió, pero cuidar tu salud siempre es prioridad.",
+                  tip:"Un fondo de emergencia existe justamente para cubrir imprevistos como este sin desestabilizar tus finanzas." }) },
+            { label:"Automedicarte", cost:"-$10",
+              apply:()=>({ money:-10, quality:-1,
+                  consequence:"Gastaste menos, pero te arriesgaste sin saber realmente qué tenías.",
+                  tip:"Ahorrar en salud a veces sale más caro después. No siempre lo más barato es lo más inteligente." }) },
+            { label:"Ignorarlo y esperar", cost:"$0",
+              apply:()=>({ money:0, quality:-2,
+                  consequence:"Decidiste esperar. No gastaste nada, pero el malestar siguió varios días más.",
+                  tip:"Postergar un problema de salud puede convertir un gasto pequeño en uno mucho mayor." }) }
+        ]
+    },
+    {
+        id: "reparacion_pc",
+        emoji: "💻",
+        title: "Tu computadora falla",
+        desc: "La necesitas para estudiar o trabajar. Repararla cuesta $90.",
+        options: [
+            { label:"Repararla", cost:"-$90",
+              apply:()=>({ money:-90, quality:1,
+                  consequence:"La reparaste. Fue un gasto fuerte, pero necesario para seguir con tus obligaciones.",
+                  tip:"Los gastos ligados a tus ingresos o estudios suelen ser necesidades, no lujos." }) },
+            { label:"Usar el celular mientras tanto", cost:"$0",
+              apply:()=>({ money:0, quality:0,
+                  consequence:"Te las arreglaste con el celular. Incómodo, pero evitaste el gasto por ahora.",
+                  tip:"A veces una solución temporal te da tiempo para planificar mejor un gasto grande." }) },
+            { label:"Pedir dinero prestado a un amigo", cost:"+$90 deuda",
+              apply:()=>({ debt:90, quality:-1,
+                  consequence:"Un amigo te prestó el dinero. La reparaste, pero ahora le debes $90.",
+                  tip:"Las deudas informales también son deudas: afectan tu relación y tus finanzas si no las pagas a tiempo." }) }
+        ]
+    },
+    {
+        id: "suscripcion_olvidada",
+        emoji: "📱",
+        title: "Suscripción olvidada",
+        desc: "Ves un cobro de $12 de una app que ya no usas.",
+        options: [
+            { label:"Cancelarla ahora", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"Cancelaste la suscripción. Ese dinero ya no se irá cada mes sin que lo notes.",
+                  tip:"Revisar tus suscripciones activas cada cierto tiempo es una forma fácil de recuperar dinero." }) },
+            { label:"Dejarla 'por si acaso'", cost:"-$12",
+              apply:()=>({ money:-12, quality:-1,
+                  consequence:"Decidiste mantenerla. Seguirás pagando por algo que casi no usas.",
+                  tip:"Los pequeños cobros recurrentes que no vigilas se acumulan más de lo que parece." }) },
+            { label:"Revisar todas tus suscripciones", cost:"+$5",
+              apply:()=>({ money:5, quality:2,
+                  consequence:"Al revisar, encontraste otro cobro duplicado y lo cancelaste también. Recuperaste algo de dinero.",
+                  tip:"Auditar tus gastos fijos de vez en cuando casi siempre revela fugas de dinero." }) }
+        ]
+    },
+    {
+        id: "oferta_trabajo",
+        emoji: "🧾",
+        title: "Trabajo extra por unos días",
+        desc: "Te ofrecen un trabajo freelance corto. Podrías ganar dinero extra.",
+        options: [
+            { label:"Aceptarlo", cost:"+$80",
+              apply:()=>({ money:80, quality:2,
+                  consequence:"Aceptaste. Fue cansado, pero terminaste el mes con ingresos extra.",
+                  tip:"Los ingresos adicionales son una de las formas más rápidas de mejorar tu situación financiera." }) },
+            { label:"Rechazarlo", cost:"$0",
+              apply:()=>({ money:0, quality:-1,
+                  consequence:"Preferiste tu tiempo libre. Válido, pero dejaste pasar un ingreso extra.",
+                  tip:"Descansar también tiene valor, pero conviene pesar el costo de oportunidad de cada decisión." }) },
+            { label:"Negociar un mejor pago", cost:"+$100",
+              apply:()=>({ money:100, quality:2,
+                  consequence:"Negociaste y te pagaron más de lo ofrecido inicialmente. Buena jugada.",
+                  tip:"Negociar tus ingresos, aunque incómodo, suele valer la pena." }) }
+        ]
+    },
+    {
+        id: "ingreso_extra",
+        emoji: "🎁",
+        title: "Recibiste un regalo en efectivo",
+        desc: "Un familiar te regaló $50 sin motivo especial.",
+        options: [
+            { label:"Ahorrarlo todo", cost:"+$50 ahorro",
+              apply:()=>({ savings:50, quality:2,
+                  consequence:"Guardaste todo el dinero. Tu meta de ahorro está un poco más cerca.",
+                  tip:"El dinero inesperado es una gran oportunidad para avanzar en tus metas sin sacrificar nada." }) },
+            { label:"Gastarlo todo", cost:"+$50 / -$50",
+              apply:()=>({ money:0, quality:-1, impulse:true,
+                  consequence:"Gastaste el regalo completo en cosas que ni recuerdas. El dinero llegó y se fue.",
+                  tip:"Sin un plan, hasta el dinero 'extra' desaparece rápido." }) },
+            { label:"Ahorrar la mitad, gastar la mitad", cost:"+$25 ahorro / +$25",
+              apply:()=>({ money:25, savings:25, quality:1,
+                  consequence:"Repartiste el dinero. Te diste un gusto y también avanzaste en tu meta.",
+                  tip:"Un balance entre disfrutar y ahorrar es sostenible a largo plazo." }) }
+        ]
+    },
+    {
+        id: "cumple_amigo",
+        emoji: "🎂",
+        title: "Cumpleaños de un amigo",
+        desc: "Quieres darle un regalo, pero no estaba en tu presupuesto.",
+        options: [
+            { label:"Comprar un regalo caro", cost:"-$50",
+              apply:()=>({ money:-50, quality:-1, impulse:true,
+                  consequence:"Compraste algo llamativo. Tu amigo lo agradeció, pero tu presupuesto lo sintió.",
+                  tip:"El valor de un regalo no siempre depende de cuánto cuesta." }) },
+            { label:"Un regalo sencillo", cost:"-$15",
+              apply:()=>({ money:-15, quality:1,
+                  consequence:"Elegiste algo simple y con cariño. Tu amigo lo apreció igual.",
+                  tip:"Ajustar los regalos a tu presupuesto no te hace menos generoso." }) },
+            { label:"Hacer algo sin costo", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"Le organizaste una sorpresa sin gastar dinero. El gesto importó más que el precio.",
+                  tip:"La creatividad puede reemplazar al dinero en muchas situaciones sociales." }) }
+        ]
+    },
+    {
+        id: "transporte",
+        emoji: "🚕",
+        title: "Transporte inesperado",
+        desc: "Se te hizo tarde y necesitas llegar rápido a un compromiso.",
+        options: [
+            { label:"Pedir un auto privado", cost:"-$20",
+              apply:()=>({ money:-20, quality:-1,
+                  consequence:"Llegaste a tiempo, pero pagaste bastante más de lo habitual.",
+                  tip:"Los gastos por urgencia suelen ser más caros: anticiparte te ahorra dinero." }) },
+            { label:"Transporte público", cost:"-$5",
+              apply:()=>({ money:-5, quality:1,
+                  consequence:"Llegaste un poco justo, pero gastaste mucho menos.",
+                  tip:"El transporte público suele ser la opción más económica para trayectos frecuentes." }) },
+            { label:"Caminar", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"Llegaste caminando. Tarde unos minutos, pero sin gastar nada.",
+                  tip:"No todos los imprevistos requieren gastar dinero para resolverse." }) }
+        ]
+    },
+    {
+        id: "oferta_producto",
+        emoji: "🎧",
+        title: "Oferta 2x1 en auriculares",
+        desc: "Una tienda ofrece auriculares 2x1 por $60. No los necesitabas hasta ahora.",
+        options: [
+            { label:"Comprarlos", cost:"-$60",
+              apply:()=>({ money:-60, quality:-2, impulse:true,
+                  consequence:"Compraste el combo. Ahora tienes un par extra que probablemente no uses.",
+                  tip:"Una 'oferta' solo ahorra dinero si realmente ibas a comprar el producto." }) },
+            { label:"No comprar", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"No caíste en la oferta. Ese dinero se queda contigo.",
+                  tip:"Las ofertas están diseñadas para generar urgencia, no para ahorrarte dinero que no ibas a gastar." }) },
+            { label:"Comprar uno más barato en otro lado", cost:"-$35",
+              apply:()=>({ money:-35, quality:0,
+                  consequence:"Encontraste una opción más simple y barata que cubre lo que necesitabas.",
+                  tip:"Comparar antes de comprar suele ser mejor que aceptar la primera oferta llamativa." }) }
+        ]
+    },
+    {
+        id: "comida_fuera",
+        emoji: "🍔",
+        title: "Comida fuera de casa",
+        desc: "No tienes ganas de cocinar hoy.",
+        options: [
+            { label:"Restaurante", cost:"-$35",
+              apply:()=>({ money:-35, quality:-1,
+                  consequence:"Comiste bien, pero fue una de las comidas más caras del mes.",
+                  tip:"Comer fuera con frecuencia es uno de los gastos que más se acumula sin que lo notes." }) },
+            { label:"Comida rápida", cost:"-$15",
+              apply:()=>({ money:-15, quality:-1,
+                  consequence:"Fue rápido y práctico, aunque no la opción más económica.",
+                  tip:"La comida rápida parece barata por comida, pero sumada varias veces al mes pesa en el presupuesto." }) },
+            { label:"Cocinar en casa", cost:"-$5",
+              apply:()=>({ money:-5, quality:2,
+                  consequence:"Cocinaste en casa. Gastaste poco y comiste igual de bien.",
+                  tip:"Cocinar en casa suele ser la opción más barata y saludable a la vez." }) }
+        ]
+    },
+    {
+        id: "bici",
+        emoji: "🚲",
+        title: "Tu bicicleta necesita reparación",
+        desc: "La usas para moverte todos los días.",
+        options: [
+            { label:"Repararla", cost:"-$25",
+              apply:()=>({ money:-25, quality:1,
+                  consequence:"La reparaste. Sigue siendo tu medio de transporte más barato.",
+                  tip:"Mantener lo que ya tienes suele salir más barato que reemplazarlo." }) },
+            { label:"No repararla y caminar", cost:"$0",
+              apply:()=>({ money:0, quality:0,
+                  consequence:"Decidiste caminar por ahora. No gastaste, pero pierdes tiempo cada día.",
+                  tip:"Postergar un arreglo pequeño puede convertirse en una molestia diaria." }) },
+            { label:"Comprar una bicicleta nueva", cost:"-$150",
+              apply:()=>({ money:-150, quality:-2, impulse:true,
+                  consequence:"Compraste una nueva por comodidad, gastando mucho más de lo necesario.",
+                  tip:"Antes de reemplazar algo, vale la pena calcular si reparar es más barato." }) }
+        ]
+    },
+    {
+        id: "oportunidad_ahorro",
+        emoji: "🏦",
+        title: "Oportunidad de ahorrar",
+        desc: "Tu banco te ofrece abrir una cuenta de ahorro con un pequeño bono por apertura.",
+        options: [
+            { label:"Abrir la cuenta y depositar $50", cost:"-$50 / +$55 ahorro",
+              apply:()=>({ money:-50, savings:55, quality:2,
+                  consequence:"Abriste la cuenta. El banco te dio un pequeño bono por empezar a ahorrar formalmente.",
+                  tip:"Separar tu dinero de ahorro del dinero de gastos diarios te ayuda a no tocarlo por impulso." }) },
+            { label:"Depositar solo $10", cost:"-$10 / +$10 ahorro",
+              apply:()=>({ money:-10, savings:10, quality:1,
+                  consequence:"Empezaste con poco, pero empezaste. Todo ahorro cuenta.",
+                  tip:"No necesitas grandes cantidades para empezar a ahorrar, solo constancia." }) },
+            { label:"No abrir la cuenta", cost:"$0",
+              apply:()=>({ money:0, quality:-1,
+                  consequence:"Decidiste no abrirla por ahora. Dejaste pasar una forma fácil de empezar a ahorrar.",
+                  tip:"Automatizar el ahorro, aunque sea con poco dinero, facilita mucho llegar a tus metas." }) }
+        ]
+    },
+    {
+        id: "compra_importante",
+        emoji: "📚",
+        title: "Necesitas material de estudio",
+        desc: "Un libro que necesitas para tus estudios cuesta $45.",
+        options: [
+            { label:"Comprarlo nuevo", cost:"-$45",
+              apply:()=>({ money:-45, quality:1,
+                  consequence:"Lo compraste. Fue un gasto necesario para tus estudios.",
+                  tip:"Los gastos ligados directamente a tu formación suelen ser una inversión, no un gasto impulsivo." }) },
+            { label:"Pedirlo prestado", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"Un compañero te lo prestó. Cubriste la necesidad sin gastar nada.",
+                  tip:"Antes de comprar, vale la pena preguntarte si realmente necesitas algo nuevo." }) },
+            { label:"Buscar una versión digital gratuita", cost:"$0",
+              apply:()=>({ money:0, quality:2,
+                  consequence:"Encontraste una versión digital legal y gratuita. Problema resuelto sin gastar.",
+                  tip:"Investigar un poco antes de comprar puede ahorrarte gastos que parecían obligatorios." }) }
+        ]
+    },
+    {
+        id: "credito_computadora",
+        emoji: "🖥️",
+        title: "Te ofrecen una computadora a crédito",
+        desc: "Puedes pagarla de contado por $300 o en 6 cuotas de $60 (total $360).",
+        options: [
+            { label:"Pagar de contado", cost:"-$300",
+              apply:(s)=>{
+                  if(s.money < 300){
+                      return { money:-Math.min(s.money,300), debt:0, quality:0,
+                          consequence:"Intentaste pagar de contado pero no te alcanzaba del todo. Ajustaste otros gastos para lograrlo.",
+                          tip:"Pagar de contado evita intereses, pero solo si no compromete tus otros gastos esenciales." };
+                  }
+                  return { money:-300, quality:2,
+                      consequence:"Pagaste de contado. Te costó más de golpe, pero ahorraste $60 en intereses totales.",
+                      tip:"Pagar de contado casi siempre es más barato que financiar, si tu presupuesto lo permite." };
+              } },
+            { label:"Pagar en 6 cuotas", cost:"-$60 hoy / +$300 deuda",
+              apply:()=>({ money:-60, debt:300, quality:-1,
+                  consequence:"Elegiste financiarla. Pagaste menos hoy, pero terminarás pagando $360 en total por los intereses.",
+                  tip:"Comprar a cuotas cuesta más en total: estás pagando por usar el dinero del banco hoy." }) },
+            { label:"No comprarla por ahora", cost:"$0",
+              apply:()=>({ money:0, quality:1,
+                  consequence:"Decidiste esperar y seguir ahorrando antes de hacer una compra grande.",
+                  tip:"Postergar una compra grande te da tiempo para decidir con más calma y ahorrar para ella." }) }
+        ]
+    }
+];
+
+/* Evento especial forzado del día 17 */
+const SPECIAL_EVENT_DAY17 = {
+    id: "celular_roto",
+    emoji: "🚨",
+    title: "EMERGENCIA: tu celular dejó de funcionar",
+    desc: "Lo necesitas para trabajar, estudiar y comunicarte.",
+    special: true,
+    options: [
+        { label:"Repararlo", cost:"-$80",
+          apply:(s)=>({ money:-80, quality:1,
+              consequence: s.savings>=100
+                ? "Lo reparaste. Gracias a tu fondo de emergencia, este imprevisto no descontroló tu mes."
+                : "Lo reparaste. Fue un golpe fuerte al presupuesto, pero resolviste el problema.",
+              tip:"Un fondo de emergencia existe exactamente para momentos como este." }) },
+        { label:"Comprar uno nuevo", cost:"-$300",
+          apply:()=>({ money:-300, quality:-2, impulse:true,
+              consequence:"Compraste uno nuevo de gama alta. Resolviste rápido, pero fue una decisión muy cara para una emergencia.",
+              tip:"En una emergencia, la opción más cara no siempre es la más razonable." }) },
+        { label:"Esperar y buscar otra solución", cost:"$0",
+          apply:()=>({ money:0, quality:0,
+              consequence:"Pediste prestado el celular de un familiar mientras resolvías el tuyo con calma.",
+              tip:"No todas las emergencias requieren una solución inmediata y costosa." }) }
+    ]
+};
+
+/* ---------------------------------------------------------------
+   3. UTILIDADES
+---------------------------------------------------------------- */
+function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+function fmt(n){ return (n<0?"-$":"$") + Math.abs(Math.round(n)); }
+
+function pickEvent(){
+    // día especial forzado
+    if(state.day === 17) return SPECIAL_EVENT_DAY17;
+
+    // 18% de probabilidad de día tranquilo sin evento
+    if(Math.random() < 0.18) return null;
+
+    const pool = EVENTS.filter(e => e.id !== state.lastEventId);
+    const evt = pool[Math.floor(Math.random()*pool.length)];
+    return evt;
+}
+
+function recomputeHealth(){
+    let h = 50;
+    h += (state.money/600)*22;
+    h += (state.savings/state.goal)*20;
+    h -= (state.debt/300)*28;
+    h -= Math.min(20, (state.impulsiveSpent/25));
+    h += state.goodDecisions*1.2;
+    h -= state.badDecisions*1.5;
+    state.health = clamp(Math.round(h), 0, 100);
+}
+
+function healthColorClass(){
+    if(state.health >= 60) return "seg-green";
+    if(state.health >= 30) return "seg-yellow";
+    return "seg-red";
+}
+
+/* ---------------------------------------------------------------
+   4. RENDERIZADO
+---------------------------------------------------------------- */
+const app = document.getElementById("app");
+
+function renderStart(){
+    app.innerHTML = `
+    <div class="start-screen">
+        <div class="start-badge">Simulador financiero · 30 días</div>
+        <h1 class="start-title">SOBREVIVE<br>AL MES</h1>
+        <p class="start-sub">¿Puedes llegar al día 30 sin quebrar?</p>
+        <p class="start-desc">Administra tu dinero, toma decisiones y descubre qué tan buenas son tus habilidades financieras. Cada elección tiene una consecuencia real en tu bolsillo.</p>
+        <div class="goal-chip">🎯 Meta del mes: ahorrar <b>${fmt(GOAL_AMOUNT)}</b> al finalizar</div>
+        <button class="btn-primary" id="startBtn">EMPEZAR</button>
+    </div>`;
+    document.getElementById("startBtn").addEventListener("click", startGame);
+}
+
+function startGame(){
+    state = getInitialState();
+    runDay();
+}
+
+function hudHtml(){
+    const segCount = 10;
+    const filled = Math.round(state.health/10);
+    const colorClass = healthColorClass();
+    let segs = "";
+    for(let i=0;i<segCount;i++){
+        segs += `<div class="health-seg ${i<filled?colorClass:''}"></div>`;
+    }
+    const goalPct = clamp(Math.round((state.savings/state.goal)*100),0,100);
+    return `
+    <div class="hud">
+        <div class="hud-top">
+            <div class="day-pill">📅 Día <b>${state.day}</b>/${TOTAL_DAYS}</div>
+            <div class="health-wrap">
+                <span>Salud financiera</span>
+                <div class="health-bars">${segs}</div>
+            </div>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">💰 Dinero</div>
+                <div class="stat-value money" id="statMoney">${fmt(state.money)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">🏦 Ahorros</div>
+                <div class="stat-value savings" id="statSavings">${fmt(state.savings)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">💳 Deuda</div>
+                <div class="stat-value debt" id="statDebt">${fmt(state.debt)}</div>
+            </div>
+        </div>
+        <div class="goal-track">
+            <div class="goal-track-top"><span>🎯 Progreso de la meta</span><span>${goalPct}%</span></div>
+            <div class="goal-bar-bg"><div class="goal-bar-fill" style="width:${goalPct}%"></div></div>
+        </div>
+    </div>`;
+}
+
+function renderGameShell(innerHtml){
+    app.innerHTML = `${hudHtml()}<div class="receipt-wrap">${innerHtml}</div>`;
+}
+
+/* --- flujo principal de un día --- */
+function runDay(){
+    if(state.day > TOTAL_DAYS){
+        return endGame("victory");
+    }
+
+    const mandatory = MANDATORY_EXPENSES[state.day];
+    if(mandatory){
+        return showMandatoryExpense(mandatory);
+    }
+
+    proceedToEvent();
+}
+
+function showMandatoryExpense(mandatory){
+    const html = `
+    <div class="info-card">
+        <div class="info-emoji">🧾</div>
+        <div class="info-title">Gasto obligatorio del día</div>
+        <div class="info-text">${mandatory.label}</div>
+        <div class="mandatory-amount">-${fmt(mandatory.amount)}</div>
+        <div class="info-text">Este gasto se descuenta automáticamente, como sucede con las cuentas de la vida real.</div>
+        <button class="btn-continue" id="mandatoryContinue">CONTINUAR</button>
+    </div>`;
+    renderGameShell(html);
+    document.getElementById("mandatoryContinue").addEventListener("click", ()=>{
+        state.money -= mandatory.amount;
+        recomputeHealth();
+        if(state.money < 0){
+            return endGame("defeat", `No pudiste cubrir "${mandatory.label}" (${fmt(mandatory.amount)}).`);
+        }
+        proceedToEvent();
+    });
+}
+
+function proceedToEvent(){
+    const evt = pickEvent();
+    if(!evt){
+        return showFreeDay();
+    }
+    state.pendingEvent = evt;
+    showEvent(evt);
+}
+
+function showFreeDay(){
+    const html = `
+    <div class="info-card">
+        <div class="info-emoji">🌤️</div>
+        <div class="info-title">Día tranquilo</div>
+        <div class="info-text">Hoy no ocurrió ningún imprevisto. Buen momento para respirar y seguir con tu plan.</div>
+        <button class="btn-continue" id="freeDayContinue">SIGUIENTE DÍA</button>
+    </div>`;
+    renderGameShell(html);
+    document.getElementById("freeDayContinue").addEventListener("click", advanceDay);
+}
+
+function showEvent(evt){
+    const optionsHtml = evt.options.map((opt, idx)=>{
+        let costClass = "cost-zero";
+        if(opt.cost.trim().startsWith("-")) costClass = "cost-neg";
+        else if(opt.cost.trim().startsWith("+")) costClass = "cost-pos";
+        return `<button class="choice" data-idx="${idx}">
+                    <span>${opt.label}</span>
+                    <span class="choice-cost ${costClass}">${opt.cost}</span>
+                </button>`;
+    }).join("");
+
+    const html = `
+    <div class="receipt">
+        <div class="receipt-tag"><span>TICKET DEL DÍA ${state.day}</span><span>${evt.special?"⚠ ESPECIAL":"EVENTO"}</span></div>
+        <div class="receipt-emoji">${evt.emoji}</div>
+        <h2 class="receipt-title">${evt.title}</h2>
+        <p class="receipt-desc">${evt.desc}</p>
+    </div>
+    <div class="perforation"></div>
+    <div class="receipt-options">
+        ${optionsHtml}
+    </div>
+    <div class="torn-edge"></div>`;
+
+    renderGameShell(html);
+
+    document.querySelectorAll(".choice").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+            const idx = parseInt(btn.dataset.idx, 10);
+            resolveChoice(evt, evt.options[idx]);
+        });
+    });
+}
+
+function resolveChoice(evt, opt){
+    const result = opt.apply(state);
+
+    // aplicar efectos numéricos
+    if(result.money) state.money += result.money;
+    if(result.savings) state.savings += result.savings;
+    if(result.debt) state.debt += result.debt;
+    if(result.impulse && result.money) state.impulsiveSpent += Math.abs(result.money);
+
+    if(result.quality >= 1) state.goodDecisions++;
+    if(result.quality <= -1) state.badDecisions++;
+
+    state.decisions.push({
+        day: state.day,
+        label: opt.label,
+        quality: result.quality,
+        text: result.consequence
+    });
+
+    state.lastEventId = evt.id;
+    if(!state.usedEventIds.includes(evt.id)) state.usedEventIds.push(evt.id);
+
+    recomputeHealth();
+
+    showConsequence(evt, opt, result);
+}
+
+function showConsequence(evt, opt, result){
+    const html = `
+    <div class="consequence-card">
+        <h3 class="consequence-title">${result.quality>=1 ? "✅" : (result.quality<=-1 ? "⚠️" : "➖")} ${opt.label}</h3>
+        <p class="consequence-text">${result.consequence}</p>
+        <div class="tip-box"><span>💡</span><div><b>Lección financiera:</b> ${result.tip}</div></div>
+        <button class="btn-continue" id="consequenceContinue">SIGUIENTE DÍA</button>
+    </div>`;
+    renderGameShell(html);
+
+    // pequeñas animaciones sobre las cifras del HUD
+    if(result.money && result.money !== 0){
+        flashStat("statMoney", result.money > 0);
+    }
+    if(result.savings){
+        flashStat("statSavings", true);
+    }
+    if(result.debt){
+        flashStat("statDebt", false);
+    }
+
+    document.getElementById("consequenceContinue").addEventListener("click", ()=>{
+        if(state.money < 0){
+            return endGame("defeat", `Tu último gasto ("${opt.label}") te dejó sin dinero disponible.`);
+        }
+        advanceDay();
+    });
+}
+
+function flashStat(id, positive){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.remove("flash-up","flash-down");
+    void el.offsetWidth; // reset animación
+    el.classList.add(positive ? "flash-up" : "flash-down");
+}
+
+function advanceDay(){
+    state.day++;
+    runDay();
+}
+
+/* ---------------------------------------------------------------
+   5. FIN DEL JUEGO
+---------------------------------------------------------------- */
+function computeFinalScore(){
+    recomputeHealth();
+    let score = state.health * 0.55;
+    score += clamp((state.savings/state.goal)*100, 0, 100) * 0.25;
+    score += (state.debt === 0 ? 20 : Math.max(0, 20 - state.debt/15));
+    score -= Math.min(15, state.impulsiveSpent/20);
+    return clamp(Math.round(score), 0, 100);
+}
+
+function rankFor(score){
+    if(score >= 90) return { emoji:"🏆", label:"EXPERTO FINANCIERO", color:"var(--lime)" };
+    if(score >= 70) return { emoji:"🥇", label:"BUEN ADMINISTRADOR", color:"var(--blue)" };
+    if(score >= 50) return { emoji:"🥈", label:"EN APRENDIZAJE", color:"var(--amber)" };
+    return { emoji:"🚨", label:"NECESITAS UN PLAN", color:"var(--coral)" };
+}
+
+function bestAndWorstDecision(){
+    if(state.decisions.length === 0){
+        return { best:null, worst:null };
+    }
+    let best = state.decisions[0], worst = state.decisions[0];
+    state.decisions.forEach(d=>{
+        if(d.quality > best.quality) best = d;
+        if(d.quality < worst.quality) worst = d;
+    });
+    return { best, worst };
+}
+
+function adviceFor(score){
+    if(score >= 90) return "Sigues así y podrías empezar a invertir tus ahorros para que crezcan por sí solos.";
+    if(score >= 70) return "Refuerza tu fondo de emergencia para que los imprevistos te afecten aún menos.";
+    if(score >= 50) return "Antes de cada compra, pregúntate si es una necesidad o un deseo del momento.";
+    return "Empieza por lo básico: anota tus gastos fijos y evita las compras impulsivas por dos semanas.";
+}
+
+function endGame(type, defeatReason){
+    const score = computeFinalScore();
+    const rank = rankFor(score);
+    const { best, worst } = bestAndWorstDecision();
+    const goalPct = clamp(Math.round((state.savings/state.goal)*100),0,100);
+
+    let headline, subline;
+    if(type === "victory"){
+        headline = "TU MES TERMINÓ";
+        subline = "Llegaste al día 30. Así quedaron tus finanzas:";
+    } else {
+        headline = "💸 TE QUEDASTE SIN DINERO";
+        subline = defeatReason || "Tus gastos superaron lo que tenías disponible.";
+    }
+
+    const html = `
+    <div class="end-screen">
+        <div class="end-header">
+            <h1 class="end-title">${headline}</h1>
+            <p class="info-text">${subline}</p>
+            <div class="end-rank" style="color:${rank.color}; border-color:${rank.color}">${rank.emoji} ${rank.label}</div>
+            <div class="end-score">Puntaje final: <b>${score}</b>/100</div>
+        </div>
+
+        <div class="end-stats">
+            <div class="end-stat"><div class="end-stat-label">💰 Dinero restante</div><div class="end-stat-value" style="color:var(--lime)">${fmt(Math.max(0,state.money))}</div></div>
+            <div class="end-stat"><div class="end-stat-label">🏦 Ahorros</div><div class="end-stat-value" style="color:var(--blue)">${fmt(state.savings)}</div></div>
+            <div class="end-stat"><div class="end-stat-label">💳 Deuda</div><div class="end-stat-value" style="color:var(--coral)">${fmt(state.debt)}</div></div>
+            <div class="end-stat"><div class="end-stat-label">🛍️ Gastos impulsivos</div><div class="end-stat-value" style="color:var(--amber)">${fmt(state.impulsiveSpent)}</div></div>
+            <div class="end-stat"><div class="end-stat-label">🎯 Meta lograda</div><div class="end-stat-value">${goalPct}%</div></div>
+            <div class="end-stat"><div class="end-stat-label">📊 Salud financiera</div><div class="end-stat-value">${state.health}/100</div></div>
+        </div>
+
+        <div class="end-notes">
+            ${best ? `<div class="note-row note-good"><b>Tu mejor decisión</b>Día ${best.day} · ${best.label}</div>` : ""}
+            ${worst ? `<div class="note-row note-bad"><b>Tu mayor error</b>Día ${worst.day} · ${worst.label}</div>` : ""}
+            <div class="note-row note-tip"><b>Consejo para el próximo mes</b>${adviceFor(score)}</div>
+        </div>
+
+        <div class="end-actions">
+            <button class="btn-secondary" id="tipsBtn" style="flex:1">VER CONSEJOS</button>
+            <button class="btn-primary" id="replayBtn" style="flex:1; margin-top:0">JUGAR DE NUEVO</button>
+        </div>
+        <footer class="credits">Sobrevive al Mes · simulador educativo de finanzas personales</footer>
+    </div>`;
+
+    app.innerHTML = html;
+
+    document.getElementById("replayBtn").addEventListener("click", startGame);
+    document.getElementById("tipsBtn").addEventListener("click", showTipsModal);
+}
+
+function showTipsModal(){
+    const tips = [
+        "Distingue necesidades de deseos antes de cada compra.",
+        "Ten un presupuesto simple: ingresos, gastos fijos y ahorro.",
+        "Arma un fondo de emergencia, aunque sea pequeño al inicio.",
+        "Evita el crédito para gastos que no sean realmente necesarios.",
+        "Revisa tus suscripciones y gastos fijos cada mes.",
+        "Automatiza tu ahorro apenas recibas tus ingresos.",
+        "Compara precios antes de compras grandes.",
+        "Espera 24 horas antes de una compra impulsiva."
+    ];
+    const html = `
+    <div class="info-card" style="text-align:left">
+        <div class="info-title center" style="margin-bottom:12px;">💡 Consejos financieros</div>
+        <div class="end-notes">
+            ${tips.map(t=>`<div class="note-row note-tip">${t}</div>`).join("")}
+        </div>
+        <button class="btn-continue" id="backFromTips">VOLVER</button>
+    </div>`;
+    app.innerHTML = html;
+    document.getElementById("backFromTips").addEventListener("click", ()=>endGame( state.day > TOTAL_DAYS ? "victory" : "defeat" ));
+}
+
+/* ---------------------------------------------------------------
+   6. ARRANQUE
+---------------------------------------------------------------- */
+renderStart();
+</script>
+</body>
+</html>
