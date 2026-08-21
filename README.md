@@ -2,54 +2,55 @@
 
 <img src="assets/cover/portada.png" alt="Portada — Sandia Camil" width="100%"/>
 
+<br/><br/>
+
+<h1>Game Development Portfolio</h1>
+
+<h3><b>Hugo Camilo Cussi Suxo</b> — <code>SandiaCamil</code></h3>
+
+<p>
+  <b>Universidad Privada del Valle</b> · <i>Ingeniería de Software</i> · <b>4to Semestre</b><br/>
+  Game Development · Gestión 2 – 2026 · Paralelo A
+</p>
+
 <br/>
 
-# Game Development Portfolio
-
-### **Hugo Camilo Cussi Suxo** — `SandiaCamil`
-
-> **Universidad Privada del Valle** · *Ingeniería de Software* · **4to Semestre**
-> 
-> Game Development · Gestión 2 – 2026 · Paralelo A
-
-<br/>
-
-[![GitHub](https://img.shields.io/badge/GitHub-SandiaCamil-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SandiaCamil)
-![Juegos](https://img.shields.io/badge/Prototipos-6-00f5d4?style=for-the-badge&logo=gamepad&logoColor=black)
-![Estado](https://img.shields.io/badge/Estado-En_construcción-ffd23f?style=for-the-badge&logo=statuspage&logoColor=black)
-
----
+<a href="https://github.com/SandiaCamil"><img src="https://img.shields.io/badge/GitHub-SandiaCamil-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/></a>
+<img src="https://img.shields.io/badge/Prototipos-6-00f5d4?style=for-the-badge&logo=gamepad&logoColor=black" alt="Juegos"/>
+<img src="https://img.shields.io/badge/Estado-En_construcción-ffd23f?style=for-the-badge&logo=statuspage&logoColor=black" alt="Estado"/>
 
 </div>
 
-## Sobre mí
+---
 
-> **Ingeniería de Software & GameDev**
+<h2>Sobre mí</h2>
 
-Soy **Hugo Camilo**, conocido en internet como **SandiaCamil**. Estudio Ingeniería de Software y curso la asignatura de Game Development, donde estoy dando mis primeros pasos en diseño y programación de videojuegos generados con apoyo de IA a partir de casos reales.
+<blockquote><b>Ingeniería de Software & GameDev</b></blockquote>
 
-Me interesan especialmente los **shooters tácticos** y los juegos de **aventura**; fuera de esta materia también trabajo en desarrollo Android, desarrollo web y ciberseguridad.
+<p>Soy <b>Hugo Camilo</b>, conocido en internet como <b>SandiaCamil</b>. Estudio Ingeniería de Software y curso la asignatura de Game Development, donde estoy dando mis primeros pasos en diseño y programación de videojuegos generados con apoyo de IA a partir de casos reales.</p>
 
-Este repositorio reúne los prototipos jugables que fui construyendo, cada uno pensado para transmitir un mensaje concreto — desde educación financiera hasta prevención del ciberacoso. Se puede jugar cada versión directamente desde el navegador.
+<p>Me interesan especialmente los <b>shooters tácticos</b> y los juegos de <b>aventura</b>; fuera de esta materia también trabajo en desarrollo Android, desarrollo web y ciberseguridad.</p>
+
+<p>Este repositorio reúne los prototipos jugables que fui construyendo, cada uno pensado para transmitir un mensaje concreto — desde educación financiera hasta prevención del ciberacoso. Se puede jugar cada versión directamente desde el navegador.</p>
 
 ---
 
-## Los juegos
+<h2>Los juegos</h2>
 
-### DungeonMathQuest — La Torre de los Números
+<h3>DungeonMathQuest — La Torre de los Números</h3>
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-Un platformer para repasar operaciones aritméticas combinadas sin que se sienta una guía de ejercicios: el jugador salta entre plataformas y debe tocar el cofre con el resultado correcto de cada operación, evitando los cofres señuelo. La idea es que resolver bien la cuenta sea la única forma de seguir avanzando.
+<p>Un platformer para repasar operaciones aritméticas combinadas sin que se sienta una guía de ejercicios: el jugador salta entre plataformas y debe tocar el cofre con el resultado correcto de cada operación, evitando los cofres señuelo. La idea es que resolver bien la cuenta sea la única forma de seguir avanzando.</p>
 
 <br/>
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/JUGAR-00f5d4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/)
-[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ffd23f?style=for-the-badge&logoColor=black)](games/dungeonmathquest/)
+<a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/"><img src="https://img.shields.io/badge/JUGAR-00f5d4?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
+<a href="games/dungeonmathquest/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ffd23f?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
 
 </div>
 
@@ -64,20 +65,20 @@ Un platformer para repasar operaciones aritméticas combinadas sin que se sienta
 
 ---
 
-### Trashketball — Extreme Pro
+<h3>Trashketball — Extreme Pro</h3>
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-Un arcade de puntería para aprender a separar residuos correctamente: cada objeto hay que encestarlo en su contenedor (orgánico, reciclable, no reciclable) antes de que se acabe el tiempo, mientras el viento desvía la trayectoria y los aciertos seguidos activan un combo. La repetición bajo presión de tiempo es lo que hace que la clasificación se quede grabada.
+<p>Un arcade de puntería para aprender a separar residuos correctamente: cada objeto hay que encestarlo en su contenedor (orgánico, reciclable, no reciclable) antes de que se acabe el tiempo, mientras el viento desvía la trayectoria y los aciertos seguidos activan un combo. La repetición bajo presión de tiempo es lo que hace que la clasificación se quede grabada.</p>
 
 <br/>
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/JUGAR-C6FF3D?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/trashketball/)
-[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-F1C40F?style=for-the-badge&logoColor=black)](games/trashketball/)
+<a href="https://sandiacamil.github.io/game-development-portfolio/games/trashketball/"><img src="https://img.shields.io/badge/JUGAR-C6FF3D?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
+<a href="games/trashketball/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-F1C40F?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
 
 </div>
 
@@ -92,20 +93,20 @@ Un arcade de puntería para aprender a separar residuos correctamente: cada obje
 
 ---
 
-### Gotitas Mágicas — Salva a Ajolí
+<h3>Gotitas Mágicas — Salva a Ajolí</h3>
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-Un arcade tipo catcher sobre el ahorro de agua: se mueve una canasta para atrapar únicamente gotas de agua limpia y evitar el resto de objetos que caen, mientras Ajolí (un ajolotito) depende de que el río se mantenga limpio. El mensaje de fondo es simple: cada gota que se deja caer es agua que se pierde.
+<p>Un arcade tipo catcher sobre el ahorro de agua: se mueve una canasta para atrapar únicamente gotas de agua limpia y evitar el resto de objetos que caen, mientras Ajolí (un ajolotito) depende de que el río se mantenga limpio. El mensaje de fondo es simple: cada gota que se deja caer es agua que se pierde.</p>
 
 <br/>
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/JUGAR-2563EB?style=for-the-badge&logoColor=white)](https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/)
-[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-DB2777?style=for-the-badge&logoColor=white)](games/gotitas-magicas/)
+<a href="https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/"><img src="https://img.shields.io/badge/JUGAR-2563EB?style=for-the-badge&logoColor=white" alt="Jugar"/></a>
+<a href="games/gotitas-magicas/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-DB2777?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
 
 </div>
 
@@ -120,20 +121,20 @@ Un arcade tipo catcher sobre el ahorro de agua: se mueve una canasta para atrapa
 
 ---
 
-### Verdu-chan — Guerra Contra la Comida Chatarra
+<h3>Verdu-chan — Guerra Contra la Comida Chatarra</h3>
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-Un roguelike tipo *survivor*: Verdu-chan, una zanahoria protagonista, resiste oleadas crecientes de comida chatarra con ataque automático, mientras recoge verduras que la curan y le dan experiencia para elegir mejoras. Convierte la idea de "comer sano te hace más fuerte" en la mecánica central del juego, en vez de solo decirla.
+<p>Un roguelike tipo <i>survivor</i>: Verdu-chan, una zanahoria protagonista, resiste oleadas crecientes de comida chatarra con ataque automático, mientras recoge verduras que la curan y le dan experiencia para elegir mejoras. Convierte la idea de "comer sano te hace más fuerte" en la mecánica central del juego, en vez de solo decirla.</p>
 
 <br/>
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/JUGAR-39ff88?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/)
-[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ff2fb3?style=for-the-badge&logoColor=white)](games/verdu-chan/)
+<a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/"><img src="https://img.shields.io/badge/JUGAR-39ff88?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
+<a href="games/verdu-chan/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ff2fb3?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
 
 </div>
 
@@ -148,20 +149,20 @@ Un roguelike tipo *survivor*: Verdu-chan, una zanahoria protagonista, resiste ol
 
 ---
 
-### La Tormenta Digital
+<h3>La Tormenta Digital</h3>
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-Una narrativa interactiva sobre ciberacoso escolar: el jugador no dispara ni esquiva, decide cómo reaccionar ante cada comentario que le llega al protagonista — bloquear, guardar evidencia, responder o agradecer — y cada decisión afecta su salud emocional. El mensaje central: engancharse a discutir con el odio anónimo hace más daño que el odio mismo.
+<p>Una narrativa interactiva sobre ciberacoso escolar: el jugador no dispara ni esquiva, decide cómo reaccionar ante cada comentario que le llega al protagonista — bloquear, guardar evidencia, responder o agradecer — y cada decisión afecta su salud emocional. El mensaje central: engancharse a discutir con el odio anónimo hace más daño que el odio mismo.</p>
 
 <br/>
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/JUGAR-00d3f4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/la-tormenta-digital/)
-[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-f59e0b?style=for-the-badge&logoColor=black)](games/la-tormenta-digital/)
+<a href="https://sandiacamil.github.io/game-development-portfolio/games/la-tormenta-digital/"><img src="https://img.shields.io/badge/JUGAR-00d3f4?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
+<a href="games/la-tormenta-digital/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-f59e0b?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
 
 </div>
 
@@ -176,20 +177,20 @@ Una narrativa interactiva sobre ciberacoso escolar: el jugador no dispara ni esq
 
 ---
 
-### Sobrevive al Mes
+<h3>Sobrevive al Mes</h3>
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de ahorro, con un evento de gasto distinto cada día que obliga a elegir entre disfrutar el presente o proteger la meta. No hay una respuesta obvia — el aprendizaje viene de sentir la consecuencia inmediata de cada decisión en el saldo, no de memorizar un consejo.
+<p>Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de ahorro, con un evento de gasto distinto cada día que obliga a elegir entre disfrutar el presente o proteger la meta. No hay una respuesta obvia — el aprendizaje viene de sentir la consecuencia inmediata de cada decisión en el saldo, no de memorizar un consejo.</p>
 
 <br/>
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/JUGAR-b7ff00?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/sobrevive-al-mes/)
-[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ff006a?style=for-the-badge&logoColor=white)](games/sobrevive-al-mes/)
+<a href="https://sandiacamil.github.io/game-development-portfolio/games/sobrevive-al-mes/"><img src="https://img.shields.io/badge/JUGAR-b7ff00?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
+<a href="games/sobrevive-al-mes/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ff006a?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
 
 </div>
 
@@ -204,9 +205,9 @@ Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de 
 
 ---
 
-## Jugar cualquier versión (betas incluidas)
+<h2>Jugar cualquier versión (betas incluidas)</h2>
 
-> Cada juego pasó por versiones intermedias antes de llegar a su forma final. Todas son jugables individualmente, no solo la última:
+<blockquote>Cada juego pasó por versiones intermedias antes de llegar a su forma final. Todas son jugables individualmente, no solo la última:</blockquote>
 
 <table>
 <thead>
@@ -339,51 +340,57 @@ Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de 
 </tbody>
 </table>
 
-> Más detalle de cada beta (con capturas comparadas) en el README de cada juego: [DungeonMathQuest](games/dungeonmathquest/) · [Trashketball](games/trashketball/) · [Gotitas Mágicas](games/gotitas-magicas/) · [Verdu-chan](games/verdu-chan/) · [La Tormenta Digital](games/la-tormenta-digital/) · [Sobrevive al Mes](games/sobrevive-al-mes/)
+<p>Más detalle de cada beta (con capturas comparadas) en el README de cada juego: <a href="games/dungeonmathquest/">DungeonMathQuest</a> · <a href="games/trashketball/">Trashketball</a> · <a href="games/gotitas-magicas/">Gotitas Mágicas</a> · <a href="games/verdu-chan/">Verdu-chan</a> · <a href="games/la-tormenta-digital/">La Tormenta Digital</a> · <a href="games/sobrevive-al-mes/">Sobrevive al Mes</a></p>
 
 ---
 
-## Stack y herramientas
+<h2>Stack y herramientas</h2>
 
 <div align="center">
 
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Canvas API](https://img.shields.io/badge/Canvas_API-000000?style=for-the-badge&logo=html5&logoColor=white)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-222?style=for-the-badge&logo=github&logoColor=white)
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5"/>
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JS"/>
+<img src="https://img.shields.io/badge/Canvas_API-000000?style=for-the-badge&logo=html5&logoColor=white" alt="Canvas"/>
+<img src="https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap"/>
+<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git"/>
+<img src="https://img.shields.io/badge/GitHub_Pages-222?style=for-the-badge&logo=github&logoColor=white" alt="GH Pages"/>
 
 </div>
 
-> La mayoría de los prototipos están hechos en **HTML5, CSS3 y JavaScript vanilla**, usando `<canvas>` para el renderizado cuando el juego lo requiere (DungeonMathQuest, Trashketball, Verdu-chan), y DOM/CSS puro para los de tipo narrativo o de tarjetas (Gotitas Mágicas, La Tormenta Digital, Sobrevive al Mes) — estos últimos apoyados en Bootstrap para la maquetación de paneles e interfaz. Sin frameworks de juego externos: decisión intencional para entender bien los fundamentos antes de pasar a un motor como Godot más adelante. Cada juego partió de un prompt de generación con IA, iterado manualmente después para corregir errores, ajustar balance y pulir la interfaz.
+<p>La mayoría de los prototipos están hechos en <b>HTML5, CSS3 y JavaScript vanilla</b>, usando <code>&lt;canvas&gt;</code> para el renderizado cuando el juego lo requiere (DungeonMathQuest, Trashketball, Verdu-chan), y DOM/CSS puro para los de tipo narrativo o de tarjetas (Gotitas Mágicas, La Tormenta Digital, Sobrevive al Mes) — estos últimos apoyados en Bootstrap para la maquetación de paneles e interfaz. Sin frameworks de juego externos: decisión intencional para entender bien los fundamentos antes de pasar a un motor como Godot más adelante. Cada juego partió de un prompt de generación con IA, iterado manualmente después para corregir errores, ajustar balance y pulir la interfaz.</p>
 
 ---
 
-## Qué aprendí
+<h2>Qué aprendí</h2>
 
-* **Mecánicas con propósito:** Traducir un mensaje o problema real en una mecánica de juego concreta, en vez de una lección explicada en texto.
-* **UX y Controles:** Entender las diferencias reales entre diseñar para teclado (DungeonMathQuest, Verdu-chan) y para mouse/touch (Trashketball, Gotitas Mágicas, La Tormenta Digital, Sobrevive al Mes).
-* **Iteración constante:** Ningún prototipo quedó bien a la primera versión: Sobrevive al Mes pasó por 6 iteraciones visuales y Trashketball cambió de mecánica central dos veces.
-* **Documentación:** Documentar el proceso (registro de versiones, capturas comparadas) es tan parte del trabajo como programar.
+<ul>
+  <li><b>Mecánicas con propósito:</b> Traducir un mensaje o problema real en una mecánica de juego concreta, en vez de una lección explicada en texto.</li>
+  <li><b>UX y Controles:</b> Entender las diferencias reales entre diseñar para teclado (DungeonMathQuest, Verdu-chan) y para mouse/touch (Trashketball, Gotitas Mágicas, La Tormenta Digital, Sobrevive al Mes).</li>
+  <li><b>Iteración constante:</b> Ningún prototipo quedó bien a la primera versión: Sobrevive al Mes pasó por 6 iteraciones visuales y Trashketball cambió de mecánica central dos veces.</li>
+  <li><b>Documentación:</b> Documentar el proceso (registro de versiones, capturas comparadas) es tan parte del trabajo como programar.</li>
+</ul>
 
 ---
 
-## Qué mejoraría en una siguiente versión
+<h2>Qué mejoraría en una siguiente versión</h2>
 
-* Migrar los prototipos a un motor real (Godot) para manejar mejor física, partículas y sonido.
-* Agregar audio a los juegos que todavía no lo tienen.
-* Guardar progreso o puntajes en un backend en vez de solo `localStorage`.
-* Unificar la paleta visual entre juegos del mismo "universo" temático, manteniendo la identidad propia de cada uno.
+<ul>
+  <li>Migrar los prototipos a un motor real (Godot) para manejar mejor física, partículas y sonido.</li>
+  <li>Agregar audio a los juegos que todavía no lo tienen.</li>
+  <li>Guardar progreso o puntajes en un backend en vez de solo <code>localStorage</code>.</li>
+  <li>Unificar la paleta visual entre juegos del mismo "universo" temático, manteniendo la identidad propia de cada uno.</li>
+</ul>
 
 ---
 
 <div align="center">
 
-### Contacto & Enlaces
+<h3>Contacto & Enlaces</h3>
 
-[![Perfil GitHub](https://img.shields.io/badge/Perfil_GitHub-github.com/SandiaCamil-00f5d4?style=for-the-badge&logo=github&logoColor=black)](https://github.com/SandiaCamil)
+<a href="https://github.com/SandiaCamil"><img src="https://img.shields.io/badge/Perfil_GitHub-github.com/SandiaCamil-00f5d4?style=for-the-badge&logo=github&logoColor=black" alt="Perfil GitHub"/></a>
+
+<br/><br/>
 
 <sub>Portafolio de Game Development — Universidad Privada del Valle, Gestión 2-2026, Paralelo A.</sub>
 
