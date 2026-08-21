@@ -4,7 +4,7 @@
 
 <br/>
 
-# 🎮 Game Development Portfolio
+# Game Development Portfolio
 
 ### **Hugo Camilo Cussi Suxo** — `SandiaCamil`
 
@@ -22,9 +22,9 @@
 
 </div>
 
-## 👤 Sobre mí
+## Sobre mí
 
-> 💻 **Ingeniería de Software & GameDev**
+> **Ingeniería de Software & GameDev**
 
 Soy **Hugo Camilo**, conocido en internet como **SandiaCamil**. Estudio Ingeniería de Software y curso la asignatura de Game Development, donde estoy dando mis primeros pasos en diseño y programación de videojuegos generados con apoyo de IA a partir de casos reales.
 
@@ -34,9 +34,9 @@ Este repositorio reúne los prototipos jugables que fui construyendo, cada uno p
 
 ---
 
-## 🕹️ Los juegos
+## Los juegos
 
-### 🏰 DungeonMathQuest — La Torre de los Números
+### DungeonMathQuest — La Torre de los Números
 
 <table>
 <tr>
@@ -48,8 +48,8 @@ Un platformer para repasar operaciones aritméticas combinadas sin que se sienta
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/▶_JUGAR_AHORA-00f5d4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/)
-[![Detalle](https://img.shields.io/badge/🔍_DETALLE_Y_BETAS-ffd23f?style=for-the-badge&logoColor=black)](games/dungeonmathquest/)
+[![Jugar](https://img.shields.io/badge/JUGAR-00f5d4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/)
+[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ffd23f?style=for-the-badge&logoColor=black)](games/dungeonmathquest/)
 
 </div>
 
@@ -64,7 +64,7 @@ Un platformer para repasar operaciones aritméticas combinadas sin que se sienta
 
 ---
 
-### 🗑️ Trashketball — Extreme Pro
+### Trashketball — Extreme Pro
 
 <table>
 <tr>
@@ -76,8 +76,8 @@ Un arcade de puntería para aprender a separar residuos correctamente: cada obje
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/▶_JUGAR_AHORA-C6FF3D?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/trashketball/)
-[![Detalle](https://img.shields.io/badge/🔍_DETALLE_Y_BETAS-F1C40F?style=for-the-badge&logoColor=black)](games/trashketball/)
+[![Jugar](https://img.shields.io/badge/JUGAR-C6FF3D?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/trashketball/)
+[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-F1C40F?style=for-the-badge&logoColor=black)](games/trashketball/)
 
 </div>
 
@@ -92,7 +92,7 @@ Un arcade de puntería para aprender a separar residuos correctamente: cada obje
 
 ---
 
-### 💧 Gotitas Mágicas — Salva a Ajolí
+### Gotitas Mágicas — Salva a Ajolí
 
 <table>
 <tr>
@@ -104,8 +104,8 @@ Un arcade tipo catcher sobre el ahorro de agua: se mueve una canasta para atrapa
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/▶_JUGAR_AHORA-2563EB?style=for-the-badge&logoColor=white)](https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/)
-[![Detalle](https://img.shields.io/badge/🔍_DETALLE_Y_BETAS-DB2777?style=for-the-badge&logoColor=white)](games/gotitas-magicas/)
+[![Jugar](https://img.shields.io/badge/JUGAR-2563EB?style=for-the-badge&logoColor=white)](https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/)
+[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-DB2777?style=for-the-badge&logoColor=white)](games/gotitas-magicas/)
 
 </div>
 
@@ -120,7 +120,7 @@ Un arcade tipo catcher sobre el ahorro de agua: se mueve una canasta para atrapa
 
 ---
 
-### 🥕 Verdu-chan — Guerra Contra la Comida Chatarra
+### Verdu-chan — Guerra Contra la Comida Chatarra
 
 <table>
 <tr>
@@ -132,8 +132,8 @@ Un roguelike tipo *survivor*: Verdu-chan, una zanahoria protagonista, resiste ol
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/▶_JUGAR_AHORA-39ff88?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/)
-[![Detalle](https://img.shields.io/badge/🔍_DETALLE_Y_BETAS-ff2fb3?style=for-the-badge&logoColor=white)](games/verdu-chan/)
+[![Jugar](https://img.shields.io/badge/JUGAR-39ff88?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/)
+[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ff2fb3?style=for-the-badge&logoColor=white)](games/verdu-chan/)
 
 </div>
 
@@ -148,7 +148,7 @@ Un roguelike tipo *survivor*: Verdu-chan, una zanahoria protagonista, resiste ol
 
 ---
 
-### 🌐 La Tormenta Digital
+### La Tormenta Digital
 
 <table>
 <tr>
@@ -160,8 +160,8 @@ Una narrativa interactiva sobre ciberacoso escolar: el jugador no dispara ni esq
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/▶_JUGAR_AHORA-00d3f4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/la-tormenta-digital/)
-[![Detalle](https://img.shields.io/badge/🔍_DETALLE_Y_BETAS-f59e0b?style=for-the-badge&logoColor=black)](games/la-tormenta-digital/)
+[![Jugar](https://img.shields.io/badge/JUGAR-00d3f4?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/la-tormenta-digital/)
+[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-f59e0b?style=for-the-badge&logoColor=black)](games/la-tormenta-digital/)
 
 </div>
 
@@ -176,7 +176,7 @@ Una narrativa interactiva sobre ciberacoso escolar: el jugador no dispara ni esq
 
 ---
 
-### 💰 Sobrevive al Mes
+### Sobrevive al Mes
 
 <table>
 <tr>
@@ -188,8 +188,8 @@ Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de 
 
 <div align="center">
 
-[![Jugar](https://img.shields.io/badge/▶_JUGAR_AHORA-b7ff00?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/sobrevive-al-mes/)
-[![Detalle](https://img.shields.io/badge/🔍_DETALLE_Y_BETAS-ff006a?style=for-the-badge&logoColor=white)](games/sobrevive-al-mes/)
+[![Jugar](https://img.shields.io/badge/JUGAR-b7ff00?style=for-the-badge&logoColor=black)](https://sandiacamil.github.io/game-development-portfolio/games/sobrevive-al-mes/)
+[![Detalle](https://img.shields.io/badge/DETALLE_Y_BETAS-ff006a?style=for-the-badge&logoColor=white)](games/sobrevive-al-mes/)
 
 </div>
 
@@ -204,7 +204,7 @@ Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de 
 
 ---
 
-## 🧪 Jugar cualquier versión (betas incluidas)
+## Jugar cualquier versión (betas incluidas)
 
 > Cada juego pasó por versiones intermedias antes de llegar a su forma final. Todas son jugables individualmente, no solo la última:
 
@@ -339,11 +339,11 @@ Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de 
 </tbody>
 </table>
 
-> 📖 **Más detalle de cada beta (con capturas comparadas) en el README de cada juego:** > [DungeonMathQuest](games/dungeonmathquest/) · [Trashketball](games/trashketball/) · [Gotitas Mágicas](games/gotitas-magicas/) · [Verdu-chan](games/verdu-chan/) · [La Tormenta Digital](games/la-tormenta-digital/) · [Sobrevive al Mes](games/sobrevive-al-mes/)
+> Más detalle de cada beta (con capturas comparadas) en el README de cada juego: [DungeonMathQuest](games/dungeonmathquest/) · [Trashketball](games/trashketball/) · [Gotitas Mágicas](games/gotitas-magicas/) · [Verdu-chan](games/verdu-chan/) · [La Tormenta Digital](games/la-tormenta-digital/) · [Sobrevive al Mes](games/sobrevive-al-mes/)
 
 ---
 
-## 🛠️ Stack y herramientas
+## Stack y herramientas
 
 <div align="center">
 
@@ -361,29 +361,29 @@ Un simulador de decisiones financieras: 30 días, un capital fijo y una meta de 
 
 ---
 
-## 💡 Qué aprendí
+## Qué aprendí
 
-* 🎯 **Mecánicas con propósito:** Traducir un mensaje o problema real en una mecánica de juego concreta, en vez de una lección explicada en texto.
-* ⌨️ **UX y Controles:** Entender las diferencias reales entre diseñar para teclado (DungeonMathQuest, Verdu-chan) y para mouse/touch (Trashketball, Gotitas Mágicas, La Tormenta Digital, Sobrevive al Mes).
-* 🔄 **Iteración constante:** Ningún prototipo quedó bien a la primera versión: Sobrevive al Mes pasó por 6 iteraciones visuales y Trashketball cambió de mecánica central dos veces.
-* 📝 **Documentación:** Documentar el proceso (registro de versiones, capturas comparadas) es tan parte del trabajo como programar.
+* **Mecánicas con propósito:** Traducir un mensaje o problema real en una mecánica de juego concreta, en vez de una lección explicada en texto.
+* **UX y Controles:** Entender las diferencias reales entre diseñar para teclado (DungeonMathQuest, Verdu-chan) y para mouse/touch (Trashketball, Gotitas Mágicas, La Tormenta Digital, Sobrevive al Mes).
+* **Iteración constante:** Ningún prototipo quedó bien a la primera versión: Sobrevive al Mes pasó por 6 iteraciones visuales y Trashketball cambió de mecánica central dos veces.
+* **Documentación:** Documentar el proceso (registro de versiones, capturas comparadas) es tan parte del trabajo como programar.
 
 ---
 
-## 🚀 Qué mejoraría en una siguiente versión
+## Qué mejoraría en una siguiente versión
 
-* 🎮 Migrar los prototipos a un motor real (Godot) para manejar mejor física, partículas y sonido.
-* 🔊 Agregar audio a los juegos que todavía no lo tienen.
-* 💾 Guardar progreso o puntajes en un backend en vez de solo `localStorage`.
-* 🎨 Unificar la paleta visual entre juegos del mismo "universo" temático, manteniendo la identidad propia de cada uno.
+* Migrar los prototipos a un motor real (Godot) para manejar mejor física, partículas y sonido.
+* Agregar audio a los juegos que todavía no lo tienen.
+* Guardar progreso o puntajes en un backend en vez de solo `localStorage`.
+* Unificar la paleta visual entre juegos del mismo "universo" temático, manteniendo la identidad propia de cada uno.
 
 ---
 
 <div align="center">
 
-### 📬 Contacto & Enlaces
+### Contacto & Enlaces
 
-[![GitHub Profile](https://img.shields.io/badge/Perfil_GitHub-github.com/SandiaCamil-00f5d4?style=for-the-badge&logo=github&logoColor=black)](https://github.com/SandiaCamil)
+[![Perfil GitHub](https://img.shields.io/badge/Perfil_GitHub-github.com/SandiaCamil-00f5d4?style=for-the-badge&logo=github&logoColor=black)](https://github.com/SandiaCamil)
 
 <sub>Portafolio de Game Development — Universidad Privada del Valle, Gestión 2-2026, Paralelo A.</sub>
 
