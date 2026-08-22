@@ -52,7 +52,7 @@
         <br/>
         <div align="center">
           <a href="https://sandiacamil.github.io/game-development-portfolio/games/dungeonmathquest/"><img src="https://img.shields.io/badge/JUGAR-00f5d4?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
-          <a href="games/dungeonmathquest/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ffd23f?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
+          <a href="https://github.com/SandiaCamil/game-development-portfolio/tree/main/games/dungeonmathquest"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ffd23f?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
         </div>
       </td>
       <td width="50%" align="center" style="background-color: #0d1117; border: none;">
@@ -73,7 +73,7 @@
         <br/>
         <div align="center">
           <a href="https://sandiacamil.github.io/game-development-portfolio/games/trashketball/"><img src="https://img.shields.io/badge/JUGAR-C6FF3D?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
-          <a href="games/trashketball/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-F1C40F?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
+          <a href="https://github.com/SandiaCamil/game-development-portfolio/tree/main/games/trashketball"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-F1C40F?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
         </div>
       </td>
       <td width="50%" align="center" style="background-color: #0d1117; border: none;">
@@ -94,7 +94,7 @@
         <br/>
         <div align="center">
           <a href="https://sandiacamil.github.io/game-development-portfolio/games/gotitas-magicas/"><img src="https://img.shields.io/badge/JUGAR-2563EB?style=for-the-badge&logoColor=white" alt="Jugar"/></a>
-          <a href="games/gotitas-magicas/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-DB2777?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
+          <a href="https://github.com/SandiaCamil/game-development-portfolio/tree/main/games/gotitas-magicas"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-DB2777?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
         </div>
       </td>
       <td width="50%" align="center" style="background-color: #0d1117; border: none;">
@@ -115,7 +115,7 @@
         <br/>
         <div align="center">
           <a href="https://sandiacamil.github.io/game-development-portfolio/games/verdu-chan/"><img src="https://img.shields.io/badge/JUGAR-39ff88?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
-          <a href="games/verdu-chan/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ff2fb3?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
+          <a href="https://github.com/SandiaCamil/game-development-portfolio/tree/main/games/verdu-chan"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ff2fb3?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
         </div>
       </td>
       <td width="50%" align="center" style="background-color: #0d1117; border: none;">
@@ -136,7 +136,7 @@
         <br/>
         <div align="center">
           <a href="https://sandiacamil.github.io/game-development-portfolio/games/la-tormenta-digital/"><img src="https://img.shields.io/badge/JUGAR-00d3f4?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
-          <a href="games/la-tormenta-digital/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-f59e0b?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
+          <a href="https://github.com/SandiaCamil/game-development-portfolio/tree/main/games/la-tormenta-digital"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-f59e0b?style=for-the-badge&logoColor=black" alt="Detalle"/></a>
         </div>
       </td>
       <td width="50%" align="center" style="background-color: #0d1117; border: none;">
@@ -157,7 +157,7 @@
         <br/>
         <div align="center">
           <a href="https://sandiacamil.github.io/game-development-portfolio/games/sobrevive-al-mes/"><img src="https://img.shields.io/badge/JUGAR-b7ff00?style=for-the-badge&logoColor=black" alt="Jugar"/></a>
-          <a href="games/sobrevive-al-mes/"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ff006a?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
+          <a href="https://github.com/SandiaCamil/game-development-portfolio/tree/main/games/sobrevive-al-mes"><img src="https://img.shields.io/badge/DETALLE_Y_BETAS-ff006a?style=for-the-badge&logoColor=white" alt="Detalle"/></a>
         </div>
       </td>
       <td width="50%" align="center" style="background-color: #0d1117; border: none;">
